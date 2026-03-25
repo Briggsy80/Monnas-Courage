@@ -722,11 +722,21 @@ function load() {
   } catch(e){}
 }
 
+function track(category, action, name) {
+  try { window._paq && _paq.push(['trackEvent', category, action, name]); } catch(e) {}
+}
+
 function advance(id, result, label) {
   const node = NODES[id];
   state.history.push({ id, result, label });
   const next = result === 'win' ? node.onWin : (result === 'loss' ? node.onLoss : node.options.find(o=>o.label===result)?.next || node.options[0].next);
   state.current = next;
+  track('Match Result', result === 'win' ? 'Win' : 'Loss', node.phase);
+  // If landing on a done node, track the final placement
+  const nextNode = NODES[next];
+  if (nextNode && nextNode.type === 'done') {
+    track('Tournament', 'Final Placement', nextNode.place);
+  }
   save();
   render();
 }
@@ -734,6 +744,8 @@ function advance(id, result, label) {
 function advanceSelect(currentId, optLabel, nextId) {
   state.history.push({ id: currentId, result: 'select', label: optLabel });
   state.current = nextId;
+  const node = NODES[currentId];
+  track('Pool Position', node.phase, optLabel);
   save();
   render();
 }
@@ -742,6 +754,7 @@ function undo() {
   if (state.history.length === 0) return;
   const last = state.history.pop();
   state.current = last.id;
+  track('Navigation', 'Undo', NODES[last.id]?.phase || last.id);
   save();
   render();
 }
@@ -755,6 +768,7 @@ function cancelReset() {
   render();
 }
 function reset() {
+  track('Navigation', 'Reset', 'Start Over');
   state = { current: 'pd1', history: [] };
   save();
   render();
