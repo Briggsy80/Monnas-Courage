@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monument — Courage Festival 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #07111f;
+    --surface:  #0f1e30;
+    --surface2: #162840;
+    --border:   #1e3a55;
+    --gold:     #e8b84b;
+    --gold-dim: #8a6a1f;
+    --green:    #22c55e;
+    --green-bg: #052512;
+    --red:      #ef4444;
+    --red-bg:   #200a0a;
+    --blue:     #3b82f6;
+    --blue-bg:  #071428;
+    --muted:    #4a6480;
+    --text:     #e8edf2;
+    --text-dim: #7a9ab8;
+    --radius:   12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(160deg, #0b1e35 0%, #071428 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 18px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .school-logo {
+    height: 52px;
+    width: 52px;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: white;
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .header-text h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900; font-size: 20px;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .header-text p {
+    font-size: 12px; color: var(--text-dim);
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  /* ── JOURNEY STRIP ── */
+  .journey {
+    padding: 14px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .journey-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .journey-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .j-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--surface);
+    border-left: 3px solid var(--border);
+    font-size: 13px;
+  }
+  .j-item.win  { border-left-color: var(--green); background: var(--green-bg); }
+  .j-item.loss { border-left-color: var(--red);   background: var(--red-bg);   }
+  .j-item.select-done { border-left-color: var(--blue); background: var(--blue-bg); }
+  .j-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 11px;
+    padding: 2px 7px; border-radius: 4px;
+    flex-shrink: 0; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .win  .j-badge { background: var(--green); color: #052512; }
+  .loss .j-badge { background: var(--red);   color: #200a0a; }
+  .select-done .j-badge { background: var(--blue); color: #071428; }
+  .j-text { color: var(--text-dim); flex: 1; line-height: 1.3; }
+  .j-undo {
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 16px; padding: 2px 4px;
+    border-radius: 4px; flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .j-undo:hover { color: var(--gold); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    margin: 16px 16px 0;
+    border: none; border-top: 1px solid var(--border);
+  }
+
+  /* ── CURRENT CARD ── */
+  .current-wrap {
+    padding: 16px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .card-phase {
+    background: var(--surface2);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .phase-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 13px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .phase-time {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  /* match layout */
+  .matchup {
+    padding: 20px 16px 16px;
+  }
+  .teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .team {
+    flex: 1;
+    text-align: center;
+  }
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 18px;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+  .team.monument .team-name { color: var(--gold); }
+  .team.opponent .team-name { color: var(--text); }
+  .team-label {
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .vs {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900; font-size: 22px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .match-note {
+    font-size: 12px; color: var(--text-dim);
+    text-align: center;
+    padding: 0 4px;
+    line-height: 1.4;
+  }
+
+  /* ── ACTION BUTTONS ── */
+  .actions {
+    padding: 0 16px 16px;
+    display: flex;
+    gap: 10px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 18px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: transform 0.1s, filter 0.15s;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-sub { font-size: 11px; font-weight: 600; opacity: 0.75; font-family: 'Barlow', sans-serif; text-transform: none; letter-spacing: 0; }
+  .btn-win  { background: var(--green); color: #031a0c; }
+  .btn-win:hover  { filter: brightness(1.1); }
+  .btn-loss { background: var(--red);   color: #1a0303; }
+  .btn-loss:hover { filter: brightness(1.1); }
+
+  /* ── POSITION SELECT ── */
+  .select-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .select-header {
+    background: var(--surface2);
+    padding: 14px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 15px;
+    color: var(--gold); text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .select-q {
+    padding: 14px 16px 8px;
+    font-size: 15px; color: var(--text);
+    font-weight: 500; line-height: 1.4;
+  }
+  .select-opts {
+    padding: 6px 16px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .btn-opt {
+    padding: 16px 10px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 20px;
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    text-align: center;
+  }
+  .btn-opt .opt-sub { display: block; font-size: 11px; font-weight: 500; color: var(--text-dim); font-family: 'Barlow', sans-serif; margin-top: 3px; }
+  .btn-opt:hover { border-color: var(--gold); background: #1a2e46; transform: scale(1.02); }
+
+  /* ── UPCOMING ── */
+  .upcoming {
+    padding: 0 16px 16px;
+  }
+  .upcoming-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .upcoming-item {
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .upcoming-item + .upcoming-item { margin-top: 6px; }
+  .up-phase {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 12px;
+    color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .up-cond { font-size: 12px; color: var(--muted); }
+  .up-win  { color: var(--green); }
+  .up-loss { color: var(--red); }
+
+  /* ── DONE SCREEN ── */
+  .done-card {
+    background: var(--surface);
+    border: 1px solid var(--gold-dim);
+    border-radius: var(--radius);
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .done-medal {
+    font-size: 56px; margin-bottom: 12px;
+  }
+  .done-place {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900; font-size: 38px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .done-label {
+    font-size: 14px; color: var(--text-dim);
+    margin-top: 6px;
+  }
+  .btn-reset {
+    margin-top: 22px;
+    padding: 12px 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 15px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── INFO PILL ── */
+  .info-pill {
+    margin: 0 16px 12px;
+    padding: 9px 14px;
+    background: #0e1f32;
+    border-left: 3px solid var(--blue);
+    border-radius: 6px;
+    font-size: 12px; color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .info-pill strong { color: var(--text); }
+
+  @media (min-width: 500px) {
+    body { max-width: 500px; margin: 0 auto; }
+    header { border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAKAAoADASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAIIBgcBAwUECf/EAF0QAAIBAwEEBQcGCAUQCQQDAAACAwQFEgYBByIyCBETQlIUGFZicpTTFSEjgpKyJDEzQVNxosIWFzdRdQknNjhDREVhc3STs8Pi8PIoNDVUY2WBsdIlZIORwdHx/8QAGQEBAQEBAQEAAAAAAAAAAAAAAAIDAQQF/8QAIxEBAQACAQQDAQEBAQAAAAAAAAIDEgERIjEyBBMhQUJScf/aAAwDAQACEQMRAD8AxHzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAAABxt29QyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZDIABkMgAGQyAAZAADkAAAAAAAAAAAABAkRJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAAAAAAAAAAAAAgSIkgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AAAAAAAAAAAAAQJESQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd0HW0sexMmZV9oDrqpmhTLmOxXyRWXFjHNTXL/AOkzNTMq4qzK7+JTDN1u9u1alk+Sri0dJckbFcuFX9kvjHtPVOzbC5d5iRGPblxEiFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AAAAAAAAAAAAAQJESQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWPH1JKqJErMqo/CzZHtGPX/AGutWj9eSpEzMmz7JUjxr1s6rNVcPC0DJi3N6rKpTGaaWnu8s6Oyuk+ScWLKytzF06yLqpars8c3TFV7zLjlkxSq6LjcqhVXFs3+8e7BPb0YX5Xk3Y3BrroO01zv2jy06s7esZMar6MFf5Zuvgi2tk9PO6fV7ptQ8N+zWfUABKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJymOXJ2nuksCtxYqvh4ebHIyGbb1KYvNK01VKrMvZK/EzriqsrcP7JUjrkRZInjxXyflyXhVW/eKR3LJbpVKv6V+Je7xF4pmWLLJVZV4+XxeFSkN6Rku9bG3MtS7N9o93xWGRYnof1+dmutvZuJHR1X7Rv1SrXRJrez1hX0eX5WmyVfZZS0UeWS5eE8mfttePw7QAZNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA65uTLh4TF2aNp5cVaRX4ZWbu5eFTJazbt2Ur4t3TGYUbiVI8ZmZVbHmZf+UqU07Vx2VCszt9EnDt5mx5cSk+qlx1LcuFl/CXyy9ou3guXCq4twdl4vrFLNdIqawuaqqqq1LcKnu+H7MsjJ+jrcvIN6tsjyxWoyg+rzfulzY+baUG0XXNQarttZHzRVKcX1i+1O6uqOjcLL1mHy57lYneADzNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7wHw3yRorXM6/jPIbhiiZWVkxxZU4VVvaPR1Fs2vQbIuH6R1Xi+1+6eezxrTrL1drFkuarworN/vFSlwyNtZImbJkbgZOFfWKZbyIew11do+HJaluXlLlsvZU/0j5Kj/RvyouRTreojRbw70mXElU3F9VT2fF9kWx6jdoqqJ14XWRWL5aKq9lbpS21Ozbz0ybdv2ShTNxcPCXS3EV/l+7S1SZZYRYfZ4R8ufxOJnwAPBw3AAdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAAAAAAAAAAAAAgSIkgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARy+fEDyr8rStFFkq97Jjz1Z3XKLieJuOKXhX7J9t4dXrFiZljxTLJj5IW45Z8ezmVePPmZseEqUoTJzNxNStwtn3W9VSoW+T+VC/Ytl+FczeypcDq7WJXVMf0rS83EvhKi77tka7zr0ysrL2/F9lT2fF9kWwzh25K3Crd4tT0Tq9qnRFVRM3zUtT8y/wA2XEVWkXJVbm4uU390QK9kuF1tzNwyos/1uU2+VPYzx0soAD5b0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAAAAAAAAAECREkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADrk8Lcu07Drfn5WA8a5YvWypJIsS4cy8zHUqtg7pGsU0S8z95sTqbKSsq8mVc2ZVZeJuEkzZdlJLy8zPzNwlSk7RVRKmNe0dV+lZ+82PhKlb8tjLvNvDSY5PKrfsls6rPmZVXPiVssmy7pVHf4rLvOuOXFtyVutj1/E8otgS5bGXLxG1ei/XtS7xIoGbhqImU1UviX6xl25ut+Tt5FnqcuHt8G+twnszT2Mca8S7fskjrXunYfGesAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAAAAAAAAAAAAAgSIkgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdEzLxN3lU7z56xsYnbh5QMfp9rOvarz5Nki95TsjXBXVFx7VeJF4mxxx5jiHKeD18mw7q45eIm2Uz7OyyV24FROFccvEUlHhi2IuWKP3V4mXFSp2/hJU3iVaSrjKqrkzd7mLYyNGi/o1d+JE4mKqdIKHsd40qsrK/YIzZNl3mPV8ZFtecq+qfXYZ2orzRVeWPYVKP9llY+b8fe5eYj63d/nPo168sJfoJZ6ny210lX+lgWX7Sn3GJbo63y/d5ZZ2bJvJlT7PD+6ZafDry9UgAOKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8d029VO+UmC48TH2HmXvYrQqrtijNsy27PnOz5HxQpEmUTZSYouLvwqda9q7dhk2S4qrJyt4iUjcS5KskUuKq7936pKRHk+g+kkZGXDHhXEpKPWuPaK3Ar8UUS8pVzpKJ1byZWxZcqZPvMWlxWOnaSR440duNEKt9JBVTeDKy9pi0aKuXh4j0fH9kW1nlw8XKrcwbbw5cPCvD1Dq6sm4cV8IbZjk32T6LzredGivas3bU6Mys0Tsnsm1DQHRCr87Jc7ezcSS9r1G/z5GWdaeuPAADJQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AAAAAAAAAAAAAQJESQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPKvTss9Oqsq8zcR6n5utTxrjlJd9n0faLDFy5eL/lOz5HVH2SOsUcbT54qjtyrwkZHl6ti9v2bwMqqqeHvEpMVZEqalepFyRIuE6fLo+3TySl7R1XFnYpLu7JWilWCD6KVccn8WRWLpNTN/D7s842ZYFT5vVLBXy70dqp8rxd4KaLmVMuI0zvKve6fVV0SjvUlyt8zL9BcUXFcvWyU2xdtIruaQ9Xl4eJl5QveZuLLlYzu7bp7/FQNcNNV1JqS3suSvTNx4+z3jA5tstPWPS1MEtNNE35KVccW8J9CckvPq3N0TK/ZS61raHLLyqlXFfWVsi1RSvcHW+R70LVIvDmzI31i6WXqnzfkz3PTj8JAAwaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAAAAAAAAAABAkRJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIsyquTNjsJHzV1MlVA0TMy+yB1TXKmR8VbtH8KmMXq7U1HLNVXCugpEZceJ+LEx/U1q11Pcqiht9ypKGhSLNpU58Tmy7rrU1T291epu03eeodsTWeJn9S+Os1/bZJGgsNsq77U91scUX6x0R27eRqJljuFZBYqRu5DxOqm0LXZqO2UuyCjpoKaDwQpifdBDBFt+jVVbb+fEfZJq13b92NhpcZ7gtXdKpWyaaobJfsnoamtuktljljuVqompOyxRWi4cvaM5kxZdqsax3rV8EOkuzdljXNOJmXxMMe1U5Xa1o2ktPr+GaJv8AW6XuHdhfigZvtcJ0XSu1BTxeTby9GQX+hVcVudu5lXxYkIZ4JlzgljZfEp6lrutxtrZUlTIqNzLlwt9U9OlM6rZjFl0tpmpvlLft2+pY/K6d1drXXNizMvFjkb9tuvqWFooNQ0tTaKpl/uq/RN9Y05eLZpPUE61Nzsy0Vb3K2h4HVvWxPRtdt1/SUrR2W502sbLwpLTXDnRfWyJyzt5VjpYaiqqarg2TU08cqN3kbJT6TENDaYisMbTxRyUjVCqz0qSdcUTeqplceziXHlxPHTV2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAAAAAAAAAECREkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHL58SMj4t/iA7AdTSdS5NwmPag1rp2xthXXOmSbbyxZ8T/APoNR99dB2t02tnjsaJV9riPQZsF4uFF/nNS3rewr1qx2ay1NXLt4Y8+DJjyIajebqyeZXn+SYUXkiXDH2mbLL6prOOv6z2bhuV8s9ujZ6+4U0KL+kddhgd23xWFHkgtEFRXyp312Yp9puYxWj0HA3bV14qqm6LE/wBIsT4rl3ubIzu32LStunpayloaaBGgyVpVyX7I1nhWzEG1TvL1Rt2xWW2/J8L/ADdsydXD9bhPMuG7DUNRE09zujVdQuLyo8mSsnstw/ZM3vGoKt7i1Jb5GiiiXLJcVVm9U+6zvVXGiluddPH2qwMmCtiaT2uK6V1grKSqeehlaJ1bFey4Vb6vKRhvdzpnaKugWRk5uHFv943Lq7S1soLTTPSq0dRVSqrS5ZY8zZGHXKz5zyweTNIsSK/FxZL4j0zlZ1LwrbfrfWLisnZP4JuFlNi7p6+p2Xl6GKdWp54ndkVfCa/vmloKu87KakyimZFbLurw5MdVhp9UaXvi11odavFGRlbjRl72KrxL9onJW0qntWzj/J7P1HPrGqNO74aaWVKO9WqpoqnYvHtXiX9ZsGw3+2XqDt7bWQVMXiRjwVPPDV64I5Drx/UcEgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAAAAAAAAAAAAAgSIkgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdFTVQQR7XnlWNVXr62bqO1uXaan1toa5X2/S1NXeJWoeH8HldsF+rylTOwya+7xtK2rNZLgsrr3IuJmMPrt51/u1Y1LpfT8nZY8U03Mv1Tr0vQaRtFyaklt61MsX92lXNV9ky6G7UMlJXPbYliZkVUdFxy5jXWZZdzAobfrW/VqRXrUK22Gd8MYm4m+qefqLStv0bSxSuvylUS1KxK0vCv2TPb1PaodL26jgnhjqaiRMWduLLLJvumD73NYaRpHpaapvUHBVdq2LZY4qVJshrCe4U1Jaqq3ytGis2axLjgxtO3vPWW2Vuw4WiVsnbm4Ssuot/dqyigstmlrlSJk4+VvWMMuG/HeNXUS0NHWLQwquGUXC+PtGv1VSdtVrbtqey2bQ/ZXC4QwTY4OrNi2XiMJ1Nvn3d2S2w0flLV1QlMqOtOuXEVw/gXrTUunpdVVMtTcKZHwld5cmVjH5LM1G7drTMrcrMymmPAn7Gw9Rb8rxX1TfJVsWBV4VZ2y4e7w908Gjv8AvQ1WstHbrhXSJEuTJC2OJjOSReFVN6dEWSqlrdRfJzRttWCLLJfbNKxzKJqqan/jH3n2BltlwrJataKfJopuJlZeHEzzSO/y0SVGN/t89vll4HdOJcDCt6VV228i/duy9r5Y+S/WMcaiiqeamVsjn17S7t3Lk0Or9FX5rTU2q40M6NwSxZYuvDwmT0NDbYLlcJ6aBuyaLhd+63qlF9P7v75eKzstPx1McyKz8D4448RkOm97G8/R+dv+UGuEKsyOs3G32jKsXLSbWgulXU3HX1LBE3ZwxROrsi+HExmz2ufUmoLg1lrGttzpXxZ0bFZV/dNf6H6QNoW5I2p7VLRPLPk8ycuOJsbdTqHTlfqurrLZd6TCqTJHZsWyy5SKxql7VPqneJpWdqa40kd5iRsWZG4lX2u8Znp3eppm5SJBUzvb6rleKoXHiPnt81Dss0Mqy41KVzrzZd9sj5NQWTSN1qqtq6hWOaVvyq5Llw+qY6yvZs2lrKaphWWCeORG7ysd67es0JbdMahtFQ1ZpK6zx0quuVNK+SfZyN3WjyjyGPyvFqjHZ2m3Z4jOp6KfcACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcgAAAAAAAAAAAAIEiJIAAAAAAAAAAAAAAAAAAAAAAAAAAABFiRFgI7WVEyy2Y/n27TDrxqCwW2qrnuV5pIkZccZpeX2T0d4Vvud10bcLfZansK6VMYpfC2RS/XW5/XdrqHqdQ1ctWrtz9vkrGuGOKpldUy3Um8/TViujyWqulrqhZWZcOT2Tz6jf9qOvRbVpDTkUbPikTOmci/aNeLoiuh5KaP6rH3WG1XqxXmkusECq1PKrn0fqljvy8bU131tdLk0l8uVXFNEzKyZMmDfVMgo91zXHQ1PqqC5rVyyysksTs2SMbW3iWyjuTUN8aCLsbtTLVLw95lPo3S0doSK66eZ+zatpnemhdv7qvEuP2Tm0yNSbu6aLTGt7fU3m2RS0Ky4S7HTNMWM43naFtEWoKhqam8mhn+liw5cWPn1NQVi0VXRtTN5R2bKqMvM3hNlVFquWqdH2euq6RqG7UcSxTxS8rr4jn2f1pqxbcTb5I6i56QnqmlpK+leZUZu8rLj948a6UEUVVUUlTArNE2OLL4WMu03oK4rq+lrKmWupPIlzSam5WZuHFuE2ZdtC0N1nl8qo+zmliZVqFbFlbusxn9nEp+tR27abvVz1LVxWq2Vc69rwrCmSqWT6I+j7xpClv0t6pvJGrIosM2Xu5f/ACNtaT0nBaKDyaepgk2pjx08WLMx5W95pbPu5ramjkkirolVmm+0TWXf8VM6yqfve0Bq9NYXW9LaKmWkqKlpVliXPhyPosNOsVrp1lgxdVxbJcWUyKy72dVW9VgllirKdlxwmU7NM6i0xU1tbV6jppI5nf6JU/JKeiZqZZ9uzLdC25rfoG7X7No5p28kT2W737Ri2ndHW+pu9LTR0nbzTvkzOxmmpL7Z7vRWq1WGsjWJmx8nyxVW8R7mmbXTaQSbUN1kSdolwgiibJc27xNbKpqLfFpqhuusGisdqpqSip4liZl7z94wrVG7ap07p+ivkFxkpKiqlZUihfFuHvG2lSe6XRuwiZpaiXhVfWPu3gUtJtulPQrGsq0USoqu2XHjxCUtO6H13vI0k3ldLJJdqKJu1lWrXNftGxJOkhBcoOyuVoa0zMrI7xLwtkepfqGe3bt3gtsEGd2fDiVeBV5sTU0miLhJwyJA3tMpX1zR1pZvdDqnT16SoqaO/UzMqpgjPjJ3u6butUqzUUciyK+Wzr2ts2n596f3U3y5XRKazytTVTtzRS44luOjrpDWmj7HX0Or7v8AKG15Y9tLxZdmuxfnU8WeZltLbAAPM1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAARbZkpIAdeDZZZHmans1Ne7RPb6pO0V0bq/WeuRxE1qKv3TQOpaGsli+Sp5EVuF0XhZT4bho7UdPQPLPap44m4ctqlrsV27Pn4v1nn3zY7UqpEuW1mx6j0z8mmX1NKaZ0TWSbu7fbLvU+WywYtAyri0SeE9HTu7OC36hirKyWKVEXKCXvIxspYVjR5FXgbhZHblJyMmxVgeVVRcWXFe9ly5Csn/AC7qx+bSdsqcnuETS1DtwNjjynaty01BfIrdJXU0dXEvDEz5M2X/ACmut+W9Sm01BLZbZlLen72WXZZFVrheK6O9+WT3CXy52zaVX4lY2x4qqf1yq1foIvZ4TMuUkOWTYrjxZHaydeSVPZ4tkyy5ZMpXrcLvfareKwallkkd+GKXLm9osUvAmH0S5q2L7O6p58uKpXPciuPZrG8sjKuKptReYwffZHJLuvusckTdqkGTM7e0ZwrrwxTz4qjLhgvMYdvaRn3Y32J4J+28jZm2uxOL3K9VLeFk9UNyt+yMlxbuqrYkmXh7p9iXjoVpFZWVmVl7ysejT6jvENE1J5dO0LNlgzd48zH2l/UMmwy8I1kbF0vvRqbTg0lsil4cGdOFiVPqyxzq1XU9otU87M0LeFvWNbsuXd4ebmI87Kv2do+uXW7ZrpPqpYYLZSs1PSqqRxJxYkI9PXp3WNbdPnljyHy9FnUSWrXj2yp4oa+LBWbuMpbrsoGxbs1+yeDLlqKbTGzXu57RjWeh8uuEWNW7ZL6pshdmzY20L1dWwkeOq2a66gAJUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAAAAAAAAAECREkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFl6zx62RZrkseLZKrYNsbFfWPRrJUpoJZ3bFUXI8iNFeTCSKTtnydGyx8IkRjkVlleOOJcWZGRuJvaNcb8t4VNozT7UtLO0lbVRfQJjjjxcxnOprzFY7NV3qfyaCKnVlfLmYpHrzVk+o75W6jubNLErMtNE3L6uJ68GP8ArKsjwdRXidJZa6rnknudVk2Ttlh63tGGtJJK7SyO2bcTN4mO2qqZamoapn5m7p0numWFdz3dO3CWOdHV2jmRslZS8e4fVa6q0dEzqr1Sr2UvW3Lw4lAqeVoZ1de6WS6JN+Wk1bLapWZoaxMlXLvEZ52l2aWr62Vkpp5UiVFVlZe8YrvOxl3bXhZWllmejbIy1Uy/BVpl7VVyyfw5GP7yknfRV7bKJVWmZMcT52P3b8+qjkmOxmVWZVyyxH48W4cScmxtkr48WXqkF2LtVeE+xPq8tH1SPXivNkzfmYL87Y5Mo4tq5Nix0S6uJsseEi2S8XeblyHUvhbIM3ey5fVA+3T9fLar3RXCJsXpXV8l9ovtpG6RXvT1Dc6d8oqiBXy9blPz89Xh4uItV0S9SNX6VqLLO/HRvlEvqMeH5eP86t8VN5rykiK8uwkfPbgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAAAAAAAAAECREkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOa45AeVfpkxWmfkf8o2zuqfLIyuypIs8rtl2XDw48IqJVqqqoxn7PY30TcPd8R8N8r6Olo5aySplzp4mdMWx4TSWdU0N0qtVM89LpC3N2aO2dSqNzeqxWPVlZ21UlHE34PS8GK95vEZrrK/NcbtetUVLZSzyslMvhZv93I1izNtfJmyy5j6eONZYUeH1QAaJO8ps3cjcmoNb2erV+zXtVVjWRlOhZmiulvaNuSqRv2hk7pH6Lwus1GlS07dtKq8vhyPD3jR0raXuCouWVNKzt62KnpWWrV6KKqSmZolpUX6x0awkbZpe5osCrtnglZcvDip8nj3enn1URxXN2yx4mOOVVxbiJ1HC7ZLysxFcdjNkp9ifV5acLkzcOLDFcu0ZWUiqrsVsWxYkvNjlkdEe6zKzZEvxsq5d3IdfDlivhHqtHkwEW5eKPiNh9HvU/8ABveNRNPIy0tZ+DyK3dZuVjXjdnllxKdtLK8VRFKrYvlll4cSM07S7Na0/ReNlaNdq/i27PmJGKbqL7HqPQtsuOx83aFVf2lMq2MrfiPi1x0p7ZSABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8dVIsNO7fn5V+sfYeVduymlWCR8dirlw+ISPnp4Z4vp8YlZ8U+tka06SFzey7tKjKqVZpfwVMeZsub7psynWDtVWSVmRlXvd4rX0sK/t7pp2xxtJkitLOuXNljj91jfBO1MqV41g3k1Fb6Flxdk8olX2uX9kxk9jWVWtXqOrZGyiifsIvYXlPHPqPOAAAxkGj9vVWU/+XT7xj7GQ6P2M1ZTqvN26feJofobpFpV0zb4Oyy7eBcWy9U7tVJPPYa527PqhgdP2Tp0ftqm0vb522xrtp4v3T69TxvHp6rbtPy6/eU+X/t6v8qGXLZjVTRKq87cvtHVkzMy48p9F4Vo6+qZW5XZf2jp4lbLJeI+xPq8lIZLl2jLwhccnbE5bJVVcR1tnxLynRxivCuWI/EzOsnKc9a5NIynHCzKvLkA+k4V4Wy4g2XE2PNwjxYtwqGVe0VcuHHICxPRG1K2x6/TVS7KnDPB+9+6WQXm2lDN1eoZNMa5t917T6JXVZV8SsXuoJo6mljnibNJVzXb6u0+V8vHrT1YqfSADzNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByAAAAAAAAAAAAAgSIkgAAAAAAAAAAAAAAAAAAAAAAAAAAAAACLMuxdvz/iPCjl7SoaVpY+ZmX7p6d07XbQP2S5PtPKp6OeJlXbsZupOvkKkdquu3Fe0iXJs2KmdIC4tX74maT+9YMV9XmLXtC+xl7V8c+JuAqbvQ09qOs3i3q5raqmSF0bBlTmPTgqZplavNZt7Splk8TsdR7dRpLUqc1jrl/8AwMfPJp++JzWqrX2omPZ9k08+tPMB9slquKflKGpX6h1NR1ez+9pf9GVtJrT5zKNDp13K3+vVRL+0pjnYT7GXKKRfqmcbq6OSp1LaaZo262qVbl9YbSpfm0xeTWiig8pXsmi42x9U7bxsimtNUks+SKnB9k7qWN4bdDSdmrdqmPNy8IuWx5qKWDsPyS8X2T5f+3p/yoXfPnu9VGrLh2rfePiy624mU9DUWzG91seKrjO33jz+ZuXlPrY/V5ac83FkvCcLt4csjlsmkXFVUkqNzLHw+Er/ANShJkqqmS8QybZxNjw8JzgzL+T+cNE7Y8DN4jvaOO6q+JshlxM2Pqk1hlbh7CTL2Sfk0uX5CT2cTm0j51XurzLxfWLp9HbUPy7u4ou0frmpV7CT/FjylNPI6n/u032TdHRXvNZatVVFonjlSkrU7y8Oanm+XxNS1x7StWu3bn8/6uo7Dqj29Te1+M7T5b07AAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAAAAAAAAAABAkRJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESK7GyOwAdWDe1xd5gydfEy/P7R2gDo7Fdu3iiVj55rVbZvytDTSZeKJdp94Gw8aTTOn34nslvb9dOp8s2idJzc+nbb7uv/wDRkQO7UasNqN2eh5uJtOUH1Yl2HFHuz0ZQ1kVXS2OCOaJskZF5TNAd+yk6vj8ij2srZScPLxcoaiiZX5/pVxbiPsBOxq1hUbj9Dz1T1EtHKzu2Tbe0OYdyWhk/vCT/AEjGzgX91mrXMe5rQqf4Ly9pz6KfdLoeFeGzRt7RnwH20asKj3XaJX/AdN9k7F3aaLRslsdN9kzEHPso1lise77SSbdmNjpPsHfHorS6Nktjof8ARbDIwPso1eKultObP8C0PD/4CndBY7RTSpLS2ykideVkiVcT0wc2pWqCp1MdgBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ2AADYAAUAAAAAAACdgAA2AADYAAUAAAAA51AAHQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcgAAAAAAAAAAAAIEiJIAAAAAAAAAAAAAAAAAAAAAAAAAAAOGZVOM1PM1VNLTWGuqIH7OVIGZX8JqjSO9S3ybqYau4XhflfyNmZvC4G6lfJclOM14vVMJ3J3euv27Kz3a4T9tVVNMrvJ6x6e8TUC6X0jcb3hn5PF9GuzvO3Co1GRNIqdWXCSXbkpqW32DXdysNPen1VJTVtQnapTYq0a5cSqZNud1JV6n0ktbXosdbFI1PU7F8a/nGozZtuOw8qC/2qoqvJYqtGmzZMfWXm2HVrWqnodI3WspmxmgpZJE27O62xTR+7WrprvT2muqdaMtwqHWVoVpk4nb6p2ZFihkQj2NsRVZutur5zWO/m83e3R6fprVdJLb5bcUgnlVV+ZW9o5PdyNns67Bkact94vVg3jWWyrqH5epLpmr8uUGPebE29148ortHZmpyrrtNU76r5erVcbLSUtTPb7ZUOy1VdFFn2RkO6+WOWhmaLUy3tMuFuHJBqM1z4QzrsINjlsbHibhyNJaq3pNpHehqGmutXlRQUCNR02PPK2P/wAhqN4Lt68gzY/qMN3a7L7Pafli91ayy1+MqQp86wK3dMvkxVWZuUajlpFXIkrrtNP2Wq1NvDu92npL41mtlBWNSxLCvHKy82WX1T0dCX69WzXtVojUFStfjS+VUdXjizJkq4t9oroNn5Ls5iParwt+Zg2WO3+f+c1fqa5X6+bw30dZ7gttp6KlWqqqnHJ2yZsV/ZJG0s+HIZqakhrtR6L1rZ7Zc7rJdrfdpWp0d1xdHNsfjGonn4uEZqa13yX652W76Pgt1T2S1t1WCoXxLibHXkXJvZA7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIiSAAAAAAAAAAAAAAAAAAAAAAAAAAADzdQUrV1pq6VGVXliZFZjCtL6Aprfuyi0/U0dG1b5K0TytEvMbFZV2riw6l8IGK7qdPT6Y0DarLU4tPSwKjt4j0NW2Wkv+nq6z1nVsgqoHidvB83C3/oe11KMF2srdX4hsNT0Vv3l2yyJp6k8gmiROyiuDtxKnd4fZMy3aaZh0ppWC1JL28uW2SeXxyNzMZNgvzcPKFRdnKuI2HmaqoHuem7hb4vmeogZF/XtNa6L09q+w2u329tPWmTyXFWm4c/aNvkcF8J2a1HEWXZrnz9XzmA73tGNrHbZIGwano65aidWbqyVf1GwSLKrcynJ7RrWybvY9O7xflyzwJtoqin7KWJ5MuwbxL1mx+rw8XCS7NOvLH5znqXYdruOjEtbQallaH5HpKCtp/7rDUKeLuz0rcbVqC7X65xQUT3FETySFuFFTLi+tl+ybH6l8I6l8J3qIcWOPeNX3DdlRXPeneNS3imgqaKst608SbW4lbhyb7xtPFccTnq2fzE7ajBt2liu2maaqs1XU+U22B8qF2biVG7jGZs2SMuOXCduCeEdS+EbDVUOk9UaSvlzrNKtDWW64z9u9LK2LI/eZT1NBaRuUOqKzVupJ45LpUxdikUXJFH4f2TYfUpHqVe6VsDbOHb/AIzXWrNL3qHWq6v0vLF5W1MtPVU83LKq5Y/eNjkepfCTsNZUOmtS3vWFsvmqGpoILbk9NTQtkzO3eY2RCuKHbgvhJYjYa63xaVvOoZNP1VlWGSe113lDLK2Ktwnuabm1XPVSrfqGmghx4NsT94yfqXwkupQC8oAAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAAAAAAAAAABAkRJAAAAAIsy7OYCQOtZUblYlkBIEc1294K67eUkSAOvNcMu77IHYCOa+I5Vlbl2gcgfiHWpQAj1qOtQJAj1qOtQJAEetQJAjmo61JEgR61I9on85Wo7AdfaL/xsJKytysTqJAEetfEBIEc18QzXHICQI9ajrUo2SBHrUjtkVduxfE3USOwEetfEGZVHkSBHNSRQAdakc1AkCKuu0kOgAj1r4iRIAZEetShIDIAARZlXmYKysBIEWZdi5MOtQJAjmviGa+InYSBHrUdalCQI9ajJcQJAj1qM1yxAkCPWoyJEgMgUAAAAADkAAAAAAAAAAAABAkRJAAAAOuo5PW/MdgAxXX1dqOg0+0+l7bHcLhmq9lK2K4940RvK35byNARQy6h0jDFFPwrKj5LkWhK09PGDyjR1miXmau2Kv8A6qxeLupLncL0iqnX2t00/crdFSLLE3ZMrczKWRjXq6z8u9K1lw3e7z6GqlyjeiqkZ1/8JuL7p+mljuEF0tFJcIGVoaqBJVbZ6ylZ51/eCaek3zLtK1b+OkdLoPXL6ctltjruwRe1ly5WbulgdTXSns1irrnVy9nDSwM7u34lPzD3hVNxv12qtW1iMsV0qpWiZvErcQwY9v0pcXQ+9LelrCzJeLPpCFqR+R3fHLxG/bE9XJaKeSuiWGpaNdsqbO63eNf9F7Zs/iQ098y/kG+8bQJvySix89wqaego5KqplWKGJcmfad02OOLd7hKq9ODeZLbqen0TaKlo5qhe1rNqt3O6cmdiq1ezqjpF1V01G2nN3FlkvNWrY9ts4lb1lO75e6R9PB5ZLYbXLEvE0Kc+P2j7uh1oGm07u7p77LTK1yuWzPPavLE3L+yb96vm24l1zxLjQW67pCW+73/+DmrKNrJds+y6pOFWb6xvqLar7NjLy/8AuVS6cmg6anttLri2RdhVROqTun7JnvQ+3ktrXQ/yXcZ87rbcUfr7yd05U9uzu38b3PF1ZPc6WyVVTZ6RauuVPoombHJj2gZ8KVr3hb4N6GhrOt1vmj4I6VmxZ1fl9oyjo878LfvL8ooayNaO6wcXY+NfEp09NfZsbclW8OX06FGtK3i+aF1NQ3ymaSCoTGVW7roemIm5Rtq/VCba6xPjxPsXh2GnL9qre9RS1stNpCmlpYmdk+l4mVTLtzuvrbvC0hTXqjk+mxXZUxd6N/CZrXf9Sm9hjD156Oqv6B38bwda3mqtll0nHJVUvDPx8ntG+921fqi4WmWXVVsjt9Sr4oiPl1qaC6Gqr/GdvA4V/Kr99i1GzlO2dXVV7XSmlaFcn2Lt2qv8+00XrTX+9fT1srrnLpCGShp8nZ1fiVF7xvoxfeps2Nu01Pkv+Car/VMTBSt+hekjrPWV6SzWPTEc9W65KuXhN3bvb3vGuV+7LVGnYLfb1ibb2qPk2ZVLoJ/yvy/5m/3WL6oXlniXJ7muN4F53iW+7pBpXT8Fxo9ka7Wld8WyNQ1W/neJBr5dEyaOX5YdsVhVuZccsvslpir9+2L57lt4f72/2RyBtrd/et4dfdnj1VYIKGiw4XV8uI2Ev2WO0ELa43jXnX9uuyRaX0/FcKTDJnZ8cWNA6q6UerNN3yos940xHBV07caZlwmX58j8/ek9Yp7xvw1F5LHk1PAszKvhVeI3xas7/FtOj7vLXeZpJ7q8McFRFL2UsStlibRKJdBfWDWbX1Rp6pkxpblHwZeNS9pnlnWlS+G710NtoKiunZVihiZ26/VKjSdK+8Vl+e3WzT0M6TT4U2L8T8XCbU6ZWrdtg3Vy2ymlwrbpIsEexebHvf8A8FLt2NFPQb2rJSVkeMyV0Wat7RpE9vVzdevReot6VfeaJb1piGjoJeKWXPiRTbJGPkUkY8reHq6putLY62ez0q1NciZU8O1udjRe8De3vS0TaPlW9aQhjpMsWdX5SyBpbpk7P6x909pPvKVj9uiaYDu3397wtf1FRFpzSMVT2HOzPwqZvUau30wxNJ/AqCRl7qymvf6nrsX5G1Hw/wB8r91Sz18ulDZrZLcrjUrDTwc7sVfbSZVT1N0oNZ6bukttvWkfIqhG4klLGbmNWz643fW/UdTAsMlV18C901t0sNFWzWG6yfUtDBG1XQp5RFLsXmTvGRdEjr/iMsnX4WFdNSW15MTH9dVd/orC9Tpqhjrq7JcYnbHhMkYGTRWDeRvv3jaBp6We/wCkYYYZ2xWVWyX2TYvR93u0O8+xvIyLTXOBvp6bZ3V8RhXT02Z7r6LFVZvLkxKk7udU3zdlrmnuMfaQMjL28Td9Dece0oqn6b1zzpSyvTxLJNsRtsa5czd00nqbXm96xUVbcZdGQy0lKjOzK+TYqbR3f6rtWsdL0l8tU6vFKisyL3G7ynpaowbTlxRuL8FfLr9kymda6Oq6bud+O8nXy1Daf0dFLFT8Mr7XxxY37oGs1DX2ZZ9S2+OhrcuRGyNNdBlI9mhr2yrxfK0pYovJX8JdTcKlVdddJe/WTX9bpi36eWteKfskVeZi1bFWdyekKW89JHWF+rolkS2z/RZL3mOSpmVp1zvpr6JKldCwRq65LslfFjXcnSX1fT6xbSTaag+Ukn8nZM+HMttj83Kq7PzH54Xj+2yq/wCn2+8XGtIWduWtd81FRPVSaHikVFywifJjCtD9Ja/3jeFQ6VuGnlpJZ6lYJcmxZC1GOUXKpVvfZoylsnSK0ZqOhgWKGvrESXHvS5Exq6tJH87L7J2nXH+b+c7DJQAAAAA5AAAAAAAAAAAAAQJESQAAAAAAK49OH+xrT7f+ZxFjiuPTh/sa0961ziKjymmi+mJpFrPqCyX+mi/BbpboNsm1e66xqv7pZDoc6q/hHulpaOSXtJ7a/YNl4eZfvHxdJ3S66h3AU06xZTUFPBUIy82OC5GjOg5rH5D3iVGnKqTGnusXCrcquvL+6en3hDdvTU1VJbdB0+mKF28rvM/ZNsXwd40R0mtMR6R3faCsyx4yrSu8vttjkbFuGzZvZ6V0VGrdrZ9Oc2PK2P8Ax+yfD/VCsUrNMqq4r2Uv3lJxdvPQb36L38h+nf8AIbf/AHNnGsei9/Ijp3/IN942cYV7Ll1zfk29U/NfpBXGW979bs0jdonl3YL6q5Y4n6UVGzKPap+ZO9ameg33XOOp4WW65N9s1wJt+jOg6CO3aKslGq4rT0ECdS+qinvqq4nl6akWbTtulj5Xpom2fqxU9ReUwvn9VLV3SnoErdxepevZxQUrSr+tdhVPoP3eWg3upQozLFWQMjbPFylu+kjKse47Vu1u9bJdi/rxKbdC+meo32ULorYxRM/Wb4/RNeX6G90Dug87Ro/ppfyMVeLcXboa21Vulg1t0ddP3q2QKt4oqBW4eaVfCbI6aez+svV/5dDLej2mW5nTuxlVuujU2mtWVT3KQ9HveTc92eukiq+0W3yz9hWU7d31vqn6F0d0pLtYdlyoZVmpp4GdHXvcJT3plbovki4vraw0v4JUN+GIi/km8Q6IO97yBpdE6jrMaeVGWheVuFW7qmlTv3G2vlmXQ3/lO3gf5Vf9YxabZy7CrHQ125bzdfN/4q/fYtPs5dhja5cmNb0v5NNTf0TVf6pjJG5TF96T/wBbPU39E1X+qY5Jz6qY9BH+V+X/ADN/usX3UoV0EV/rvy/5m/3S+pefymArBfv7dq3f5t/smLPs3UVgvzf9Nq291fJv9kRjVys+ACVItsKpfJ8F16X19t1SqtFVW5omVvWTEteVdsK9fTVuH+a/7MvH2s6VlkSfdvvm4so/k24s2PqZ/wDxP0osNzhudjorlTOrxVECyrt9XEpV07tK/JOt6TUMMWMFxjwdlXvqbQ6Ou8mCPo4V1TXVK9tY4nTibixxyX942yTtOzk9rwN40n8avShtumo/pbTY+KfHlZu9+6aiuUSxdKXBOFEvCqq/XN89DHTktTS33eDcI2ae6TusTN4e9+6aHuy/9Khv6a/fEeHafolHyKc7TiPkU52nmpf+XJpfpj/yH3X2k+8pug0v0yf5D7r7SfeU7j93OWnegrqaw2GzX5bvcoKPtZVZFlbFm4VPe6WG+OwVmmF0npysStqKyVe3aLlVTBOh9uz01r213qa/QSSPTTqiYtj3VO3pIbhKPRFsh1Pp6WWaiWVUlifmTJu6eitdkTstTpW2xXrdPbbVO30VVb1ib7J6G6/SkGitG0mn6aVpUp+vFmG7XbhoGyZPjs8jTaezbLrQ3JHahqoqlYnaN9sbZYsv41MKpcvQBwvz7Os5JUrl07NnVu3tnNw3GIxDpAbolv27Sz6xscC/KFLQo1Sir+VXHmMy6d38m9u/pFDcOg4I6jQFpilXYyS0KIy7fZNYvVlXspB0Vd68ugdUJZrm8nyTWvgyt/cm8Reu9TxVel62pgkWSKWjdlZfDiUi6We6N9FX99RWaBvkqtkybFfyD8xnXRb3xNctK1uh79Ur5RBRutHK7c3C3CaVO37wbM36DP8AYNe/6WlLEFd+g3t6tDX3+dbtKWIMb9msobefq/Nj+MwXdnod9Lag1HcpahZflar7ZNmzuripnTI21/VJLs6v1kcUOG2bOrax+dt2/tsav+n2+8fom3KfnZdv7bKr/p9vvGuLwzp+ia7Fw2GD7y9FPqm76arop1i22i4bKptm3vKZxH+T2fqIyJkyt4TJTiPLL1TtIquO3/ESCgAAAAByAAAAAAAAAAAAAgSIkgAAAAEZPmUB1rlj3iuXTi/sc063/maG5t4WpdulbH8qpbKu4cap2VPzcX/KVc6RmqNWbw6O20dq0hdIIaOdZmeVObH6pcSnlaintsF10PTW6pVWiqLckT7NvhZFPzb1ZR3Xd7vQrqamkaCqoKpmgb1eZS6mhd7tzehs9qrNF3aKbCKnd8OBeVcjV3Sy3VXXUG9K1XOy0M8kVyVEqWROTi4mb6ppjvVNSzboQ6YnptJVur7hF+FXeXJXbm2r/wAbTCf6oZ/17TX+Sl+8pv6uuce7LQtot9FZKuvSKJYlipl4tmJV7pMVusd6l5t70OkLlTUNEjKvapxZN9X1RHdZz6rNdGDbs2bktPdfD9A33jZxVjcfvI1Ho/QFFYLzoi6tLR5IrRRNjtVmyLL2Ks+ULTT1zQPA00ex2R16tqmeSe5U+r7pORiinTc0RU2XX66spUbyG5YszKvI68xemTlMZ3j6NtOudNVFlusWSOvA/eRvEMdalTsx/o56lg1PuksdTG+UtNSxU8/tIuP7psjZ1L+Nilths29TcHqOqitlDJebDPLniuTKy/umyvOR7S3MlNoy7tcsfyTRtizfZFQdX0dN7VUFo3WS2VZVWquTYKuXFh3jCugZoaemjr9Y1yY7JVWCl2bV7vePhod2uvd9WtYdQ65jkttlRuGHbzY+Ethp2z2+w2qktVugWClp0wjVSttZ1HqgHi6qurWaw1dzjpJavsly7KJeJjDlTVHTU2/1lq3/ACqGW9H1urc7pz/M0yNGdITW+p94OivkC0aMukCyvlK8qcKqp7u6HejfNNaDt1juuibtJNRRrEronC37JvzPYlYS/wBqo73aKi1XCJZ6WoRkdGX9o/Onf5u3ue7PW7LF2nkU8va0NQvtcuXqn6KaZuTXix0txamkpGnRWaKXmUxXfZu6tm8XR9RaqtFWoVGamm7yP3Riya89HKnZX3+p8TPUXrVUskjO7RRZNt73ExcReUqt0KNIXzSOptV0l4oZIOpURH2rwvizFqVGX2clFuUx3eNC9Vu/1BTRL1yzWyoRfaaJjIm5dp1SR9onZsqsjLgy7TLw0UJ6FNVFat9fk1W3ZyvFLFxcPFyl+12rjzFP99W43Uenta/w43ds2Kv2zQrzo3qmVaP6Ql1ttGlDrjSF0irYlxaWnRmV/WxNb7kT+LKSMuxdmTfjKvWyf+EfTRqKuh46e3QYSN3cuzx+8enqTe9rTWUO20aA0jWwNUcDVdUrLgvsmcbgd1y6FoJ7lc5fKb9cWzqptvdbwk66uttDrUHW3zbfWIUlt5cir9hbq6atw/zX/Zm294m8afSl22W+DTlwuWSZ506ZKpWyy37WdLv9qN4Uujrk1JOrJ2XZNljjiaxPXhNN6dLfSS6n3R1rRplU2/8ACIm6uXHmKHaRuN6dJtJ0Msiw3adEliXvMrf7x+gul9b7devV2Os01cKCGWnZGaoThbIr5uP3MXOg6QVW94oWW22uV5Yn2rwu3MhpFzM68opavdvp+DTGgrZZYFVVp6ZVbHvNiUVvC49Kx8l4vlr98uFr7ebU6Yu9RbKbStyuGEWSzQpkjMU3uFl1/U70H1m2l6tWau8qw7JuXLLEnG7T9Fo3XZsXZls+c7DUeid6tZe7vRW2fSF1oZZ8c5XTgVsTbhlyqTI0t0yv5D7r7SfeU2hqy6yWSw1t1Sklq9tLHnshi2cTlZ+kBrzUevdBy6ctGirrC07K0jyx8qqdnj9Kcf1PX/sTUa//AHK/dUsXvG0tBrLSlXYKlmiSoX5pfCVF6M951jut23CCt0dcKulrGXbkkbZKxu/+PK6egV5/0RVcfrk0zvUFfRaD3azy1M+UNuo2RHbvNia36FFZNcd2ldcJ5M5qi4Suzf42Y05v21bvQ3iwfJVNpWut9oy/JKrZP7RuvoY2S62DdjLR3ejkpJWqnZUfm5hU9rk13N5x7e74SeS9f4zrbZtxXb+bvGP66v7aYsbXNKGe4OjKvYwrxMZNGmunb/Jxbf6RQ3Nu5+fQ1lXb/wBzj+6Vb6SmqNWbyLNRWa1aMukFPBP2rtLE2WS8psPd7vbvVs0vbLVddE3fyqCJIXeKLh8ORrr2s69m4teabt+q9O1NlukCy086Mvz7OTb+Zj84t6Gjb5ux1zUW95JYNsTZU0yLjmnd4j9MaGbbU0EFRg0faorsjLxLwmsOkZuupt4ujZVgiVbtSoz0sveZvCwxZNfwqWE9Al2k3ZXJ2bJmuDuzetipZQr30K7DddPaBudDeKSSmqFuLNiy83CpYQjJ5VIAdcv4tn4/5/xGdKSbauPMfnZeP7bKr/p9vvFsL5vkrKKvqqOLRd3neBmVXVOFipVVZNf1G9KXWraVrc3r2q+yxblyNoRb9F1bYsWzLb+YmaUs2+esqp6Sml0Vd4mnZEdmThT82RueBsk2Ni2zr/n2Ga3YAAAAAAADkAAAAAAAAAAAABAkRJAAAAOG2df4zkAdbRxtzIrfn+c48ng/RJ9k7QB1rDFs5Yk+yc9knXs4F+YmAIsiNzbF2/rIeTwfok+ydoA6vJ4P0SfZO38QAHHV1nOIAHXJHE64uisu3821T5/k237NuXkMGX8/ZqfYAIqiLyquwdS+EkABFkVuZVJADq8ng/RJ9k57GD9En2TsAEVVVXFVx2DBfCSAHWsUSMzLGq7W5upfxnYAAAAEcF8KnzSW+hkbKSjgbbt/nj2H1gDohpqaH8lBGn6lO3qUkABHqViQA62hibmjVvqjsYP0SfZOwAdawxJyxLs/Uo7OPLa2C5bfz4nYAOvsYtv9zX7Jx5PB+iT7J2gDrWGLY2Sxqu32TsAAiyK3MqsR7GD9En2TsAHX5PB+iT7Jx5PB+iT7J2gDq8ng/RJ9kmsSKvUqLsJAARZEbmVdpIAdfYRfok+yceTwfok+ydoAjguzlVRgvhJADrjjiT8mir+pTsAAAADr7CL9En2TjyeD9En2TtAHV2EX6JPsnaAAAAAAAAAByAAAAAAAAAAAAAgSIkgAAAAAAAAAAAAAAAAAAAAAAAAAAAjl8+I61PK1beqTTuna++XDLyahgaaTHm6lPnm1Jb6bSX8I5GbyBYFm6+9iB7+QyPgs9fBc7XS3Km/JVESyp1+FlyPirtQ2+l1NRafkbb5ZWRtLFs9Vf/8AAl7fWcK67Tqbb1MYPcN51hpq2WkpoKu4NA2Mr06ZKvtCRnvWo61PKsN3pb3QQ11Htbsn299MT59Uakt2npaCO4ZLtr6laWDHxMB7+QXblsPD1Jfrfp9KTyxm/CalKeL2mY9peJcgpJm6iOakZOFMmMBqt5lmhuU1HS01bXLTv2Us0K8CME02BkvWM1Plo6hKyjjqYssJEV1PN1Xqa0aYoNlVdajZEr8KJ3nb1RI97rUd0w3S+vbde7olvWjq6SZ1yTtlxyUy5u76zBSWQzX9rE8Kw6kt96uNzo6Nm7W3T9jP7WKt+8Sseobfdbzc7ZTM/bW2VYp8vEy5Ae3mviGa9fMdUjxojSyMqoq5ZeEwKt3pWBKt46WCuq4Ymxlnhj640+sJGws1Jdankadvdvv1riuNsqVnhl4VZe6fXcK2mt1HLWVkix08S5O7BL6+vrOTW7b2bAr7X8lr/Ilb/rfZ8BnlqrIK+hirKSVZ4JVzV1/OB9hHrU8bVmoKHTls2V9wy7LbMkXD4nbFf/c9SN1eJZF5XVcesKd4AAAAAAAAAAAAAAAAAAAAAAAAAAAADkAAAAAAAAAAAABAkRJAAAAAAAAAAAAAAAAAAAAAAAAAAABgHSEVm3LatVdjf9lT8v5+E1tcrLrZdx7SS3+JqRbcjdj2HFj4eYsBXUlPXUktLVRLLBKuLo34tuw6/kyh20XkbU0fk+OGHV82J3qPC3bq2zd9p9WyZvIIMu73VMZ1Mjfx8aZkx5aOfi7q8DGyKemgp4I4Io1SOJepF2d3YdclBSS1sdZJBG08XzI+PzqEuLgjy0c0cbYu0bKresah3H3mz2HRU1qvDRUl1pZXWpWo53Y3QyLtPDu2kdOXWq8qrrRTTT/ndo9mTDgeHuf1BU6l0vLcqqlWmxrJ4olTvIrcLGL9JGGsng0olvl7Oo+WIljfauWLZcxteht9HQU601HTxwQqvVsRF6thxWW2jrOx8pgSXsHzjy2crAaU3kWjVtHPp2e83yKtp1vFOzIkGPfX1jecO3riU6Ku30dXh5TBHJg2a9ez8W0+ldmK4qFOuq/I7cmx2d40Xco20ol2uek9TUUlPm9RLb6iLiz7yqxviRFdcWMfqtF6XqqtquostJJMzZM22PZxbTs0mpT0JdZb5pK33OppuwlqIFZ07uw15vmVaHeFo++3OBp7LA8sU+K5LE7Y4u37RtyGGKCJYokWNFXFU2cuw6q6go6+nemrKaOeJ+ZHXJdpweDbtS6aq7pT0lJVU01VKjNF2X/HCZJ3G8XrHk2fSunrTU7ai32qmgn8apsyPZ6lCmitG2vVFVrrWb2O7x0MPyiuatBlk3ZJ6x6+5CmuVJrjW8V1qFnqdlYmUq7PmfhU2rTW+jppppYII43nbKXbs2c20Utvo6WpmqYKeNJZ2ylddnzttO9R8GsKasq9K3KmoXxqJadlj2+FsTXm6XUWl7bu8paG5SRUVXRxYVkMy8Wa83tG28FPCrtHaarKxquptFNJMzZM21Obac4SwfcNHI1He7hTxbae21txeShTqx+b87Y//vaerv2oK+v3aXGntqsz7MXlRe8i8ymdU9LT08CQQRLFEi9SqnzbNh2NFG6srLkrfM2zb+cDWf8AC7RWzd2rdpEsS0uPk2PHljy4n37g6Wso92dvjrYniZsnjRuZUZuE9/8AgTpbyzyr5Eou2yyy7JT3o40jXFFxXZ+YdRrXpFvsTQkDtjs2LcadmZvzL2qmY6fvlor4oYqO4RTS9kvCr+qffdrZb7tRtR3GmjqadtuTI69anx2nS9htVV5Tb7ZBBLjjkinFPaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcgAAAAAAAAAAAAIEiJIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAAAAAAAAAECREkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIAAAAAAAAAAAACBIYgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOo4xOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//Z" alt="Hoërskool Monument" class="school-logo">
+  <div class="header-text">
+    <h1>Hoërskool Monument</h1>
+    <p>COURAGE FESTIVAL 2026 · LIVE TRACKER</p>
+  </div>
+</header>
+
+<div id="app"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  MATCH DATA  (state machine)
+// ════════════════════════════════════════════════════════
+
+const NODES = {
+
+  // ── POOL D ──────────────────────────────────────────
+  pd1: {
+    type: 'match', phase: 'Pool D — Match 1',
+    day: 'Day 1', time: '10:25',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'DF Akademie',
+    note: 'Match 1 of 3 in Pool D',
+    onWin: 'pd2', onLoss: 'pd2'
+  },
+  pd2: {
+    type: 'match', phase: 'Pool D — Match 2',
+    day: 'Day 1', time: '12:15',
+    home: 'Epworth', homeIsMonument: false,
+    away: 'Hoërskool Monument',
+    note: 'Match 2 of 3 in Pool D',
+    onWin: 'pd3', onLoss: 'pd3'
+  },
+  pd3: {
+    type: 'match', phase: 'Pool D — Match 3',
+    day: 'Day 2', time: '07:45',
+    home: 'Pretoria High School', homeIsMonument: false,
+    away: 'Hoërskool Monument',
+    note: 'Final pool match — position confirmed afterwards',
+    onWin: 'ask_d', onLoss: 'ask_d'
+  },
+  ask_d: {
+    type: 'select', phase: 'Pool D — Final Position',
+    question: 'Where did Monument finish in Pool D?',
+    hint: 'Based on wins, goal difference, etc.',
+    options: [
+      { label: '1st', sub: '→ Pool E', next: 'pe1_1st' },
+      { label: '2nd', sub: '→ Pool E', next: 'pe1_2nd' },
+      { label: '3rd', sub: '→ Pool G', next: 'pg1_3rd' },
+      { label: '4th', sub: '→ Pool G', next: 'pg1_4th' },
+    ]
+  },
+
+  // ── POOL E (1st in D) ───────────────────────────────
+  pe1_1st: {
+    type: 'match', phase: 'Pool E — Game 1',
+    day: 'Day 2', time: '10:50',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '2nd in Pool A',
+    note: '1st Pool D × 2nd Pool A cross-pool seeding',
+    onWin: 'pe2_1st', onLoss: 'pe2_1st'
+  },
+  pe2_1st: {
+    type: 'match', phase: 'Pool E — Game 2',
+    day: 'Day 2', time: '14:05',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '1st in Pool A',
+    note: '1st Pool D × 1st Pool A cross-pool seeding',
+    onWin: 'ask_e', onLoss: 'ask_e'
+  },
+
+  // ── POOL E (2nd in D) ───────────────────────────────
+  pe1_2nd: {
+    type: 'match', phase: 'Pool E — Game 1',
+    day: 'Day 2', time: '10:25',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '1st in Pool A',
+    note: '2nd Pool D × 1st Pool A cross-pool seeding',
+    onWin: 'pe2_2nd', onLoss: 'pe2_2nd'
+  },
+  pe2_2nd: {
+    type: 'match', phase: 'Pool E — Game 2',
+    day: 'Day 2', time: '14:30',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '2nd in Pool A',
+    note: '2nd Pool D × 2nd Pool A cross-pool seeding',
+    onWin: 'ask_e', onLoss: 'ask_e'
+  },
+
+  ask_e: {
+    type: 'select', phase: 'Pool E — Final Position',
+    question: 'Where did Monument finish in Pool E?',
+    hint: 'Determines quarter-final opponent',
+    options: [
+      { label: '1st', sub: 'vs 4th Pool F', next: 'qf1' },
+      { label: '2nd', sub: 'vs 3rd Pool F', next: 'qf2' },
+      { label: '3rd', sub: 'vs 2nd Pool F', next: 'qf3' },
+      { label: '4th', sub: 'vs 1st Pool F', next: 'qf4' },
+    ]
+  },
+
+  // ── QUARTER-FINALS ───────────────────────────────────
+  qf1: {
+    type: 'match', phase: 'Quarter-Final (Q1)',
+    day: 'Day 3', time: '10:50',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '4th in Pool F',
+    note: '1st Pool E vs 4th Pool F',
+    onWin: 'sf_a', onLoss: 'm63'
+  },
+  qf2: {
+    type: 'match', phase: 'Quarter-Final (Q2)',
+    day: 'Day 3', time: '11:15',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '3rd in Pool F',
+    note: '2nd Pool E vs 3rd Pool F',
+    onWin: 'sf_a', onLoss: 'm63'
+  },
+  qf3: {
+    type: 'match', phase: 'Quarter-Final (Q3)',
+    day: 'Day 3', time: '11:40',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '2nd in Pool F',
+    note: '3rd Pool E vs 2nd Pool F',
+    onWin: 'sf_b', onLoss: 'm64'
+  },
+  qf4: {
+    type: 'match', phase: 'Quarter-Final (Q4)',
+    day: 'Day 3', time: '12:05',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '1st in Pool F',
+    note: '4th Pool E vs 1st Pool F',
+    onWin: 'sf_b', onLoss: 'm64'
+  },
+
+  // ── SEMIS ────────────────────────────────────────────
+  sf_a: {
+    type: 'match', phase: 'Semi-Final',
+    day: 'Day 3', time: '15:20',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Winner Q1/Q2',
+    note: 'Winners Q1 vs Q2',
+    onWin: 'final', onLoss: 'p3'
+  },
+  sf_b: {
+    type: 'match', phase: 'Semi-Final',
+    day: 'Day 3', time: '15:50',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Winner Q3/Q4',
+    note: 'Winners Q3 vs Q4',
+    onWin: 'final', onLoss: 'p3'
+  },
+
+  // ── 5th/8th consolation (after losing QF) ────────────
+  m63: {
+    type: 'match', phase: 'Match M63',
+    day: 'Day 3', time: '14:30',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Other QF Loser (Q1/Q2)',
+    note: 'Losers Q1 & Q2 — determines 5th–8th bracket',
+    onWin: 'p5', onLoss: 'p7'
+  },
+  m64: {
+    type: 'match', phase: 'Match M64',
+    day: 'Day 3', time: '14:55',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Other QF Loser (Q3/Q4)',
+    note: 'Losers Q3 & Q4 — determines 5th–8th bracket',
+    onWin: 'p5', onLoss: 'p7'
+  },
+
+  // ── DAY 4 TOP-8 FINALS ───────────────────────────────
+  final: {
+    type: 'match', phase: '🏆 FINAL',
+    day: 'Day 4', time: '11:05',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Other Semi Winner',
+    note: 'Winner Semi 1 vs Winner Semi 2',
+    onWin: 'done_1st', onLoss: 'done_2nd'
+  },
+  p3: {
+    type: 'match', phase: '3rd / 4th Place',
+    day: 'Day 4', time: '10:40',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Other Semi Loser',
+    note: 'Loser Semi 1 vs Loser Semi 2',
+    onWin: 'done_3rd', onLoss: 'done_4th'
+  },
+  p5: {
+    type: 'match', phase: '5th / 6th Place',
+    day: 'Day 4', time: '10:15',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Other M63/M64 Winner',
+    note: 'Winners M63 vs M64',
+    onWin: 'done_5th', onLoss: 'done_6th'
+  },
+  p7: {
+    type: 'match', phase: '7th / 8th Place',
+    day: 'Day 4', time: '09:50',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: 'Other M63/M64 Loser',
+    note: 'Losers M63 vs M64',
+    onWin: 'done_7th', onLoss: 'done_8th'
+  },
+
+  // ── POOL G (3rd in D) ────────────────────────────────
+  pg1_3rd: {
+    type: 'match', phase: 'Pool G — Game 1',
+    day: 'Day 2', time: '12:40',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '4th in Pool A',
+    note: '3rd Pool D × 4th Pool A cross-pool seeding',
+    onWin: 'pg2_3rd', onLoss: 'pg2_3rd'
+  },
+  pg2_3rd: {
+    type: 'match', phase: 'Pool G — Game 2',
+    day: 'Day 2', time: '15:55',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '3rd in Pool A',
+    note: '3rd Pool D × 3rd Pool A cross-pool seeding',
+    onWin: 'ask_g', onLoss: 'ask_g'
+  },
+
+  // ── POOL G (4th in D) ────────────────────────────────
+  pg1_4th: {
+    type: 'match', phase: 'Pool G — Game 1',
+    day: 'Day 2', time: '12:15',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '3rd in Pool A',
+    note: '4th Pool D × 3rd Pool A cross-pool seeding',
+    onWin: 'pg2_4th', onLoss: 'pg2_4th'
+  },
+  pg2_4th: {
+    type: 'match', phase: 'Pool G — Game 2',
+    day: 'Day 2', time: '16:20',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '4th in Pool A',
+    note: '4th Pool D × 4th Pool A cross-pool seeding',
+    onWin: 'ask_g', onLoss: 'ask_g'
+  },
+
+  ask_g: {
+    type: 'select', phase: 'Pool G — Final Position',
+    question: 'Where did Monument finish in Pool G?',
+    hint: 'Determines Day 3 classification opponent',
+    options: [
+      { label: '1st', sub: 'vs 4th Pool H → M55', next: 'm55' },
+      { label: '2nd', sub: 'vs 3rd Pool H → M56', next: 'm56' },
+      { label: '3rd', sub: 'vs 2nd Pool H → M57', next: 'm57' },
+      { label: '4th', sub: 'vs 1st Pool H → M58', next: 'm58' },
+    ]
+  },
+
+  // ── DAY 3 CLASSIFICATION ─────────────────────────────
+  m55: {
+    type: 'match', phase: 'Classification M55',
+    day: 'Day 3', time: '09:00',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '4th in Pool H',
+    note: '1st Pool G vs 4th Pool H',
+    onWin: 'm60a', onLoss: 'm59a'
+  },
+  m56: {
+    type: 'match', phase: 'Classification M56',
+    day: 'Day 3', time: '09:25',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '3rd in Pool H',
+    note: '2nd Pool G vs 3rd Pool H',
+    onWin: 'm60b', onLoss: 'm59b'
+  },
+  m57: {
+    type: 'match', phase: 'Classification M57',
+    day: 'Day 3', time: '09:50',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '2nd in Pool H',
+    note: '3rd Pool G vs 2nd Pool H',
+    onWin: 'm62a', onLoss: 'm61a'
+  },
+  m58: {
+    type: 'match', phase: 'Classification M58',
+    day: 'Day 3', time: '10:15',
+    home: 'Hoërskool Monument', homeIsMonument: true,
+    away: '1st in Pool H',
+    note: '4th Pool G vs 1st Pool H',
+    onWin: 'm62b', onLoss: 'm61b'
+  },
+
+  m59a: { type:'match', phase:'Match M59', day:'Day 3', time:'12:40', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M56', note:'Losers M55 & M56', onWin:'p13a', onLoss:'p15a' },
+  m59b: { type:'match', phase:'Match M59', day:'Day 3', time:'12:40', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M55', note:'Losers M55 & M56', onWin:'p13a', onLoss:'p15a' },
+  m60a: { type:'match', phase:'Match M60', day:'Day 3', time:'13:05', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M56', note:'Winners M55 & M56', onWin:'p9a', onLoss:'p11a' },
+  m60b: { type:'match', phase:'Match M60', day:'Day 3', time:'13:05', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M55', note:'Winners M55 & M56', onWin:'p9a', onLoss:'p11a' },
+  m61a: { type:'match', phase:'Match M61', day:'Day 3', time:'13:30', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M58', note:'Losers M57 & M58', onWin:'p13b', onLoss:'p15b' },
+  m61b: { type:'match', phase:'Match M61', day:'Day 3', time:'13:30', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M57', note:'Losers M57 & M58', onWin:'p13b', onLoss:'p15b' },
+  m62a: { type:'match', phase:'Match M62', day:'Day 3', time:'13:55', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M58', note:'Winners M57 & M58', onWin:'p9b', onLoss:'p11b' },
+  m62b: { type:'match', phase:'Match M62', day:'Day 3', time:'13:55', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M57', note:'Winners M57 & M58', onWin:'p9b', onLoss:'p11b' },
+
+  // ── DAY 4 PLACEMENT ──────────────────────────────────
+  p9a:  { type:'match', phase:'9th / 10th Place',  day:'Day 4', time:'09:15', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M62', note:'Winners M60 & M62', onWin:'done_9th',  onLoss:'done_10th' },
+  p9b:  { type:'match', phase:'9th / 10th Place',  day:'Day 4', time:'09:15', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M60', note:'Winners M60 & M62', onWin:'done_9th',  onLoss:'done_10th' },
+  p11a: { type:'match', phase:'11th / 12th Place', day:'Day 4', time:'08:50', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M62',  note:'Losers M60 & M62', onWin:'done_11th', onLoss:'done_12th' },
+  p11b: { type:'match', phase:'11th / 12th Place', day:'Day 4', time:'08:50', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M60',  note:'Losers M60 & M62', onWin:'done_11th', onLoss:'done_12th' },
+  p13a: { type:'match', phase:'13th / 14th Place', day:'Day 4', time:'08:25', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M59', note:'Winners M59 & M61', onWin:'done_13th', onLoss:'done_14th' },
+  p13b: { type:'match', phase:'13th / 14th Place', day:'Day 4', time:'08:25', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M61', note:'Winners M59 & M61', onWin:'done_13th', onLoss:'done_14th' },
+  p15a: { type:'match', phase:'15th / 16th Place', day:'Day 4', time:'08:00', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M59', note:'Losers M59 & M61', onWin:'done_15th', onLoss:'done_16th' },
+  p15b: { type:'match', phase:'15th / 16th Place', day:'Day 4', time:'08:00', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M61', note:'Losers M59 & M61', onWin:'done_15th', onLoss:'done_16th' },
+
+  // ── DONE NODES ───────────────────────────────────────
+  done_1st:  { type:'done', place:'1st Place 🏆',  medal:'🥇', color:'#e8b84b' },
+  done_2nd:  { type:'done', place:'2nd Place',      medal:'🥈', color:'#9ca3af' },
+  done_3rd:  { type:'done', place:'3rd Place',       medal:'🥉', color:'#cd7f32' },
+  done_4th:  { type:'done', place:'4th Place',       medal:'🏑', color:'#5b9bd5' },
+  done_5th:  { type:'done', place:'5th Place',       medal:'🏑', color:'#5b9bd5' },
+  done_6th:  { type:'done', place:'6th Place',       medal:'🏑', color:'#5b9bd5' },
+  done_7th:  { type:'done', place:'7th Place',       medal:'🏑', color:'#5b9bd5' },
+  done_8th:  { type:'done', place:'8th Place',       medal:'🏑', color:'#5b9bd5' },
+  done_9th:  { type:'done', place:'9th Place',       medal:'🏑', color:'#5b9bd5' },
+  done_10th: { type:'done', place:'10th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_11th: { type:'done', place:'11th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_12th: { type:'done', place:'12th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_13th: { type:'done', place:'13th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_14th: { type:'done', place:'14th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_15th: { type:'done', place:'15th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_16th: { type:'done', place:'16th Place',      medal:'🏑', color:'#5b9bd5' },
+};
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+
+let state = {
+  current: 'pd1',
+  history: []   // [{id, result, label}]
+};
+
+function save() {
+  try { localStorage.setItem('monument26', JSON.stringify(state)); } catch(e){}
+}
+function load() {
+  try {
+    const s = localStorage.getItem('monument26');
+    if (s) state = JSON.parse(s);
+  } catch(e){}
+}
+
+function advance(id, result, label) {
+  const node = NODES[id];
+  state.history.push({ id, result, label });
+  const next = result === 'win' ? node.onWin : (result === 'loss' ? node.onLoss : node.options.find(o=>o.label===result)?.next || node.options[0].next);
+  state.current = next;
+  save();
+  render();
+}
+
+function advanceSelect(currentId, optLabel, nextId) {
+  state.history.push({ id: currentId, result: 'select', label: optLabel });
+  state.current = nextId;
+  save();
+  render();
+}
+
+function undo() {
+  if (state.history.length === 0) return;
+  const last = state.history.pop();
+  state.current = last.id;
+  save();
+  render();
+}
+
+function askReset() {
+  state.confirmReset = true;
+  render();
+}
+function cancelReset() {
+  state.confirmReset = false;
+  render();
+}
+function reset() {
+  state = { current: 'pd1', history: [] };
+  save();
+  render();
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════════════
+
+function render() {
+  const app = document.getElementById('app');
+  const node = NODES[state.current];
+  let html = '';
+
+  // Journey strip
+  if (state.history.length > 0) {
+    html += `<div class="journey">
+      <div class="journey-title">Your journey so far</div>
+      <div class="journey-list">`;
+    state.history.forEach((h, i) => {
+      const n = NODES[h.id];
+      const isLast = i === state.history.length - 1;
+      let cls = h.result === 'win' ? 'win' : h.result === 'loss' ? 'loss' : 'select-done';
+      let badge = h.result === 'win' ? 'WIN' : h.result === 'loss' ? 'LOSS' : 'SET';
+      let desc = h.result === 'select' ? `Finished <strong>${h.label}</strong> in Pool ${n.phase.includes('Pool D')?'D':n.phase.includes('Pool E')?'E':'G'}`
+                 : `${n.phase} <span style="color:var(--text-dim)">· ${n.day} ${n.time}</span>`;
+      html += `<div class="j-item ${cls}">
+        <span class="j-badge">${badge}</span>
+        <span class="j-text">${desc}</span>
+        ${isLast ? `<button class="j-undo" onclick="undo()" title="Undo last result">↩</button>` : ''}
+      </div>`;
+    });
+    html += `</div></div><hr class="divider">`;
+  }
+
+  // Current node
+  html += `<div class="current-wrap">`;
+
+  if (node.type === 'done') {
+    html += renderDone(node);
+  } else if (node.type === 'select') {
+    html += renderSelect(node);
+  } else {
+    html += renderMatch(node);
+    // Upcoming preview
+    html += renderUpcoming(node);
+  }
+
+  html += `</div>`;
+  app.innerHTML = html;
+}
+
+function renderMatch(node) {
+  const monHome = node.homeIsMonument;
+  const monTeam = `<div class="team monument"><div class="team-name">${node.homeIsMonument ? node.home : node.away}</div><div class="team-label">Monument</div></div>`;
+  const oppTeam = `<div class="team opponent"><div class="team-name">${node.homeIsMonument ? node.away : node.home}</div><div class="team-label">Opponent</div></div>`;
+  const [left, right] = monHome ? [monTeam, oppTeam] : [oppTeam, monTeam];
+
+  let winNext = NODES[node.onWin];
+  let lossNext = NODES[node.onLoss];
+  let winLabel = winNext ? (winNext.type==='done' ? winNext.place : winNext.phase) : '';
+  let lossLabel = lossNext ? (lossNext.type==='done' ? lossNext.place : lossNext.phase) : '';
+
+  return `
+    <div class="card">
+      <div class="card-phase">
+        <span class="phase-name">${node.phase}</span>
+        <span class="phase-time">${node.day} · ${node.time}</span>
+      </div>
+      <div class="matchup">
+        <div class="teams">
+          ${left}
+          <div class="vs">VS</div>
+          ${right}
+        </div>
+        <div class="match-note">${node.note}</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-win" onclick="advance('${state.current}','win','')">
+          WIN
+          <span class="btn-sub">→ ${winLabel}</span>
+        </button>
+        <button class="btn btn-loss" onclick="advance('${state.current}','loss','')">
+          LOSS
+          <span class="btn-sub">→ ${lossLabel}</span>
+        </button>
+      </div>
+    </div>`;
+}
+
+function renderSelect(node) {
+  let optsHtml = node.options.map(o =>
+    `<button class="btn-opt" onclick="advanceSelect('${state.current}','${o.label}','${o.next}')">
+      ${o.label}
+      <span class="opt-sub">${o.sub}</span>
+    </button>`
+  ).join('');
+
+  return `
+    <div class="select-card">
+      <div class="select-header">${node.phase}</div>
+      <div class="select-q">${node.question}<br><span style="font-size:12px;color:var(--muted)">${node.hint}</span></div>
+      <div class="select-opts">${optsHtml}</div>
+    </div>`;
+}
+
+function renderDone(node) {
+  const confirming = state.confirmReset;
+  return `
+    <div class="done-card">
+      <div class="done-medal">${node.medal}</div>
+      <div class="done-place" style="color:${node.color}">${node.place}</div>
+      <div class="done-label">Hoërskool Monument — Courage Festival 2026</div>
+      ${confirming ? `
+        <div style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px">Reset everything and start from match 1?</div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-reset" style="flex:1;color:var(--red);border-color:var(--red)" onclick="reset()">Yes, reset</button>
+            <button class="btn-reset" style="flex:1" onclick="cancelReset()">Cancel</button>
+          </div>
+        </div>
+      ` : `
+        <button class="btn-reset" onclick="askReset()">Start Over</button>
+      `}
+    </div>`;
+}
+
+function renderUpcoming(node) {
+  const winNext  = NODES[node.onWin];
+  const lossNext = NODES[node.onLoss];
+  if (!winNext && !lossNext) return '';
+
+  const sameNext = node.onWin === node.onLoss;
+
+  let items = '';
+  if (sameNext) {
+    const desc = winNext.type === 'select'
+      ? `Position select — ${winNext.question}`
+      : `${winNext.phase} · ${winNext.day} ${winNext.time}`;
+    items = `<div class="upcoming-item"><div class="up-phase">Next Up (either result)</div><div class="up-cond">${desc}</div></div>`;
+  } else {
+    const wDesc = winNext.type === 'done'
+      ? winNext.place
+      : `${winNext.phase} · ${winNext.day} ${winNext.time}`;
+    const lDesc = lossNext.type === 'done'
+      ? lossNext.place
+      : `${lossNext.phase} · ${lossNext.day} ${lossNext.time}`;
+    items = `
+      <div class="upcoming-item">
+        <div class="up-phase">If WIN:</div>
+        <div class="up-cond up-win">${wDesc}</div>
+      </div>
+      <div class="upcoming-item">
+        <div class="up-phase">If LOSS:</div>
+        <div class="up-cond up-loss">${lDesc}</div>
+      </div>`;
+  }
+
+  return `<div class="upcoming"><div class="upcoming-title">Coming up</div>${items}</div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+load();
+render();
+</script>
+</body>
+</html>
