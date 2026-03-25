@@ -334,6 +334,65 @@
   }
   .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
 
+  /* ── HELP SECTION ── */
+  .help-section {
+    margin: 12px 16px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .help-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .help-toggle::-webkit-details-marker { display: none; }
+  .help-icon {
+    width: 22px; height: 22px;
+    background: var(--gold-dim);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .help-label {
+    flex: 1;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 13px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .help-chevron {
+    color: var(--muted);
+    font-size: 20px;
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+  details[open] .help-chevron { transform: rotate(90deg); }
+  .help-body {
+    padding: 4px 16px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .help-body p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .help-body strong { color: var(--text); }
+  .c-win  { color: var(--green); }
+  .c-loss { color: var(--red); }
+
   /* ── INFO PILL ── */
   .info-pill {
     margin: 0 16px 12px;
@@ -385,6 +444,23 @@
     <p>COURAGE FESTIVAL 2026 · LIVE TRACKER</p>
   </div>
 </header>
+
+<details class="help-section">
+  <summary class="help-toggle">
+    <span class="help-icon">?</span>
+    <span class="help-label">How to use this tracker</span>
+    <span class="help-chevron">›</span>
+  </summary>
+  <div class="help-body">
+    <p>This page follows the <strong>Hoërskool Monument 1st Girls' Hockey Team</strong> through the Courage Festival 2026 tournament, step by step.</p>
+    <p>After each match, tap <strong class="c-win">WIN</strong> or <strong class="c-loss">LOSS</strong> to record the result. The tracker will automatically show you Monument's next game — you don't need to figure out the bracket yourself.</p>
+    <p>At the end of each pool stage you'll be asked to select Monument's finishing position (1st, 2nd, 3rd or 4th). This determines which bracket they move into for the next round.</p>
+    <p>Each match card shows the date, time, and opponent, as well as a preview of where a win or loss will lead next.</p>
+    <p>If you make a mistake, tap the <strong>↩</strong> button next to the last result in your history to undo it.</p>
+    <p>Your progress is saved automatically. If you close the page and come back, it will pick up exactly where you left off.</p>
+    <p>At the end of the tournament the tracker will show Monument's final placing. Tap <strong>Start Over</strong> to reset.</p>
+  </div>
+</details>
 
 <div id="app"></div>
 
