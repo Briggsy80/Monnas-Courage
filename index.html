@@ -345,11 +345,35 @@
   }
   .info-pill strong { color: var(--text); }
 
+  footer {
+    margin: 24px 16px 16px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+
   @media (min-width: 500px) {
     body { max-width: 500px; margin: 0 auto; }
     header { border-radius: 0; }
   }
 </style>
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.modernbiz.co.za/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '24']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
 </head>
 <body>
 
@@ -898,5 +922,8 @@ function renderUpcoming(node) {
 load();
 render();
 </script>
+<footer>
+  <p>Fixture information is presented as received from tournament organisers. Cylon Consulting accepts no responsibility for any changes, errors or omissions. Please confirm schedules with official festival communications.</p>
+</footer>
 </body>
 </html>
