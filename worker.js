@@ -105,7 +105,7 @@ async function handleSheets(url) {
 
 const PIXELLOT_API = 'https://supersportschools.watch.pixellot.tv/api/event/list';
 const PIXELLOT_PROJECT = '606dace04cf99f438737e283';
-const TOURNAMENT_KEYWORD = 'KINGSMEAD';
+const TOURNAMENT_SUBCATEGORY = '69c2ed3f2a337d76720fc58d'; // Kingsmead Courage Festival 2026
 
 async function handleStreams() {
   try {
@@ -118,7 +118,7 @@ async function handleStreams() {
           'x-project-id': PIXELLOT_PROJECT,
         },
         body: JSON.stringify({
-          filters: { status },
+          filters: { 'identities.id': TOURNAMENT_SUBCATEGORY, status },
           limit: 100,
           offset: 0,
         }),
@@ -128,7 +128,7 @@ async function handleStreams() {
       const entries = data?.content?.entries || [];
       for (const e of entries) {
         const title = (e.title || '').toUpperCase();
-        if (!title.includes(TOURNAMENT_KEYWORD) || !title.includes('HOCKEY')) continue;
+        if (!title.includes('HOCKEY')) continue;
         const home = e.eventTeams?.homeTeam?.name || '';
         const away = e.eventTeams?.awayTeam?.name || '';
         events.push({
