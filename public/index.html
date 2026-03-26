@@ -703,19 +703,7 @@ function renderPoolTab() {
   const el = document.getElementById('poolContent');
   if(!el) return;
 
-  // Points system rules box
-  let html = `<div class="rule-box"><h4>Points System</h4>
-    <div class="points-grid">
-      <div class="pts-item"><div class="pts-num w">3</div><div class="pts-lbl">Win</div></div>
-      <div class="pts-item"><div class="pts-num d">1</div><div class="pts-lbl">Draw</div></div>
-      <div class="pts-item"><div class="pts-num l">0</div><div class="pts-lbl">Loss</div></div>
-    </div>
-    <ul style="margin-top:8px">
-      <li>Tiebreaker: Goal diff → Goals for → Head-to-head → Shootout</li>
-      <li>Round 1 points <strong>carry forward</strong> into Round 2 pools</li>
-      <li>Playoff draws decided by 8-second penalty shootout</li>
-    </ul>
-  </div>`;
+  let html = '';
 
   // Round 1 pools
   const r1 = ['A','B','C','D'];
@@ -744,6 +732,20 @@ function renderPoolTab() {
   if(!r1.some(p => sheetPools[p] && sheetPools[p].length)) {
     html += '<div class="no-data">Fetching standings…</div>';
   }
+
+  // Points system rules box at bottom
+  html += `<div class="rule-box"><h4>Points System</h4>
+    <div class="points-grid">
+      <div class="pts-item"><div class="pts-num w">3</div><div class="pts-lbl">Win</div></div>
+      <div class="pts-item"><div class="pts-num d">1</div><div class="pts-lbl">Draw</div></div>
+      <div class="pts-item"><div class="pts-num l">0</div><div class="pts-lbl">Loss</div></div>
+    </div>
+    <ul style="margin-top:8px">
+      <li>Tiebreaker: Goal diff → Goals for → Head-to-head → Shootout</li>
+      <li>Round 1 points <strong>carry forward</strong> into Round 2 pools</li>
+      <li>Playoff draws decided by 8-second penalty shootout</li>
+    </ul>
+  </div>`;
 
   el.innerHTML = html;
 }
