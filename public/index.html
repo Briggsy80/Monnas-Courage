@@ -760,6 +760,7 @@ function buildLiveTable(title, teams, syncTime) {
     const gd = (gf||ga) ? (gf - ga >= 0 ? '+' : '') + (gf - ga) : '—';
     return `<tr${isM?' class="monument-row"':''}>
       <td>${t.name||'TBD'}</td>
+      <td>${t.played||'0'}</td>
       <td>${t.goalsFor||'—'}</td>
       <td>${t.goalsAgainst||'—'}</td>
       <td>${gd}</td>
@@ -771,7 +772,7 @@ function buildLiveTable(title, teams, syncTime) {
     <div class="pool-title">${title}</div>
     <span class="pool-source-badge badge-live" style="margin:6px 12px 0;display:inline-block">Live from sheet${timeStr}</span>
     <table class="pool-table">
-      <tr><th>Team</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Pos</th></tr>
+      <tr><th>Team</th><th>P</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Pos</th></tr>
       ${rows}
     </table>
   </div>`;
@@ -1251,6 +1252,7 @@ function calcPoolStatsFromScores(teams) {
     });
     // Only override if we found at least one match score
     if(played > 0) {
+      t.played = String(played);
       t.points = String(pts);
       t.goalsFor = String(gf);
       t.goalsAgainst = String(ga);
