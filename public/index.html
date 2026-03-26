@@ -576,11 +576,21 @@ function renderLog() {
     entries.push({type:'result', node:n, id:h.id, result:h.result, score, fromSheet:!!h.fromSheet});
   });
 
-  // Current match (if it's a match node, not select/done)
+  // Current match and upcoming matches
   const cur = NODES[state.current];
   if(cur && cur.type === 'match') {
     const score = sheetScores[state.current] || null;
-    entries.push({type:'current', node:cur, id:state.current, score});
+    entries.push({type:'upcoming', node:cur, id:state.current, score});
+    // Walk ahead to show future known matches
+    const nextIds = new Set();
+    if(cur.onWin) nextIds.add(cur.onWin);
+    if(cur.onDraw) nextIds.add(cur.onDraw);
+    if(cur.onLoss) nextIds.add(cur.onLoss);
+    for(const nid of nextIds) {
+      const nn = NODES[nid];
+      if(nn && nn.type === 'match') entries.push({type:'future', node:nn, id:nid});
+      else if(nn && nn.type === 'select') entries.push({type:'pending_select', node:nn});
+    }
   } else if(cur && cur.type === 'select') {
     entries.push({type:'pending_select', node:cur});
   }
@@ -613,14 +623,25 @@ function renderLog() {
       </div>`;
       return;
     }
-    if(e.type === 'current') {
+    if(e.type === 'upcoming') {
       const scoreStr = e.score ? `${e.score.mGoals} – ${e.score.oGoals}` : '';
       html += `<div class="log-item" style="border-left-color:var(--gold);background:rgba(232,184,75,0.08)">
-        <span class="log-badge" style="background:var(--gold);color:#1a1a2e;animation:pulse-badge 2s infinite">NOW</span>
+        <span class="log-badge" style="background:var(--gold);color:#1a1a2e">NEXT</span>
         <div class="log-body">
           <div class="log-match">${e.node.phase}</div>
           <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
           ${scoreStr ? `<div class="log-score">${scoreStr}</div>` : ''}
+          <div class="log-time">${e.node.day} · ${e.node.time}</div>
+        </div>
+      </div>`;
+      return;
+    }
+    if(e.type === 'future') {
+      html += `<div class="log-item" style="border-left-color:var(--border)">
+        <span class="log-badge" style="background:var(--surface2);color:var(--muted)">TBD</span>
+        <div class="log-body">
+          <div class="log-match" style="color:var(--muted)">${e.node.phase}</div>
+          <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
           <div class="log-time">${e.node.day} · ${e.node.time}</div>
         </div>
       </div>`;
@@ -743,12 +764,17 @@ function renderPoolTab() {
 
 function buildLiveTable(title, teams, syncTime) {
   const timeStr = syncTime ? ' · ' + fmtTime(syncTime) : '';
-  let rows = teams.map(t => {
+  // Sort by calculated position
+  const sorted = [...teams].sort((a, b) => (parseInt(a.position)||99) - (parseInt(b.position)||99));
+  let rows = sorted.map(t => {
     const isM = t.name.toLowerCase().includes('monument');
+    const gf = parseInt(t.goalsFor)||0, ga = parseInt(t.goalsAgainst)||0;
+    const gd = (gf||ga) ? (gf - ga >= 0 ? '+' : '') + (gf - ga) : '—';
     return `<tr${isM?' class="monument-row"':''}>
       <td>${t.name||'TBD'}</td>
       <td>${t.goalsFor||'—'}</td>
       <td>${t.goalsAgainst||'—'}</td>
+      <td>${gd}</td>
       <td><span class="pts-badge">${t.points||'—'}</span></td>
       <td>${t.position||'—'}</td>
     </tr>`;
@@ -757,7 +783,7 @@ function buildLiveTable(title, teams, syncTime) {
     <div class="pool-title">${title}</div>
     <span class="pool-source-badge badge-live" style="margin:6px 12px 0;display:inline-block">Live from sheet${timeStr}</span>
     <table class="pool-table">
-      <tr><th>Team</th><th>GF</th><th>GA</th><th>Pts</th><th>Pos</th></tr>
+      <tr><th>Team</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Pos</th></tr>
       ${rows}
     </table>
   </div>`;
@@ -1203,7 +1229,33 @@ function parsePoolRows(rows) {
       goalsAgainst: gaIdx >= 0 && row[gaIdx] !== undefined ? row[gaIdx].toString() : '—',
     });
   }
+  // Calculate positions locally from points, goal diff, goals for
+  calcPoolPositions(teams);
   return teams;
+}
+
+// Calculate pool positions from points, goal diff, goals for (tiebreaker rules from PDF)
+function calcPoolPositions(teams) {
+  if(!teams || teams.length === 0) return;
+  // Parse numeric values, skip if no meaningful data
+  const parsed = teams.map(t => {
+    const pts = parseInt(t.points) || 0;
+    const gf  = parseInt(t.goalsFor) || 0;
+    const ga  = parseInt(t.goalsAgainst) || 0;
+    return { team: t, pts, gf, ga, gd: gf - ga };
+  });
+  // Only calculate if at least one team has points or goals
+  if(parsed.every(p => p.pts === 0 && p.gf === 0 && p.ga === 0)) return;
+  // Sort: points desc, then goal diff desc, then goals for desc
+  parsed.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
+  // Assign calculated positions
+  parsed.forEach((p, i) => {
+    p.team.calcPosition = String(i + 1);
+    // Use calculated position if sheet position is missing
+    if(!p.team.position || p.team.position === '—' || p.team.position === '' || p.team.position === '0') {
+      p.team.position = p.team.calcPosition;
+    }
+  });
 }
 
 // ════════════════════════════════════════════════════════
