@@ -315,6 +315,7 @@ function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('pane-' + name).classList.add('active');
   document.getElementById('btn-' + name).classList.add('active');
+  window.scrollTo(0, 0);
   if (name === 'log') renderLog();
   if (name === 'pool') renderPoolTab();
   track('Tab', 'Switch', name);
