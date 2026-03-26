@@ -864,16 +864,25 @@ function setSyncStatus(state, label) {
 // ════════════════════════════════════════════════════════
 
 // Normalize team name for matching (strip diacritics, accents, spaces, punctuation)
+const TEAM_ALIASES = {'middleburg':'middelburg'};
 function normTeam(s) {
-  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+  let n = s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+  for(const [from, to] of Object.entries(TEAM_ALIASES)) n = n.replace(from, to);
+  return n;
 }
-// Fuzzy match: handles "H/S Volkskool" vs "Hoer Volkskool" (different abbreviations)
+// Fuzzy match: handles "H/S Volkskool" vs "Hoer Volkskool", "Redhill" vs "Redhill School", etc.
 function teamsMatch(a, b) {
   if(a === b) return true;
-  if(a.length < 8 || b.length < 8) return false;
-  // Skip first 2 chars (variable prefix) and check 8-char overlap
-  const aSub = a.slice(2, 12), bSub = b.slice(2, 12);
-  return a.includes(bSub) || b.includes(aSub);
+  // Check if shorter name is fully contained in longer
+  const [shorter, longer] = a.length <= b.length ? [a, b] : [b, a];
+  if(shorter.length >= 5 && longer.includes(shorter)) return true;
+  // Sliding window: check for 6-char substring overlap
+  if(shorter.length >= 6) {
+    for(let i = 0; i <= shorter.length - 6; i++) {
+      if(longer.includes(shorter.slice(i, i+6))) return true;
+    }
+  }
+  return false;
 }
 
 // Extract a score from a group of cells in a cross-table row
