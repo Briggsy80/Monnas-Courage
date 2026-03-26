@@ -59,8 +59,7 @@ function parseCSV(text) {
   return rows;
 }
 
-export async function onRequest(context) {
-  const url = new URL(context.request.url);
+async function handleSheets(url) {
   const sheet = url.searchParams.get('sheet');
   const range = url.searchParams.get('range');
 
@@ -94,7 +93,6 @@ export async function onRequest(context) {
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=30',
-        'Access-Control-Allow-Origin': '*',
       },
     });
   } catch (err) {
@@ -104,3 +102,13 @@ export async function onRequest(context) {
     });
   }
 }
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === '/api/sheets') {
+      return handleSheets(url);
+    }
+    return env.ASSETS.fetch(request);
+  },
+};
