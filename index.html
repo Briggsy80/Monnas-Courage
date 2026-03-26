@@ -2,424 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAD/ElEQVR4nMWXzW8bRRiHn5nd9WftJCRt7CRFIUoqQIEDF4TEh0oPVUCIM/8CR46cuHKqKiE4gBCH0gNCqjhwAqFKcACaNpCUKCRNUuJ8NLazcez4c3dnONiO4yoh9gal72G92vXMPPPO7/3NjpientY8wRBa6ycKYCql8MNgGBKtNMpHWyFE617Xo8sOIF8oErAsgsHAqQBkt43rsILf7sxzZ2YeIQRKqa4hfAM0Q2lNamO7AeV7/O4BmumzLJPtR3bj2RkC1EMTDFg8Su+2QZ0ZgOM6WJZJJpunWqshpcTvKvgC8FxNKBQgly9g7+brD30KwR+A0hiGpOpUSWdstNa+vKRrACEEnueRydhEwkHefPUlUqlthBC+ddAxQHOAHTtHLl9gdXUdpSCX22d3N4eU/vR8ohNq3XC+/D63vr/Nyuo6xXKNja00htCMDCeIRSO8ODnO21df6wjkcLbMTkm10Ni5fcbHnqG3J8bk86N8fP0mm+l9YlGPsVIFIepO2c1ynIjb7Ks3HueD99/jXDTAhx9do1Sp4Tgus/cfsLa2ybtTryOl0fHAHQMAByrfzua49ukNFhaX+WNugd7eGPF4lIxd4IfbvwOgVHfV0JUIZ+cWmflzHq9apVKqUK3UyGZzFEsVvv3uZ1zX7VqMHW3HzR1wLbXFL7/eZW+vwOU3XuGf1DYbWxkikRChgMXVKy8TjYRP9ISuvwe6EVUnhnRsFRxu3NznpZSUy2Wy2R2kFCilUUoTDAXwXA+lNEJIEIpwOExfb2+jr5aAm5Vx1ETaMnD8TDWe51JzHCzDBASepzBMCRqElDhOjWAwWIc5ITttS6CU0k3CpaUVDENQqdYYHX2avxeXGRlK4Lge9s4uQ8MX2C8WKZbKDJ4fIJ2xiUQiVMtlkslB/lp4wMhQAuV55PZyJBJJCvkC6xubTIyPMTSUOMhqM6QQ4iBFNdfhs89vMn3vPkvLD9naTnN3ZpZKtcKXN75h5WGK7M4e2ayN8hR2bo/rn3zB9L05pGnw40/1SlBovvr6FqnUBvH4OTYfpYlGI0ealDyckp54jBcmLzEw0MdwcpBQwOLicJJYNMI7U1eQwuTicBKn6hAIBEleOM9zz06QSA5SqzhcmhilXKkQCgZ5a+oy0pD09/fxVF+Mnp74kQJt04DnKUzTOCBtpsvzPAyj5XKu62KYBp7b/L9C6cZEdF2kpmk0+vQOJvj475EiVEohhKBe+fUoFUtkbRsrYFGr1uiJxymUigRNC8dxULp+PohGwgz097d9KR+p/G59oGnFGkBzUI6tMmu8gLZMHRe+Dibi0KUlJt2o91aHpzKi/wrdfmkb6DTHS/NxorMO3yej/yv+Ba66L0CwT0vAAAAAAElFTkSuQmCC">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Monument — Courage Festival 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg:       #07111f;
-    --surface:  #0f1e30;
-    --surface2: #162840;
-    --border:   #1e3a55;
-    --gold:     #e8b84b;
-    --gold-dim: #8a6a1f;
-    --green:    #22c55e;
-    --green-bg: #052512;
-    --red:      #ef4444;
-    --red-bg:   #200a0a;
-    --blue:     #3b82f6;
-    --blue-bg:  #071428;
-    --muted:    #4a6480;
-    --text:     #e8edf2;
-    --text-dim: #7a9ab8;
-    --radius:   12px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Barlow', sans-serif;
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
-
-  /* ── HEADER ── */
-  header {
-    background: linear-gradient(160deg, #0b1e35 0%, #071428 100%);
-    border-bottom: 2px solid var(--gold);
-    padding: 18px 20px 14px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .school-logo {
-    height: 52px;
-    width: 52px;
-    object-fit: contain;
-    flex-shrink: 0;
-    background: white;
-    border-radius: 8px;
-    padding: 3px;
-  }
-  .header-text h1 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900; font-size: 20px;
-    color: var(--gold);
-    line-height: 1;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .header-text p {
-    font-size: 12px; color: var(--text-dim);
-    letter-spacing: 0.5px;
-    margin-top: 2px;
-  }
-
-  /* ── JOURNEY STRIP ── */
-  .journey {
-    padding: 14px 16px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .journey-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .journey-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .j-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: var(--surface);
-    border-left: 3px solid var(--border);
-    font-size: 13px;
-  }
-  .j-item.win  { border-left-color: var(--green); background: var(--green-bg); }
-  .j-item.loss { border-left-color: var(--red);   background: var(--red-bg);   }
-  .j-item.select-done { border-left-color: var(--blue); background: var(--blue-bg); }
-  .j-badge {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800; font-size: 11px;
-    padding: 2px 7px; border-radius: 4px;
-    flex-shrink: 0; text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .win  .j-badge { background: var(--green); color: #052512; }
-  .loss .j-badge { background: var(--red);   color: #200a0a; }
-  .select-done .j-badge { background: var(--blue); color: #071428; }
-  .j-text { color: var(--text-dim); flex: 1; line-height: 1.3; }
-  .j-undo {
-    background: none; border: none;
-    color: var(--muted); cursor: pointer;
-    font-size: 16px; padding: 2px 4px;
-    border-radius: 4px; flex-shrink: 0;
-    transition: color 0.15s;
-  }
-  .j-undo:hover { color: var(--gold); }
-
-  /* ── DIVIDER ── */
-  .divider {
-    margin: 16px 16px 0;
-    border: none; border-top: 1px solid var(--border);
-  }
-
-  /* ── CURRENT CARD ── */
-  .current-wrap {
-    padding: 16px;
-  }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .card-phase {
-    background: var(--surface2);
-    padding: 10px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .phase-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 13px;
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .phase-time {
-    font-size: 12px;
-    color: var(--text-dim);
-    font-weight: 500;
-  }
-
-  /* match layout */
-  .matchup {
-    padding: 20px 16px 16px;
-  }
-  .teams {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .team {
-    flex: 1;
-    text-align: center;
-  }
-  .team-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800; font-size: 18px;
-    line-height: 1.15;
-    text-transform: uppercase;
-  }
-  .team.monument .team-name { color: var(--gold); }
-  .team.opponent .team-name { color: var(--text); }
-  .team-label {
-    font-size: 10px; color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
-  .vs {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900; font-size: 22px;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-  .match-note {
-    font-size: 12px; color: var(--text-dim);
-    text-align: center;
-    padding: 0 4px;
-    line-height: 1.4;
-  }
-
-  /* ── ACTION BUTTONS ── */
-  .actions {
-    padding: 0 16px 16px;
-    display: flex;
-    gap: 10px;
-  }
-  .btn {
-    flex: 1;
-    padding: 14px 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800; font-size: 18px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    transition: transform 0.1s, filter 0.15s;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 2px;
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn-sub { font-size: 11px; font-weight: 600; opacity: 0.75; font-family: 'Barlow', sans-serif; text-transform: none; letter-spacing: 0; }
-  .btn-win  { background: var(--green); color: #031a0c; }
-  .btn-win:hover  { filter: brightness(1.1); }
-  .btn-loss { background: var(--red);   color: #1a0303; }
-  .btn-loss:hover { filter: brightness(1.1); }
-
-  /* ── POSITION SELECT ── */
-  .select-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .select-header {
-    background: var(--surface2);
-    padding: 14px 16px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 15px;
-    color: var(--gold); text-transform: uppercase; letter-spacing: 1px;
-    border-bottom: 1px solid var(--border);
-  }
-  .select-q {
-    padding: 14px 16px 8px;
-    font-size: 15px; color: var(--text);
-    font-weight: 500; line-height: 1.4;
-  }
-  .select-opts {
-    padding: 6px 16px 16px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .btn-opt {
-    padding: 16px 10px;
-    background: var(--surface2);
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800; font-size: 20px;
-    color: var(--text);
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
-    text-align: center;
-  }
-  .btn-opt .opt-sub { display: block; font-size: 11px; font-weight: 500; color: var(--text-dim); font-family: 'Barlow', sans-serif; margin-top: 3px; }
-  .btn-opt:hover { border-color: var(--gold); background: #1a2e46; transform: scale(1.02); }
-
-  /* ── UPCOMING ── */
-  .upcoming {
-    padding: 0 16px 16px;
-  }
-  .upcoming-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2px; color: var(--muted);
-    text-transform: uppercase; margin-bottom: 10px;
-  }
-  .upcoming-item {
-    padding: 10px 14px;
-    background: var(--surface);
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    display: flex; flex-direction: column; gap: 3px;
-  }
-  .upcoming-item + .upcoming-item { margin-top: 6px; }
-  .up-phase {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 12px;
-    color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .up-cond { font-size: 12px; color: var(--muted); }
-  .up-win  { color: var(--green); }
-  .up-loss { color: var(--red); }
-
-  /* ── DONE SCREEN ── */
-  .done-card {
-    background: var(--surface);
-    border: 1px solid var(--gold-dim);
-    border-radius: var(--radius);
-    padding: 30px 20px;
-    text-align: center;
-  }
-  .done-medal {
-    font-size: 56px; margin-bottom: 12px;
-  }
-  .done-place {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900; font-size: 38px;
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .done-label {
-    font-size: 14px; color: var(--text-dim);
-    margin-top: 6px;
-  }
-  .btn-reset {
-    margin-top: 22px;
-    padding: 12px 28px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-dim);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 15px;
-    letter-spacing: 0.5px; text-transform: uppercase;
-    cursor: pointer; transition: border-color 0.15s, color 0.15s;
-  }
-  .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* ── HELP SECTION ── */
-  .help-section {
-    margin: 12px 16px 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .help-toggle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
-    list-style: none;
-    user-select: none;
-  }
-  .help-toggle::-webkit-details-marker { display: none; }
-  .help-icon {
-    width: 22px; height: 22px;
-    background: var(--gold-dim);
-    color: var(--gold);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900; font-size: 13px;
-    flex-shrink: 0;
-  }
-  .help-label {
-    flex: 1;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 13px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .help-chevron {
-    color: var(--muted);
-    font-size: 20px;
-    transition: transform 0.2s;
-    line-height: 1;
-  }
-  details[open] .help-chevron { transform: rotate(90deg); }
-  .help-body {
-    padding: 4px 16px 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .help-body p {
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-  .help-body strong { color: var(--text); }
-  .c-win  { color: var(--green); }
-  .c-loss { color: var(--red); }
-
-  /* ── INFO PILL ── */
-  .info-pill {
-    margin: 0 16px 12px;
-    padding: 9px 14px;
-    background: #0e1f32;
-    border-left: 3px solid var(--blue);
-    border-radius: 6px;
-    font-size: 12px; color: var(--text-dim);
-    line-height: 1.5;
-  }
-  .info-pill strong { color: var(--text); }
-
-  footer {
-    margin: 24px 16px 16px;
-    padding: 12px 14px;
-    border-top: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.6;
-    text-align: center;
-  }
-
-  @media (min-width: 500px) {
-    body { max-width: 500px; margin: 0 auto; }
-    header { border-radius: 0; }
-  }
-</style>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAD/ElEQVR4nMWXzW8bRRiHn5nd9WftJCRt7CRFIUoqQIEDF4TEh0oPVUCIM/8CR46cuHKqKiE4gBCH0gNCqjhwAqFKcACaNpCUKCRNUuJ8NLazcez4c3dnONiO4yoh9gal72G92vXMPPPO7/3NjpientY8wRBa6ycKYCql8MNgGBKtNMpHWyFE617Xo8sOIF8oErAsgsHAqQBkt43rsILf7sxzZ2YeIQRKqa4hfAM0Q2lNamO7AeV7/O4BmumzLJPtR3bj2RkC1EMTDFg8Su+2QZ0ZgOM6WJZJJpunWqshpcTvKvgC8FxNKBQgly9g7+brD30KwR+A0hiGpOpUSWdstNa+vKRrACEEnueRydhEwkHefPUlUqlthBC+ddAxQHOAHTtHLl9gdXUdpSCX22d3N4eU/vR8ohNq3XC+/D63vr/Nyuo6xXKNja00htCMDCeIRSO8ODnO21df6wjkcLbMTkm10Ni5fcbHnqG3J8bk86N8fP0mm+l9YlGPsVIFIepO2c1ynIjb7Ks3HueD99/jXDTAhx9do1Sp4Tgus/cfsLa2ybtTryOl0fHAHQMAByrfzua49ukNFhaX+WNugd7eGPF4lIxd4IfbvwOgVHfV0JUIZ+cWmflzHq9apVKqUK3UyGZzFEsVvv3uZ1zX7VqMHW3HzR1wLbXFL7/eZW+vwOU3XuGf1DYbWxkikRChgMXVKy8TjYRP9ISuvwe6EVUnhnRsFRxu3NznpZSUy2Wy2R2kFCilUUoTDAXwXA+lNEJIEIpwOExfb2+jr5aAm5Vx1ETaMnD8TDWe51JzHCzDBASepzBMCRqElDhOjWAwWIc5ITttS6CU0k3CpaUVDENQqdYYHX2avxeXGRlK4Lge9s4uQ8MX2C8WKZbKDJ4fIJ2xiUQiVMtlkslB/lp4wMhQAuV55PZyJBJJCvkC6xubTIyPMTSUOMhqM6QQ4iBFNdfhs89vMn3vPkvLD9naTnN3ZpZKtcKXN75h5WGK7M4e2ayN8hR2bo/rn3zB9L05pGnw40/1SlBovvr6FqnUBvH4OTYfpYlGI0ealDyckp54jBcmLzEw0MdwcpBQwOLicJJYNMI7U1eQwuTicBKn6hAIBEleOM9zz06QSA5SqzhcmhilXKkQCgZ5a+oy0pD09/fxVF+Mnp74kQJt04DnKUzTOCBtpsvzPAyj5XKu62KYBp7b/L9C6cZEdF2kpmk0+vQOJvj475EiVEohhKBe+fUoFUtkbRsrYFGr1uiJxymUigRNC8dxULp+PohGwgz097d9KR+p/G59oGnFGkBzUI6tMmu8gLZMHRe+Dibi0KUlJt2o91aHpzKi/wrdfmkb6DTHS/NxorMO3yej/yv+Ba66L0CwT0vAAAAAAElFTkSuQmCC">
 <!-- Matomo -->
 <script>
   var _paq = window._paq = window._paq || [];
@@ -434,6 +19,235 @@
   })();
 </script>
 <!-- End Matomo Code -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#07111f; --surface:#0f1e30; --surface2:#162840; --border:#1e3a55;
+  --gold:#e8b84b; --gold-dim:#8a6a1f;
+  --green:#22c55e; --green-bg:#052512;
+  --red:#ef4444;  --red-bg:#200a0a;
+  --amber:#f59e0b; --amber-bg:#1a1000;
+  --blue:#3b82f6; --blue-bg:#071428;
+  --muted:#4a6480; --text:#e8edf2; --text-dim:#7a9ab8;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;padding-bottom:40px;}
+
+/* ── HEADER ── */
+header{background:linear-gradient(160deg,#0b1e35,#071428);border-bottom:2px solid var(--gold);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.school-logo{height:48px;width:48px;object-fit:contain;background:#fff;border-radius:8px;padding:3px;flex-shrink:0;}
+.header-text{flex:1;}
+.header-text h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:19px;color:var(--gold);
+  line-height:1;letter-spacing:.5px;text-transform:uppercase;}
+.header-text p{font-size:11px;color:var(--text-dim);letter-spacing:.5px;margin-top:2px;}
+.sync-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:20px;padding:4px 10px;flex-shrink:0;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s;}
+.sync-dot.ok{background:var(--green);}
+.sync-dot.err{background:var(--red);}
+.sync-dot.pulse{animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.sync-label{font-size:10px;color:var(--text-dim);font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+
+/* ── HELP ── */
+.help-section{margin:10px 14px 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.help-toggle{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;list-style:none;user-select:none;}
+.help-toggle::-webkit-details-marker{display:none;}
+.help-icon{width:21px;height:21px;background:var(--gold-dim);color:var(--gold);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;
+  font-weight:900;font-size:13px;flex-shrink:0;}
+.help-label{flex:1;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;
+  color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;}
+.help-chevron{color:var(--muted);font-size:20px;transition:transform .2s;line-height:1;}
+details[open] .help-chevron{transform:rotate(90deg);}
+.help-body{padding:4px 14px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:9px;}
+.help-body p{font-size:13px;color:var(--text-dim);line-height:1.6;}
+.help-body strong{color:var(--text);}
+.c-win{color:var(--green);} .c-draw{color:var(--amber);} .c-loss{color:var(--red);}
+
+/* ── TABS ── */
+.tab-nav{display:flex;gap:2px;padding:10px 14px 0;overflow-x:auto;}
+.tab-btn{flex:1;padding:9px 6px;background:var(--surface);border:1px solid var(--border);border-radius:8px 8px 0 0;
+  cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;
+  color:var(--muted);letter-spacing:.5px;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.tab-btn.active{background:var(--surface2);border-bottom-color:var(--surface2);color:var(--gold);}
+.tab-pane{display:none;padding:0;}
+.tab-pane.active{display:block;}
+
+/* ── TRACKER ── */
+.tracker-wrap{padding:12px 14px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;}
+.card-phase{background:var(--surface2);padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.phase-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;}
+.phase-time{font-size:11px;color:var(--text-dim);font-weight:500;}
+.matchup{padding:18px 14px 12px;}
+.teams{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
+.team{flex:1;text-align:center;}
+.team-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;line-height:1.15;text-transform:uppercase;}
+.team.monument .team-name{color:var(--gold);}
+.team.opponent .team-name{color:var(--text);}
+.team-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.vs{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:var(--muted);flex-shrink:0;}
+.match-note{font-size:11px;color:var(--text-dim);text-align:center;line-height:1.4;}
+.actions{padding:0 14px 14px;display:flex;gap:8px;}
+.actions.three .btn{font-size:15px;}
+.btn{flex:1;padding:13px 8px;border:none;border-radius:9px;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.5px;
+  text-transform:uppercase;transition:transform .1s,filter .15s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.btn:active{transform:scale(.97);}
+.btn-sub{font-size:10px;font-weight:600;opacity:.7;font-family:'Barlow',sans-serif;text-transform:none;letter-spacing:0;}
+.btn-win {background:var(--green);color:#031a0c;}
+.btn-win:hover{filter:brightness(1.1);}
+.btn-draw{background:var(--amber);color:#110900;}
+.btn-draw:hover{filter:brightness(1.1);}
+.btn-loss{background:var(--red);color:#1a0303;}
+.btn-loss:hover{filter:brightness(1.1);}
+
+/* upcoming */
+.upcoming{padding:0 14px 12px;}
+.upcoming-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.upcoming-item{padding:9px 12px;background:var(--surface);border:1px dashed var(--border);
+  border-radius:8px;display:flex;flex-direction:column;gap:3px;}
+.upcoming-item+.upcoming-item{margin-top:5px;}
+.up-phase{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
+.up-cond{font-size:12px;color:var(--muted);}
+.up-win{color:var(--green);} .up-draw{color:var(--amber);} .up-loss{color:var(--red);}
+
+/* journey */
+.journey{padding:12px 14px 0;}
+.journey-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.journey-list{display:flex;flex-direction:column;gap:4px;}
+.j-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;
+  background:var(--surface);border-left:3px solid var(--border);font-size:12px;}
+.j-item.win {border-left-color:var(--green);background:var(--green-bg);}
+.j-item.draw{border-left-color:var(--amber);background:var(--amber-bg);}
+.j-item.loss{border-left-color:var(--red);background:var(--red-bg);}
+.j-item.sel {border-left-color:var(--blue);background:var(--blue-bg);}
+.j-badge{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:10px;
+  padding:2px 6px;border-radius:4px;flex-shrink:0;text-transform:uppercase;letter-spacing:.5px;}
+.win  .j-badge{background:var(--green);color:#052512;}
+.draw .j-badge{background:var(--amber);color:#110900;}
+.loss .j-badge{background:var(--red);color:#200a0a;}
+.sel  .j-badge{background:var(--blue);color:#071428;}
+.j-text{color:var(--text-dim);flex:1;line-height:1.3;}
+.j-undo{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;
+  padding:2px 4px;border-radius:4px;flex-shrink:0;transition:color .15s;}
+.j-undo:hover{color:var(--gold);}
+.j-divider{margin:10px 14px 0;border:none;border-top:1px solid var(--border);}
+
+/* select node */
+.select-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.select-header{background:var(--surface2);padding:12px 14px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:14px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);}
+.select-q{padding:12px 14px 6px;font-size:14px;color:var(--text);font-weight:500;line-height:1.4;}
+.select-q small{font-size:11px;color:var(--muted);display:block;margin-top:2px;}
+.select-opts{padding:6px 14px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-opt{padding:15px 8px;background:var(--surface2);border:2px solid var(--border);border-radius:9px;
+  cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;
+  color:var(--text);transition:border-color .15s,background .15s,transform .1s;text-align:center;}
+.btn-opt .opt-sub{display:block;font-size:10px;font-weight:500;color:var(--text-dim);
+  font-family:'Barlow',sans-serif;margin-top:2px;}
+.btn-opt:hover{border-color:var(--gold);background:#1a2e46;transform:scale(1.02);}
+
+/* done */
+.done-card{background:var(--surface);border:1px solid var(--gold-dim);border-radius:var(--radius);padding:28px 18px;text-align:center;}
+.done-medal{font-size:52px;margin-bottom:10px;}
+.done-place{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:1px;}
+.done-label{font-size:13px;color:var(--text-dim);margin-top:5px;}
+.btn-reset{margin-top:20px;padding:11px 26px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;color:var(--text-dim);font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:border-color .15s,color .15s;}
+.btn-reset:hover{border-color:var(--gold);color:var(--gold);}
+.reset-confirm{margin-top:18px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);}
+.reset-confirm p{font-size:12px;color:var(--text-dim);margin-bottom:10px;}
+.reset-confirm-btns{display:flex;gap:8px;}
+
+/* ── SCHEDULE TAB ── */
+.schedule-wrap{padding:12px 14px;}
+.day-group{margin-bottom:16px;}
+.day-header{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;
+  color:var(--gold);text-transform:uppercase;letter-spacing:1px;
+  padding:8px 12px;background:var(--surface2);border-radius:8px 8px 0 0;
+  border-bottom:2px solid var(--gold-dim);}
+.fix-row{display:flex;align-items:center;gap:8px;padding:9px 12px;
+  background:var(--surface);border-left:2px solid var(--border);border-bottom:1px solid var(--border);}
+.fix-row:last-child{border-radius:0 0 8px 8px;}
+.fix-row.monument-match{border-left-color:var(--gold);background:#0d1e32;}
+.fix-row.played{opacity:.6;}
+.fix-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;
+  color:var(--text-dim);width:44px;flex-shrink:0;}
+.fix-teams{flex:1;font-size:12px;line-height:1.4;}
+.fix-team1{color:var(--text);}
+.fix-team2{color:var(--text-dim);}
+.fix-pool{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;
+  color:var(--muted);background:var(--surface2);padding:2px 7px;border-radius:4px;flex-shrink:0;}
+.fix-pool.monument-pool{background:var(--gold-dim);color:var(--gold);}
+.fix-monument-tag{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;}
+.no-data{padding:20px 14px;text-align:center;color:var(--muted);font-size:13px;}
+
+/* ── POOL TABLE TAB ── */
+.pool-wrap{padding:12px 14px;}
+.pool-section{margin-bottom:16px;}
+.pool-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;
+  color:var(--gold);text-transform:uppercase;letter-spacing:1px;
+  padding:8px 12px;background:var(--surface2);border-radius:8px 8px 0 0;border-bottom:2px solid var(--gold-dim);}
+.pool-table{width:100%;background:var(--surface);border-radius:0 0 8px 8px;overflow:hidden;border-collapse:collapse;}
+.pool-table th{background:var(--surface2);padding:7px 10px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;text-align:center;}
+.pool-table th:first-child{text-align:left;}
+.pool-table td{padding:9px 10px;font-size:13px;border-top:1px solid var(--border);text-align:center;}
+.pool-table td:first-child{text-align:left;font-weight:600;}
+.pool-table tr.monument-row td{background:#0d1e32;color:var(--gold);}
+.pool-table tr.monument-row td:first-child{color:var(--gold);}
+.pts-badge{display:inline-block;background:var(--surface2);padding:2px 8px;border-radius:4px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;}
+.monument-row .pts-badge{background:var(--gold-dim);color:var(--gold);}
+.pool-note{font-size:11px;color:var(--muted);padding:8px 12px;line-height:1.5;
+  background:var(--surface);border-top:1px solid var(--border);border-radius:0 0 8px 8px;}
+.pool-source-badge{display:inline-block;font-size:10px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.badge-live{background:#052512;color:var(--green);border:1px solid var(--green);}
+.badge-manual{background:#071428;color:var(--blue);border:1px solid var(--blue);}
+.rule-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.rule-box h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;
+  color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.rule-box ul{font-size:12px;color:var(--text-dim);line-height:1.7;padding-left:16px;}
+.points-grid{display:flex;gap:8px;margin-top:6px;}
+.pts-item{flex:1;text-align:center;background:var(--surface2);border-radius:8px;padding:10px 6px;}
+.pts-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:24px;}
+.pts-num.w{color:var(--green);} .pts-num.d{color:var(--amber);} .pts-num.l{color:var(--red);}
+.pts-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+/* ── LOG TAB ── */
+.log-wrap{padding:12px 14px;}
+.log-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px;}
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+  background:var(--surface);border-radius:8px;margin-bottom:6px;border-left:3px solid var(--border);}
+.log-item.win {border-left-color:var(--green);}
+.log-item.draw{border-left-color:var(--amber);}
+.log-item.loss{border-left-color:var(--red);}
+.log-item.sel {border-left-color:var(--blue);}
+.log-badge{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;
+  padding:3px 8px;border-radius:4px;flex-shrink:0;text-transform:uppercase;margin-top:1px;}
+.win  .log-badge{background:var(--green);color:#052512;}
+.draw .log-badge{background:var(--amber);color:#110900;}
+.loss .log-badge{background:var(--red);color:#200a0a;}
+.sel  .log-badge{background:var(--blue);color:#071428;}
+.log-body{flex:1;}
+.log-match{font-size:13px;color:var(--text);font-weight:500;}
+.log-time{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ── FOOTER ── */
+footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border);
+  font-size:11px;color:var(--muted);line-height:1.6;text-align:center;}
+
+@media(min-width:500px){body{max-width:500px;margin:0 auto;}}
+</style>
 </head>
 <body>
 
@@ -441,7 +255,11 @@
   <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAKAAoADASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAIIBgcBAwUECf/EAF0QAAIBAwEEBQcGCAUQCQQDAAACAwQFEgYBByIyCBETQlIUGFZicpTTFSEjgpKyJDEzQVNxosIWFzdRdQknNjhDREVhc3STs8Pi8PIoNDVUY2WBsdIlZIORwdHx/8QAGQEBAQEBAQEAAAAAAAAAAAAAAAIDAQQF/8QAIxEBAQACAQQDAQEBAQAAAAAAAAIDEgERIjEyBBMhQUJScf/aAAwDAQACEQMRAD8AxHzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kWkfeaj4BfkAUG8yneX6RaR95qPgDzKd5fpFpH3mo+AX5AFBvMp3l+kWkfeaj4A8yneX6RaR95qPgF+QBQbzKd5fpFpH3mo+APMp3l+kW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" alt="Hoërskool Monument" class="school-logo">
   <div class="header-text">
     <h1>Hoërskool Monument</h1>
-    <p>COURAGE FESTIVAL 2026 · LIVE TRACKER</p>
+    <p>COURAGE FESTIVAL 2026 · 1ST GIRLS' HOCKEY</p>
+  </div>
+  <div class="sync-pill">
+    <span class="sync-dot" id="syncDot"></span>
+    <span class="sync-label" id="syncLabel">…</span>
   </div>
 </header>
 
@@ -453,558 +271,616 @@
   </summary>
   <div class="help-body">
     <p>This page follows the <strong>Hoërskool Monument 1st Girls' Hockey Team</strong> through the Courage Festival 2026 tournament, step by step.</p>
-    <p>After each match, tap <strong class="c-win">WIN</strong> or <strong class="c-loss">LOSS</strong> to record the result. The tracker will automatically show you Monument's next game — you don't need to figure out the bracket yourself.</p>
-    <p>At the end of each pool stage you'll be asked to select Monument's finishing position (1st, 2nd, 3rd or 4th). This determines which bracket they move into for the next round.</p>
-    <p>Each match card shows the date, time, and opponent, as well as a preview of where a win or loss will lead next.</p>
-    <p>If you make a mistake, tap the <strong>↩</strong> button next to the last result in your history to undo it.</p>
-    <p>Your progress is saved automatically. If you close the page and come back, it will pick up exactly where you left off.</p>
-    <p>At the end of the tournament the tracker will show Monument's final placing. Tap <strong>Start Over</strong> to reset.</p>
+    <p>After each match, tap <strong class="c-win">WIN</strong>, <strong class="c-draw">DRAW</strong>, or <strong class="c-loss">LOSS</strong>. Pool matches can end in a draw. Knockout matches go to a penalty shootout if drawn — tap WIN or LOSS for the overall match result.</p>
+    <p>At the end of each pool stage, select Monument's finishing position. This determines which bracket they enter for the next round.</p>
+    <p>Use the tabs above to switch between the live <strong>Tracker</strong>, full <strong>Schedule</strong> (updated from the official sheet), <strong>Pool D</strong> standings, and the match <strong>Log</strong>.</p>
+    <p>Tap <strong>↩</strong> on any history item to undo it. Progress saves automatically in your browser.</p>
   </div>
 </details>
 
-<div id="app"></div>
+<nav class="tab-nav">
+  <button class="tab-btn active" id="btn-tracker" onclick="switchTab('tracker')">🏑 Tracker</button>
+  <button class="tab-btn" id="btn-schedule" onclick="switchTab('schedule')">📅 Schedule</button>
+  <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 <span id="poolTabLabel">Pool D</span></button>
+  <button class="tab-btn" id="btn-log" onclick="switchTab('log')">📋 Log</button>
+</nav>
+
+<div class="tab-pane active" id="pane-tracker"><div id="app"></div></div>
+<div class="tab-pane" id="pane-schedule"><div class="schedule-wrap" id="scheduleContent"><div class="no-data">Fetching schedule…</div></div></div>
+<div class="tab-pane" id="pane-pool"><div class="pool-wrap" id="poolContent"><div class="no-data">Fetching standings…</div></div></div>
+<div class="tab-pane" id="pane-log"><div class="log-wrap" id="logContent"><div class="log-empty">No results recorded yet.</div></div></div>
+
+<footer>Fixture information is presented as received from tournament organisers. Cylon Consulting accepts no responsibility for any changes, errors or omissions. Please confirm schedules with official festival communications.</footer>
 
 <script>
 // ════════════════════════════════════════════════════════
-//  MATCH DATA  (state machine)
+//  CONFIG
 // ════════════════════════════════════════════════════════
+const SHEET_ID  = '1wCcDyOVyCXO4WmIpi602ySKfbg3BI7Xd';
+const API_KEY   = 'AIzaSyBsyDvPuv8uBjYD1bcW6UHmENiz3w5PODM';
+const POLL_MS   = 60000;
 
+// ════════════════════════════════════════════════════════
+//  TAB MANAGEMENT
+// ════════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + name).classList.add('active');
+  document.getElementById('btn-' + name).classList.add('active');
+  if (name === 'log') renderLog();
+  if (name === 'pool') renderPoolTab();
+  track('Tab', 'Switch', name);
+}
+
+// ════════════════════════════════════════════════════════
+//  NODES (state machine)
+// ════════════════════════════════════════════════════════
+// canDraw:true = pool match; no flag = knockout (WIN/LOSS only)
 const NODES = {
+  pd1:{type:'match',phase:'Pool D — Match 1',day:'Thu 26 Mar',time:'10:25',home:'Hoërskool Monument',homeIsMonument:true,away:'DF Akademie',note:'Match 1 of 3 in Pool D',canDraw:true,onWin:'pd2',onDraw:'pd2',onLoss:'pd2'},
+  pd2:{type:'match',phase:'Pool D — Match 2',day:'Thu 26 Mar',time:'12:15',home:'Epworth School',homeIsMonument:false,away:'Hoërskool Monument',note:'Match 2 of 3 in Pool D',canDraw:true,onWin:'pd3',onDraw:'pd3',onLoss:'pd3'},
+  pd3:{type:'match',phase:'Pool D — Match 3',day:'Fri 27 Mar',time:'07:45',home:'Pretoria High School',homeIsMonument:false,away:'Hoërskool Monument',note:'Final pool match — position confirmed afterwards',canDraw:true,onWin:'ask_d',onDraw:'ask_d',onLoss:'ask_d'},
+  ask_d:{type:'select',phase:'Pool D — Final Position',question:'Where did Monument finish in Pool D?',hint:'Based on points, goal difference, etc.',options:[
+    {label:'1st',sub:'→ Pool E',next:'pe1_1st'},{label:'2nd',sub:'→ Pool E',next:'pe1_2nd'},
+    {label:'3rd',sub:'→ Pool G',next:'pg1_3rd'},{label:'4th',sub:'→ Pool G',next:'pg1_4th'}]},
 
-  // ── POOL D ──────────────────────────────────────────
-  pd1: {
-    type: 'match', phase: 'Pool D — Match 1',
-    day: 'Thu 26 Mar', time: '10:25',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'DF Akademie',
-    note: 'Match 1 of 3 in Pool D',
-    onWin: 'pd2', onLoss: 'pd2'
-  },
-  pd2: {
-    type: 'match', phase: 'Pool D — Match 2',
-    day: 'Thu 26 Mar', time: '12:15',
-    home: 'Epworth', homeIsMonument: false,
-    away: 'Hoërskool Monument',
-    note: 'Match 2 of 3 in Pool D',
-    onWin: 'pd3', onLoss: 'pd3'
-  },
-  pd3: {
-    type: 'match', phase: 'Pool D — Match 3',
-    day: 'Fri 27 Mar', time: '07:45',
-    home: 'Pretoria High School', homeIsMonument: false,
-    away: 'Hoërskool Monument',
-    note: 'Final pool match — position confirmed afterwards',
-    onWin: 'ask_d', onLoss: 'ask_d'
-  },
-  ask_d: {
-    type: 'select', phase: 'Pool D — Final Position',
-    question: 'Where did Monument finish in Pool D?',
-    hint: 'Based on wins, goal difference, etc.',
-    options: [
-      { label: '1st', sub: '→ Pool E', next: 'pe1_1st' },
-      { label: '2nd', sub: '→ Pool E', next: 'pe1_2nd' },
-      { label: '3rd', sub: '→ Pool G', next: 'pg1_3rd' },
-      { label: '4th', sub: '→ Pool G', next: 'pg1_4th' },
-    ]
-  },
+  pe1_1st:{type:'match',phase:'Pool E — Game 1',day:'Fri 27 Mar',time:'10:50',home:'Hoërskool Monument',homeIsMonument:true,away:'2nd in Pool A',note:'1st Pool D vs 2nd Pool A  ·  points carry forward from Pool D',canDraw:true,onWin:'pe2_1st',onDraw:'pe2_1st',onLoss:'pe2_1st'},
+  pe2_1st:{type:'match',phase:'Pool E — Game 2',day:'Fri 27 Mar',time:'14:05',home:'Hoërskool Monument',homeIsMonument:true,away:'1st in Pool A',note:'1st Pool D vs 1st Pool A',canDraw:true,onWin:'ask_e',onDraw:'ask_e',onLoss:'ask_e'},
+  pe1_2nd:{type:'match',phase:'Pool E — Game 1',day:'Fri 27 Mar',time:'10:25',home:'Hoërskool Monument',homeIsMonument:true,away:'1st in Pool A',note:'2nd Pool D vs 1st Pool A  ·  points carry forward from Pool D',canDraw:true,onWin:'pe2_2nd',onDraw:'pe2_2nd',onLoss:'pe2_2nd'},
+  pe2_2nd:{type:'match',phase:'Pool E — Game 2',day:'Fri 27 Mar',time:'14:30',home:'Hoërskool Monument',homeIsMonument:true,away:'2nd in Pool A',note:'2nd Pool D vs 2nd Pool A',canDraw:true,onWin:'ask_e',onDraw:'ask_e',onLoss:'ask_e'},
+  ask_e:{type:'select',phase:'Pool E — Final Position',question:'Where did Monument finish in Pool E?',hint:'Includes carried-forward Pool D points',options:[
+    {label:'1st',sub:'vs 4th Pool F',next:'qf1'},{label:'2nd',sub:'vs 3rd Pool F',next:'qf2'},
+    {label:'3rd',sub:'vs 2nd Pool F',next:'qf3'},{label:'4th',sub:'vs 1st Pool F',next:'qf4'}]},
 
-  // ── POOL E (1st in D) ───────────────────────────────
-  pe1_1st: {
-    type: 'match', phase: 'Pool E — Game 1',
-    day: 'Fri 27 Mar', time: '10:50',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '2nd in Pool A',
-    note: '1st Pool D × 2nd Pool A cross-pool seeding',
-    onWin: 'pe2_1st', onLoss: 'pe2_1st'
-  },
-  pe2_1st: {
-    type: 'match', phase: 'Pool E — Game 2',
-    day: 'Fri 27 Mar', time: '14:05',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '1st in Pool A',
-    note: '1st Pool D × 1st Pool A cross-pool seeding',
-    onWin: 'ask_e', onLoss: 'ask_e'
-  },
+  pg1_3rd:{type:'match',phase:'Pool G — Game 1',day:'Fri 27 Mar',time:'12:40',home:'Hoërskool Monument',homeIsMonument:true,away:'4th in Pool A',note:'3rd Pool D vs 4th Pool A  ·  points carry forward from Pool D',canDraw:true,onWin:'pg2_3rd',onDraw:'pg2_3rd',onLoss:'pg2_3rd'},
+  pg2_3rd:{type:'match',phase:'Pool G — Game 2',day:'Fri 27 Mar',time:'15:55',home:'Hoërskool Monument',homeIsMonument:true,away:'3rd in Pool A',note:'3rd Pool D vs 3rd Pool A',canDraw:true,onWin:'ask_g',onDraw:'ask_g',onLoss:'ask_g'},
+  pg1_4th:{type:'match',phase:'Pool G — Game 1',day:'Fri 27 Mar',time:'12:15',home:'Hoërskool Monument',homeIsMonument:true,away:'3rd in Pool A',note:'4th Pool D vs 3rd Pool A  ·  points carry forward from Pool D',canDraw:true,onWin:'pg2_4th',onDraw:'pg2_4th',onLoss:'pg2_4th'},
+  pg2_4th:{type:'match',phase:'Pool G — Game 2',day:'Fri 27 Mar',time:'16:20',home:'Hoërskool Monument',homeIsMonument:true,away:'4th in Pool A',note:'4th Pool D vs 4th Pool A',canDraw:true,onWin:'ask_g',onDraw:'ask_g',onLoss:'ask_g'},
+  ask_g:{type:'select',phase:'Pool G — Final Position',question:'Where did Monument finish in Pool G?',hint:'Includes carried-forward Pool D points',options:[
+    {label:'1st',sub:'vs 4th Pool H → M55',next:'m55'},{label:'2nd',sub:'vs 3rd Pool H → M56',next:'m56'},
+    {label:'3rd',sub:'vs 2nd Pool H → M57',next:'m57'},{label:'4th',sub:'vs 1st Pool H → M58',next:'m58'}]},
 
-  // ── POOL E (2nd in D) ───────────────────────────────
-  pe1_2nd: {
-    type: 'match', phase: 'Pool E — Game 1',
-    day: 'Fri 27 Mar', time: '10:25',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '1st in Pool A',
-    note: '2nd Pool D × 1st Pool A cross-pool seeding',
-    onWin: 'pe2_2nd', onLoss: 'pe2_2nd'
-  },
-  pe2_2nd: {
-    type: 'match', phase: 'Pool E — Game 2',
-    day: 'Fri 27 Mar', time: '14:30',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '2nd in Pool A',
-    note: '2nd Pool D × 2nd Pool A cross-pool seeding',
-    onWin: 'ask_e', onLoss: 'ask_e'
-  },
+  qf1:{type:'match',phase:'Quarter-Final (Q1)',day:'Sat 28 Mar',time:'10:50',home:'Hoërskool Monument',homeIsMonument:true,away:'4th in Pool F',note:'1st Pool E vs 4th Pool F  ·  Shootout if drawn',onWin:'sf_a',onLoss:'m63'},
+  qf2:{type:'match',phase:'Quarter-Final (Q2)',day:'Sat 28 Mar',time:'11:15',home:'Hoërskool Monument',homeIsMonument:true,away:'3rd in Pool F',note:'2nd Pool E vs 3rd Pool F  ·  Shootout if drawn',onWin:'sf_a',onLoss:'m63'},
+  qf3:{type:'match',phase:'Quarter-Final (Q3)',day:'Sat 28 Mar',time:'11:40',home:'Hoërskool Monument',homeIsMonument:true,away:'2nd in Pool F',note:'3rd Pool E vs 2nd Pool F  ·  Shootout if drawn',onWin:'sf_b',onLoss:'m64'},
+  qf4:{type:'match',phase:'Quarter-Final (Q4)',day:'Sat 28 Mar',time:'12:05',home:'Hoërskool Monument',homeIsMonument:true,away:'1st in Pool F',note:'4th Pool E vs 1st Pool F  ·  Shootout if drawn',onWin:'sf_b',onLoss:'m64'},
+  sf_a:{type:'match',phase:'Semi-Final',day:'Sat 28 Mar',time:'15:20',home:'Hoërskool Monument',homeIsMonument:true,away:'Other QF Winner',note:'Winners Q1 vs Q2  ·  30 min  ·  Shootout if drawn',onWin:'final',onLoss:'p3'},
+  sf_b:{type:'match',phase:'Semi-Final',day:'Sat 28 Mar',time:'15:50',home:'Hoërskool Monument',homeIsMonument:true,away:'Other QF Winner',note:'Winners Q3 vs Q4  ·  30 min  ·  Shootout if drawn',onWin:'final',onLoss:'p3'},
+  m63:{type:'match',phase:'Match M63',day:'Sat 28 Mar',time:'14:30',home:'Hoërskool Monument',homeIsMonument:true,away:'Other QF Loser (Q1/Q2)',note:'5th–8th bracket — Losers Q1 & Q2',onWin:'p5',onLoss:'p7'},
+  m64:{type:'match',phase:'Match M64',day:'Sat 28 Mar',time:'14:55',home:'Hoërskool Monument',homeIsMonument:true,away:'Other QF Loser (Q3/Q4)',note:'5th–8th bracket — Losers Q3 & Q4',onWin:'p5',onLoss:'p7'},
+  final:{type:'match',phase:'🏆 FINAL',day:'Sun 29 Mar',time:'11:05',home:'Hoërskool Monument',homeIsMonument:true,away:'Other Semi Winner',note:'30 min  ·  Shootout if drawn',onWin:'done_1st',onLoss:'done_2nd'},
+  p3:{type:'match',phase:'3rd / 4th Place',day:'Sun 29 Mar',time:'10:40',home:'Hoërskool Monument',homeIsMonument:true,away:'Other Semi Loser',note:'',onWin:'done_3rd',onLoss:'done_4th'},
+  p5:{type:'match',phase:'5th / 6th Place',day:'Sun 29 Mar',time:'10:15',home:'Hoërskool Monument',homeIsMonument:true,away:'Other M63/M64 Winner',note:'',onWin:'done_5th',onLoss:'done_6th'},
+  p7:{type:'match',phase:'7th / 8th Place',day:'Sun 29 Mar',time:'09:50',home:'Hoërskool Monument',homeIsMonument:true,away:'Other M63/M64 Loser',note:'',onWin:'done_7th',onLoss:'done_8th'},
 
-  ask_e: {
-    type: 'select', phase: 'Pool E — Final Position',
-    question: 'Where did Monument finish in Pool E?',
-    hint: 'Determines quarter-final opponent',
-    options: [
-      { label: '1st', sub: 'vs 4th Pool F', next: 'qf1' },
-      { label: '2nd', sub: 'vs 3rd Pool F', next: 'qf2' },
-      { label: '3rd', sub: 'vs 2nd Pool F', next: 'qf3' },
-      { label: '4th', sub: 'vs 1st Pool F', next: 'qf4' },
-    ]
-  },
+  m55:{type:'match',phase:'Classification M55',day:'Sat 28 Mar',time:'09:00',home:'Hoërskool Monument',homeIsMonument:true,away:'4th in Pool H',note:'1st Pool G vs 4th Pool H',onWin:'m60a',onLoss:'m59a'},
+  m56:{type:'match',phase:'Classification M56',day:'Sat 28 Mar',time:'09:25',home:'Hoërskool Monument',homeIsMonument:true,away:'3rd in Pool H',note:'2nd Pool G vs 3rd Pool H',onWin:'m60b',onLoss:'m59b'},
+  m57:{type:'match',phase:'Classification M57',day:'Sat 28 Mar',time:'09:50',home:'Hoërskool Monument',homeIsMonument:true,away:'2nd in Pool H',note:'3rd Pool G vs 2nd Pool H',onWin:'m62a',onLoss:'m61a'},
+  m58:{type:'match',phase:'Classification M58',day:'Sat 28 Mar',time:'10:15',home:'Hoërskool Monument',homeIsMonument:true,away:'1st in Pool H',note:'4th Pool G vs 1st Pool H',onWin:'m62b',onLoss:'m61b'},
+  m59a:{type:'match',phase:'Match M59',day:'Sat 28 Mar',time:'12:40',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M56',note:'Losers M55 & M56',onWin:'p13a',onLoss:'p15a'},
+  m59b:{type:'match',phase:'Match M59',day:'Sat 28 Mar',time:'12:40',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M55',note:'Losers M55 & M56',onWin:'p13a',onLoss:'p15a'},
+  m60a:{type:'match',phase:'Match M60',day:'Sat 28 Mar',time:'13:05',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M56',note:'Winners M55 & M56',onWin:'p9a',onLoss:'p11a'},
+  m60b:{type:'match',phase:'Match M60',day:'Sat 28 Mar',time:'13:05',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M55',note:'Winners M55 & M56',onWin:'p9a',onLoss:'p11a'},
+  m61a:{type:'match',phase:'Match M61',day:'Sat 28 Mar',time:'13:30',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M58',note:'Losers M57 & M58',onWin:'p13b',onLoss:'p15b'},
+  m61b:{type:'match',phase:'Match M61',day:'Sat 28 Mar',time:'13:30',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M57',note:'Losers M57 & M58',onWin:'p13b',onLoss:'p15b'},
+  m62a:{type:'match',phase:'Match M62',day:'Sat 28 Mar',time:'13:55',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M58',note:'Winners M57 & M58',onWin:'p9b',onLoss:'p11b'},
+  m62b:{type:'match',phase:'Match M62',day:'Sat 28 Mar',time:'13:55',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M57',note:'Winners M57 & M58',onWin:'p9b',onLoss:'p11b'},
+  p9a: {type:'match',phase:'9th / 10th Place', day:'Sun 29 Mar',time:'09:15',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M62',note:'Winners M60 & M62',onWin:'done_9th', onLoss:'done_10th'},
+  p9b: {type:'match',phase:'9th / 10th Place', day:'Sun 29 Mar',time:'09:15',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M60',note:'Winners M60 & M62',onWin:'done_9th', onLoss:'done_10th'},
+  p11a:{type:'match',phase:'11th / 12th Place',day:'Sun 29 Mar',time:'08:50',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M62', note:'Losers M60 & M62', onWin:'done_11th',onLoss:'done_12th'},
+  p11b:{type:'match',phase:'11th / 12th Place',day:'Sun 29 Mar',time:'08:50',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M60', note:'Losers M60 & M62', onWin:'done_11th',onLoss:'done_12th'},
+  p13a:{type:'match',phase:'13th / 14th Place',day:'Sun 29 Mar',time:'08:25',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M59',note:'Winners M59 & M61',onWin:'done_13th',onLoss:'done_14th'},
+  p13b:{type:'match',phase:'13th / 14th Place',day:'Sun 29 Mar',time:'08:25',home:'Hoërskool Monument',homeIsMonument:true,away:'Winner M61',note:'Winners M59 & M61',onWin:'done_13th',onLoss:'done_14th'},
+  p15a:{type:'match',phase:'15th / 16th Place',day:'Sun 29 Mar',time:'08:00',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M59', note:'Losers M59 & M61', onWin:'done_15th',onLoss:'done_16th'},
+  p15b:{type:'match',phase:'15th / 16th Place',day:'Sun 29 Mar',time:'08:00',home:'Hoërskool Monument',homeIsMonument:true,away:'Loser M61', note:'Losers M59 & M61', onWin:'done_15th',onLoss:'done_16th'},
 
-  // ── QUARTER-FINALS ───────────────────────────────────
-  qf1: {
-    type: 'match', phase: 'Quarter-Final (Q1)',
-    day: 'Sat 28 Mar', time: '10:50',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '4th in Pool F',
-    note: '1st Pool E vs 4th Pool F',
-    onWin: 'sf_a', onLoss: 'm63'
-  },
-  qf2: {
-    type: 'match', phase: 'Quarter-Final (Q2)',
-    day: 'Sat 28 Mar', time: '11:15',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '3rd in Pool F',
-    note: '2nd Pool E vs 3rd Pool F',
-    onWin: 'sf_a', onLoss: 'm63'
-  },
-  qf3: {
-    type: 'match', phase: 'Quarter-Final (Q3)',
-    day: 'Sat 28 Mar', time: '11:40',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '2nd in Pool F',
-    note: '3rd Pool E vs 2nd Pool F',
-    onWin: 'sf_b', onLoss: 'm64'
-  },
-  qf4: {
-    type: 'match', phase: 'Quarter-Final (Q4)',
-    day: 'Sat 28 Mar', time: '12:05',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '1st in Pool F',
-    note: '4th Pool E vs 1st Pool F',
-    onWin: 'sf_b', onLoss: 'm64'
-  },
-
-  // ── SEMIS ────────────────────────────────────────────
-  sf_a: {
-    type: 'match', phase: 'Semi-Final',
-    day: 'Sat 28 Mar', time: '15:20',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Winner Q1/Q2',
-    note: 'Winners Q1 vs Q2',
-    onWin: 'final', onLoss: 'p3'
-  },
-  sf_b: {
-    type: 'match', phase: 'Semi-Final',
-    day: 'Sat 28 Mar', time: '15:50',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Winner Q3/Q4',
-    note: 'Winners Q3 vs Q4',
-    onWin: 'final', onLoss: 'p3'
-  },
-
-  // ── 5th/8th consolation (after losing QF) ────────────
-  m63: {
-    type: 'match', phase: 'Match M63',
-    day: 'Sat 28 Mar', time: '14:30',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Other QF Loser (Q1/Q2)',
-    note: 'Losers Q1 & Q2 — determines 5th–8th bracket',
-    onWin: 'p5', onLoss: 'p7'
-  },
-  m64: {
-    type: 'match', phase: 'Match M64',
-    day: 'Sat 28 Mar', time: '14:55',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Other QF Loser (Q3/Q4)',
-    note: 'Losers Q3 & Q4 — determines 5th–8th bracket',
-    onWin: 'p5', onLoss: 'p7'
-  },
-
-  // ── DAY 4 TOP-8 FINALS ───────────────────────────────
-  final: {
-    type: 'match', phase: '🏆 FINAL',
-    day: 'Sun 29 Mar', time: '11:05',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Other Semi Winner',
-    note: 'Winner Semi 1 vs Winner Semi 2',
-    onWin: 'done_1st', onLoss: 'done_2nd'
-  },
-  p3: {
-    type: 'match', phase: '3rd / 4th Place',
-    day: 'Sun 29 Mar', time: '10:40',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Other Semi Loser',
-    note: 'Loser Semi 1 vs Loser Semi 2',
-    onWin: 'done_3rd', onLoss: 'done_4th'
-  },
-  p5: {
-    type: 'match', phase: '5th / 6th Place',
-    day: 'Sun 29 Mar', time: '10:15',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Other M63/M64 Winner',
-    note: 'Winners M63 vs M64',
-    onWin: 'done_5th', onLoss: 'done_6th'
-  },
-  p7: {
-    type: 'match', phase: '7th / 8th Place',
-    day: 'Sun 29 Mar', time: '09:50',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: 'Other M63/M64 Loser',
-    note: 'Losers M63 vs M64',
-    onWin: 'done_7th', onLoss: 'done_8th'
-  },
-
-  // ── POOL G (3rd in D) ────────────────────────────────
-  pg1_3rd: {
-    type: 'match', phase: 'Pool G — Game 1',
-    day: 'Fri 27 Mar', time: '12:40',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '4th in Pool A',
-    note: '3rd Pool D × 4th Pool A cross-pool seeding',
-    onWin: 'pg2_3rd', onLoss: 'pg2_3rd'
-  },
-  pg2_3rd: {
-    type: 'match', phase: 'Pool G — Game 2',
-    day: 'Fri 27 Mar', time: '15:55',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '3rd in Pool A',
-    note: '3rd Pool D × 3rd Pool A cross-pool seeding',
-    onWin: 'ask_g', onLoss: 'ask_g'
-  },
-
-  // ── POOL G (4th in D) ────────────────────────────────
-  pg1_4th: {
-    type: 'match', phase: 'Pool G — Game 1',
-    day: 'Fri 27 Mar', time: '12:15',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '3rd in Pool A',
-    note: '4th Pool D × 3rd Pool A cross-pool seeding',
-    onWin: 'pg2_4th', onLoss: 'pg2_4th'
-  },
-  pg2_4th: {
-    type: 'match', phase: 'Pool G — Game 2',
-    day: 'Fri 27 Mar', time: '16:20',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '4th in Pool A',
-    note: '4th Pool D × 4th Pool A cross-pool seeding',
-    onWin: 'ask_g', onLoss: 'ask_g'
-  },
-
-  ask_g: {
-    type: 'select', phase: 'Pool G — Final Position',
-    question: 'Where did Monument finish in Pool G?',
-    hint: 'Determines Day 3 classification opponent',
-    options: [
-      { label: '1st', sub: 'vs 4th Pool H → M55', next: 'm55' },
-      { label: '2nd', sub: 'vs 3rd Pool H → M56', next: 'm56' },
-      { label: '3rd', sub: 'vs 2nd Pool H → M57', next: 'm57' },
-      { label: '4th', sub: 'vs 1st Pool H → M58', next: 'm58' },
-    ]
-  },
-
-  // ── DAY 3 CLASSIFICATION ─────────────────────────────
-  m55: {
-    type: 'match', phase: 'Classification M55',
-    day: 'Sat 28 Mar', time: '09:00',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '4th in Pool H',
-    note: '1st Pool G vs 4th Pool H',
-    onWin: 'm60a', onLoss: 'm59a'
-  },
-  m56: {
-    type: 'match', phase: 'Classification M56',
-    day: 'Sat 28 Mar', time: '09:25',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '3rd in Pool H',
-    note: '2nd Pool G vs 3rd Pool H',
-    onWin: 'm60b', onLoss: 'm59b'
-  },
-  m57: {
-    type: 'match', phase: 'Classification M57',
-    day: 'Sat 28 Mar', time: '09:50',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '2nd in Pool H',
-    note: '3rd Pool G vs 2nd Pool H',
-    onWin: 'm62a', onLoss: 'm61a'
-  },
-  m58: {
-    type: 'match', phase: 'Classification M58',
-    day: 'Sat 28 Mar', time: '10:15',
-    home: 'Hoërskool Monument', homeIsMonument: true,
-    away: '1st in Pool H',
-    note: '4th Pool G vs 1st Pool H',
-    onWin: 'm62b', onLoss: 'm61b'
-  },
-
-  m59a: { type:'match', phase:'Match M59', day:'Sat 28 Mar', time:'12:40', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M56', note:'Losers M55 & M56', onWin:'p13a', onLoss:'p15a' },
-  m59b: { type:'match', phase:'Match M59', day:'Sat 28 Mar', time:'12:40', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M55', note:'Losers M55 & M56', onWin:'p13a', onLoss:'p15a' },
-  m60a: { type:'match', phase:'Match M60', day:'Sat 28 Mar', time:'13:05', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M56', note:'Winners M55 & M56', onWin:'p9a', onLoss:'p11a' },
-  m60b: { type:'match', phase:'Match M60', day:'Sat 28 Mar', time:'13:05', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M55', note:'Winners M55 & M56', onWin:'p9a', onLoss:'p11a' },
-  m61a: { type:'match', phase:'Match M61', day:'Sat 28 Mar', time:'13:30', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M58', note:'Losers M57 & M58', onWin:'p13b', onLoss:'p15b' },
-  m61b: { type:'match', phase:'Match M61', day:'Sat 28 Mar', time:'13:30', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M57', note:'Losers M57 & M58', onWin:'p13b', onLoss:'p15b' },
-  m62a: { type:'match', phase:'Match M62', day:'Sat 28 Mar', time:'13:55', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M58', note:'Winners M57 & M58', onWin:'p9b', onLoss:'p11b' },
-  m62b: { type:'match', phase:'Match M62', day:'Sat 28 Mar', time:'13:55', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M57', note:'Winners M57 & M58', onWin:'p9b', onLoss:'p11b' },
-
-  // ── DAY 4 PLACEMENT ──────────────────────────────────
-  p9a:  { type:'match', phase:'9th / 10th Place',  day:'Sun 29 Mar', time:'09:15', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M62', note:'Winners M60 & M62', onWin:'done_9th',  onLoss:'done_10th' },
-  p9b:  { type:'match', phase:'9th / 10th Place',  day:'Sun 29 Mar', time:'09:15', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M60', note:'Winners M60 & M62', onWin:'done_9th',  onLoss:'done_10th' },
-  p11a: { type:'match', phase:'11th / 12th Place', day:'Sun 29 Mar', time:'08:50', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M62',  note:'Losers M60 & M62', onWin:'done_11th', onLoss:'done_12th' },
-  p11b: { type:'match', phase:'11th / 12th Place', day:'Sun 29 Mar', time:'08:50', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M60',  note:'Losers M60 & M62', onWin:'done_11th', onLoss:'done_12th' },
-  p13a: { type:'match', phase:'13th / 14th Place', day:'Sun 29 Mar', time:'08:25', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M59', note:'Winners M59 & M61', onWin:'done_13th', onLoss:'done_14th' },
-  p13b: { type:'match', phase:'13th / 14th Place', day:'Sun 29 Mar', time:'08:25', home:'Hoërskool Monument', homeIsMonument:true, away:'Winner M61', note:'Winners M59 & M61', onWin:'done_13th', onLoss:'done_14th' },
-  p15a: { type:'match', phase:'15th / 16th Place', day:'Sun 29 Mar', time:'08:00', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M59', note:'Losers M59 & M61', onWin:'done_15th', onLoss:'done_16th' },
-  p15b: { type:'match', phase:'15th / 16th Place', day:'Sun 29 Mar', time:'08:00', home:'Hoërskool Monument', homeIsMonument:true, away:'Loser M61', note:'Losers M59 & M61', onWin:'done_15th', onLoss:'done_16th' },
-
-  // ── DONE NODES ───────────────────────────────────────
-  done_1st:  { type:'done', place:'1st Place 🏆',  medal:'🥇', color:'#e8b84b' },
-  done_2nd:  { type:'done', place:'2nd Place',      medal:'🥈', color:'#9ca3af' },
-  done_3rd:  { type:'done', place:'3rd Place',       medal:'🥉', color:'#cd7f32' },
-  done_4th:  { type:'done', place:'4th Place',       medal:'🏑', color:'#5b9bd5' },
-  done_5th:  { type:'done', place:'5th Place',       medal:'🏑', color:'#5b9bd5' },
-  done_6th:  { type:'done', place:'6th Place',       medal:'🏑', color:'#5b9bd5' },
-  done_7th:  { type:'done', place:'7th Place',       medal:'🏑', color:'#5b9bd5' },
-  done_8th:  { type:'done', place:'8th Place',       medal:'🏑', color:'#5b9bd5' },
-  done_9th:  { type:'done', place:'9th Place',       medal:'🏑', color:'#5b9bd5' },
-  done_10th: { type:'done', place:'10th Place',      medal:'🏑', color:'#5b9bd5' },
-  done_11th: { type:'done', place:'11th Place',      medal:'🏑', color:'#5b9bd5' },
-  done_12th: { type:'done', place:'12th Place',      medal:'🏑', color:'#5b9bd5' },
-  done_13th: { type:'done', place:'13th Place',      medal:'🏑', color:'#5b9bd5' },
-  done_14th: { type:'done', place:'14th Place',      medal:'🏑', color:'#5b9bd5' },
-  done_15th: { type:'done', place:'15th Place',      medal:'🏑', color:'#5b9bd5' },
-  done_16th: { type:'done', place:'16th Place',      medal:'🏑', color:'#5b9bd5' },
+  done_1st: {type:'done',place:'1st Place 🏆',medal:'🥇',color:'#e8b84b'},
+  done_2nd: {type:'done',place:'2nd Place',   medal:'🥈',color:'#9ca3af'},
+  done_3rd: {type:'done',place:'3rd Place',   medal:'🥉',color:'#cd7f32'},
+  done_4th: {type:'done',place:'4th Place',   medal:'🏑',color:'#5b9bd5'},
+  done_5th: {type:'done',place:'5th Place',   medal:'🏑',color:'#5b9bd5'},
+  done_6th: {type:'done',place:'6th Place',   medal:'🏑',color:'#5b9bd5'},
+  done_7th: {type:'done',place:'7th Place',   medal:'🏑',color:'#5b9bd5'},
+  done_8th: {type:'done',place:'8th Place',   medal:'🏑',color:'#5b9bd5'},
+  done_9th: {type:'done',place:'9th Place',   medal:'🏑',color:'#5b9bd5'},
+  done_10th:{type:'done',place:'10th Place',  medal:'🏑',color:'#5b9bd5'},
+  done_11th:{type:'done',place:'11th Place',  medal:'🏑',color:'#5b9bd5'},
+  done_12th:{type:'done',place:'12th Place',  medal:'🏑',color:'#5b9bd5'},
+  done_13th:{type:'done',place:'13th Place',  medal:'🏑',color:'#5b9bd5'},
+  done_14th:{type:'done',place:'14th Place',  medal:'🏑',color:'#5b9bd5'},
+  done_15th:{type:'done',place:'15th Place',  medal:'🏑',color:'#5b9bd5'},
+  done_16th:{type:'done',place:'16th Place',  medal:'🏑',color:'#5b9bd5'},
 };
 
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
+let state = {current:'pd1', history:[], confirmReset:false};
+let sheetFixtures = null;
+let sheetPools    = {D:null, E:null, G:null};  // live standings per pool
+let lastSync      = null;
+let syncOk        = false;
 
-let state = {
-  current: 'pd1',
-  history: []   // [{id, result, label}]
-};
+function save(){try{localStorage.setItem('monument26v3',JSON.stringify({current:state.current,history:state.history}));}catch(e){}}
+function load(){try{const s=localStorage.getItem('monument26v3');if(s){const d=JSON.parse(s);state.current=d.current||'pd1';state.history=d.history||[];}}catch(e){}}
 
-function save() {
-  try { localStorage.setItem('monument26', JSON.stringify(state)); } catch(e){}
-}
-function load() {
-  try {
-    const s = localStorage.getItem('monument26');
-    if (s) state = JSON.parse(s);
-  } catch(e){}
-}
-
-function track(category, action, name) {
-  try { window._paq && _paq.push(['trackEvent', category, action, name]); } catch(e) {}
-}
-
-function advance(id, result, label) {
+// ════════════════════════════════════════════════════════
+//  TRACKER LOGIC
+// ════════════════════════════════════════════════════════
+function advance(id, result) {
   const node = NODES[id];
-  state.history.push({ id, result, label });
-  const next = result === 'win' ? node.onWin : (result === 'loss' ? node.onLoss : node.options.find(o=>o.label===result)?.next || node.options[0].next);
+  const next = result==='win' ? node.onWin : result==='draw' ? node.onDraw : node.onLoss;
+  state.history.push({id, result, ts: Date.now()});
   state.current = next;
-  track('Match Result', result === 'win' ? 'Win' : 'Loss', node.phase);
-  // If landing on a done node, track the final placement
-  const nextNode = NODES[next];
-  if (nextNode && nextNode.type === 'done') {
-    track('Tournament', 'Final Placement', nextNode.place);
-  }
-  save();
-  render();
+  track('Match Result', result.charAt(0).toUpperCase()+result.slice(1), node.phase);
+  const nxt = NODES[next];
+  if(nxt && nxt.type==='done') track('Tournament','Final Placement',nxt.place);
+  save(); render();
 }
-
 function advanceSelect(currentId, optLabel, nextId) {
-  state.history.push({ id: currentId, result: 'select', label: optLabel });
+  state.history.push({id:currentId, result:'select', label:optLabel, ts:Date.now()});
   state.current = nextId;
-  const node = NODES[currentId];
-  track('Pool Position', node.phase, optLabel);
-  save();
-  render();
+  track('Pool Position', NODES[currentId].phase, optLabel);
+  save(); render();
 }
-
 function undo() {
-  if (state.history.length === 0) return;
+  if(!state.history.length) return;
   const last = state.history.pop();
   state.current = last.id;
-  track('Navigation', 'Undo', NODES[last.id]?.phase || last.id);
-  save();
-  render();
-}
-
-function askReset() {
-  state.confirmReset = true;
-  render();
-}
-function cancelReset() {
   state.confirmReset = false;
-  render();
+  track('Navigation','Undo', NODES[last.id]?.phase || last.id);
+  save(); render();
 }
-function reset() {
-  track('Navigation', 'Reset', 'Start Over');
-  state = { current: 'pd1', history: [] };
-  save();
-  render();
+function askReset(){state.confirmReset=true;render();}
+function cancelReset(){state.confirmReset=false;render();}
+function reset(){
+  track('Navigation','Reset','Start Over');
+  state={current:'pd1',history:[],confirmReset:false};
+  save(); render();
 }
 
 // ════════════════════════════════════════════════════════
-//  RENDER
+//  RENDER — TRACKER
 // ════════════════════════════════════════════════════════
-
 function render() {
   const app = document.getElementById('app');
   const node = NODES[state.current];
   let html = '';
 
-  // Journey strip
-  if (state.history.length > 0) {
-    html += `<div class="journey">
-      <div class="journey-title">Your journey so far</div>
-      <div class="journey-list">`;
-    state.history.forEach((h, i) => {
+  if(state.history.length) {
+    html += `<div class="journey"><div class="journey-title">Journey so far</div><div class="journey-list">`;
+    state.history.forEach((h,i) => {
       const n = NODES[h.id];
-      const isLast = i === state.history.length - 1;
-      let cls = h.result === 'win' ? 'win' : h.result === 'loss' ? 'loss' : 'select-done';
-      let badge = h.result === 'win' ? 'WIN' : h.result === 'loss' ? 'LOSS' : 'SET';
-      let desc = h.result === 'select' ? `Finished <strong>${h.label}</strong> in Pool ${n.phase.includes('Pool D')?'D':n.phase.includes('Pool E')?'E':'G'}`
-                 : `${n.phase} <span style="color:var(--text-dim)">· ${n.day} ${n.time}</span>`;
-      html += `<div class="j-item ${cls}">
-        <span class="j-badge">${badge}</span>
+      const isLast = i===state.history.length-1;
+      let cls = h.result==='win'?'win':h.result==='draw'?'draw':h.result==='loss'?'loss':'sel';
+      let badge = h.result==='win'?'WIN':h.result==='draw'?'DRAW':h.result==='loss'?'LOSS':'SET';
+      let desc = h.result==='select'
+        ? `Finished <strong>${h.label}</strong> in ${n.phase.split('—')[0].trim()}`
+        : `${n.phase} <span style="color:var(--muted)">· ${n.day} ${n.time}</span>`;
+      html += `<div class="j-item ${cls}"><span class="j-badge">${badge}</span>
         <span class="j-text">${desc}</span>
-        ${isLast ? `<button class="j-undo" onclick="undo()" title="Undo last result">↩</button>` : ''}
-      </div>`;
+        ${isLast?`<button class="j-undo" onclick="undo()" title="Undo">↩</button>`:''}
+        </div>`;
     });
-    html += `</div></div><hr class="divider">`;
+    html += `</div></div><hr class="j-divider">`;
   }
 
-  // Current node
-  html += `<div class="current-wrap">`;
-
-  if (node.type === 'done') {
-    html += renderDone(node);
-  } else if (node.type === 'select') {
-    html += renderSelect(node);
-  } else {
-    html += renderMatch(node);
-    // Upcoming preview
-    html += renderUpcoming(node);
-  }
-
+  html += `<div class="tracker-wrap">`;
+  if(node.type==='done')        html += renderDone(node);
+  else if(node.type==='select') html += renderSelect(node);
+  else                          html += renderMatch(node) + renderUpcoming(node);
   html += `</div>`;
+
   app.innerHTML = html;
+  renderLog();
+  updatePoolTabLabel();
 }
 
 function renderMatch(node) {
-  const monHome = node.homeIsMonument;
-  const monTeam = `<div class="team monument"><div class="team-name">${node.homeIsMonument ? node.home : node.away}</div><div class="team-label">Monument</div></div>`;
-  const oppTeam = `<div class="team opponent"><div class="team-name">${node.homeIsMonument ? node.away : node.home}</div><div class="team-label">Opponent</div></div>`;
-  const [left, right] = monHome ? [monTeam, oppTeam] : [oppTeam, monTeam];
+  const monL = node.homeIsMonument;
+  const monTeam = `<div class="team monument"><div class="team-name">${node.homeIsMonument?node.home:node.away}</div><div class="team-label">Monument</div></div>`;
+  const oppTeam = `<div class="team opponent"><div class="team-name">${node.homeIsMonument?node.away:node.home}</div><div class="team-label">Opponent</div></div>`;
+  const [left,right] = monL ? [monTeam,oppTeam] : [oppTeam,monTeam];
 
-  let winNext = NODES[node.onWin];
-  let lossNext = NODES[node.onLoss];
-  let winLabel = winNext ? (winNext.type==='done' ? winNext.place : winNext.phase) : '';
-  let lossLabel = lossNext ? (lossNext.type==='done' ? lossNext.place : lossNext.phase) : '';
+  const wn=NODES[node.onWin], ln=NODES[node.onLoss];
+  const wLabel = wn?(wn.type==='done'?wn.place:wn.phase):'';
+  const lLabel = ln?(ln.type==='done'?ln.place:ln.phase):'';
+  const dnLabel = node.onDraw ? (NODES[node.onDraw]?(NODES[node.onDraw].type==='done'?NODES[node.onDraw].place:NODES[node.onDraw].phase):'') : '';
 
-  return `
-    <div class="card">
-      <div class="card-phase">
-        <span class="phase-name">${node.phase}</span>
-        <span class="phase-time">${node.day} · ${node.time}</span>
-      </div>
-      <div class="matchup">
-        <div class="teams">
-          ${left}
-          <div class="vs">VS</div>
-          ${right}
-        </div>
-        <div class="match-note">${node.note}</div>
-      </div>
-      <div class="actions">
-        <button class="btn btn-win" onclick="advance('${state.current}','win','')">
-          WIN
-          <span class="btn-sub">→ ${winLabel}</span>
-        </button>
-        <button class="btn btn-loss" onclick="advance('${state.current}','loss','')">
-          LOSS
-          <span class="btn-sub">→ ${lossLabel}</span>
-        </button>
-      </div>
-    </div>`;
+  const threeBtn = node.canDraw;
+  return `<div class="card">
+    <div class="card-phase"><span class="phase-name">${node.phase}</span><span class="phase-time">${node.day} · ${node.time}</span></div>
+    <div class="matchup">
+      <div class="teams">${left}<div class="vs">VS</div>${right}</div>
+      ${node.note?`<div class="match-note">${node.note}</div>`:''}
+    </div>
+    <div class="actions${threeBtn?' three':''}">
+      <button class="btn btn-win" onclick="advance('${state.current}','win')">WIN<span class="btn-sub">→ ${wLabel}</span></button>
+      ${threeBtn?`<button class="btn btn-draw" onclick="advance('${state.current}','draw')">DRAW<span class="btn-sub">→ ${dnLabel}</span></button>`:''}
+      <button class="btn btn-loss" onclick="advance('${state.current}','loss')">LOSS<span class="btn-sub">→ ${lLabel}</span></button>
+    </div>
+  </div>`;
 }
 
 function renderSelect(node) {
-  let optsHtml = node.options.map(o =>
+  const opts = node.options.map(o=>
     `<button class="btn-opt" onclick="advanceSelect('${state.current}','${o.label}','${o.next}')">
-      ${o.label}
-      <span class="opt-sub">${o.sub}</span>
-    </button>`
-  ).join('');
-
-  return `
-    <div class="select-card">
-      <div class="select-header">${node.phase}</div>
-      <div class="select-q">${node.question}<br><span style="font-size:12px;color:var(--muted)">${node.hint}</span></div>
-      <div class="select-opts">${optsHtml}</div>
-    </div>`;
-}
-
-function renderDone(node) {
-  const confirming = state.confirmReset;
-  return `
-    <div class="done-card">
-      <div class="done-medal">${node.medal}</div>
-      <div class="done-place" style="color:${node.color}">${node.place}</div>
-      <div class="done-label">Hoërskool Monument — Courage Festival 2026</div>
-      ${confirming ? `
-        <div style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
-          <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px">Reset everything and start from match 1?</div>
-          <div style="display:flex;gap:10px">
-            <button class="btn-reset" style="flex:1;color:var(--red);border-color:var(--red)" onclick="reset()">Yes, reset</button>
-            <button class="btn-reset" style="flex:1" onclick="cancelReset()">Cancel</button>
-          </div>
-        </div>
-      ` : `
-        <button class="btn-reset" onclick="askReset()">Start Over</button>
-      `}
-    </div>`;
+      ${o.label}<span class="opt-sub">${o.sub}</span></button>`).join('');
+  return `<div class="select-card">
+    <div class="select-header">${node.phase}</div>
+    <div class="select-q">${node.question}<small>${node.hint}</small></div>
+    <div class="select-opts">${opts}</div>
+  </div>`;
 }
 
 function renderUpcoming(node) {
-  const winNext  = NODES[node.onWin];
-  const lossNext = NODES[node.onLoss];
-  if (!winNext && !lossNext) return '';
-
-  const sameNext = node.onWin === node.onLoss;
-
-  let items = '';
-  if (sameNext) {
-    const desc = winNext.type === 'select'
-      ? `Position select — ${winNext.question}`
-      : `${winNext.phase} · ${winNext.day} ${winNext.time}`;
-    items = `<div class="upcoming-item"><div class="up-phase">Next Up (either result)</div><div class="up-cond">${desc}</div></div>`;
+  const wn = NODES[node.onWin], ln = NODES[node.onLoss];
+  if(!wn && !ln) return '';
+  const same = node.onWin===node.onLoss;
+  let items='';
+  if(same) {
+    const n=wn; const d=n.type==='select'?n.question:`${n.phase} · ${n.day} ${n.time}`;
+    items=`<div class="upcoming-item"><div class="up-phase">Next (any result)</div><div class="up-cond">${d}</div></div>`;
   } else {
-    const wDesc = winNext.type === 'done'
-      ? winNext.place
-      : `${winNext.phase} · ${winNext.day} ${winNext.time}`;
-    const lDesc = lossNext.type === 'done'
-      ? lossNext.place
-      : `${lossNext.phase} · ${lossNext.day} ${lossNext.time}`;
-    items = `
-      <div class="upcoming-item">
-        <div class="up-phase">If WIN:</div>
-        <div class="up-cond up-win">${wDesc}</div>
+    const wd=wn.type==='done'?wn.place:`${wn.phase} · ${wn.day} ${wn.time}`;
+    const ld=ln.type==='done'?ln.place:`${ln.phase} · ${ln.day} ${ln.time}`;
+    items=`<div class="upcoming-item"><div class="up-phase">If WIN:</div><div class="up-cond up-win">${wd}</div></div>
+           <div class="upcoming-item"><div class="up-phase">If LOSS:</div><div class="up-cond up-loss">${ld}</div></div>`;
+  }
+  return `<div class="upcoming"><div class="upcoming-title">Coming up</div>${items}</div>`;
+}
+
+function renderDone(node) {
+  return `<div class="done-card">
+    <div class="done-medal">${node.medal}</div>
+    <div class="done-place" style="color:${node.color}">${node.place}</div>
+    <div class="done-label">Hoërskool Monument · Courage Festival 2026</div>
+    ${state.confirmReset?`
+      <div class="reset-confirm">
+        <p>Reset everything and start from match 1?</p>
+        <div class="reset-confirm-btns">
+          <button class="btn-reset" style="color:var(--red);border-color:var(--red)" onclick="reset()">Yes, reset</button>
+          <button class="btn-reset" onclick="cancelReset()">Cancel</button>
+        </div>
+      </div>`:`<button class="btn-reset" onclick="askReset()">Start Over</button>`}
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER — LOG
+// ════════════════════════════════════════════════════════
+function renderLog() {
+  const el = document.getElementById('logContent');
+  if(!el) return;
+  if(!state.history.length) {el.innerHTML='<div class="log-empty">No results recorded yet.</div>';return;}
+  let html='';
+  [...state.history].reverse().forEach(h => {
+    const n = NODES[h.id];
+    const cls = h.result==='win'?'win':h.result==='draw'?'draw':h.result==='loss'?'loss':'sel';
+    const badge = h.result==='win'?'WIN':h.result==='draw'?'DRAW':h.result==='loss'?'LOSS':'SET';
+    const matchDesc = h.result==='select'
+      ? `Position set: ${h.label} — ${n.phase}`
+      : `${n.phase}${n.away?' vs '+n.away:''}`;
+    const ts = h.ts ? new Date(h.ts).toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}) : '';
+    const day = n.day || '';
+    html += `<div class="log-item ${cls}">
+      <span class="log-badge">${badge}</span>
+      <div class="log-body">
+        <div class="log-match">${matchDesc}</div>
+        <div class="log-time">${day}${ts?' · Recorded '+ts:''}</div>
       </div>
-      <div class="upcoming-item">
-        <div class="up-phase">If LOSS:</div>
-        <div class="up-cond up-loss">${lDesc}</div>
-      </div>`;
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════
+//  POOL TABLE — calculate Monument's record from history
+// ════════════════════════════════════════════════════════
+const POOL_NODES = new Set(['pd1','pd2','pd3']);
+const POOL_E_NODES = new Set(['pe1_1st','pe2_1st','pe1_2nd','pe2_2nd']);
+const POOL_G_NODES = new Set(['pg1_3rd','pg2_3rd','pg1_4th','pg2_4th']);
+
+// Which pool is Monument currently in?
+function currentPool() {
+  const cur = state.current;
+  if (POOL_E_NODES.has(cur) || cur === 'ask_e' ||
+      /^(qf|sf|final|p3|p5|p7|m63|m64|done_[1-8])/.test(cur)) return 'E';
+  if (POOL_G_NODES.has(cur) || cur === 'ask_g' ||
+      /^(m5[5-9]|m6[0-4]|p9|p11|p13|p15|done_(9|10|11|12|13|14|15|16))/.test(cur)) return 'G';
+  return 'D';
+}
+
+// Update pool tab label to match current pool
+function updatePoolTabLabel() {
+  const lbl = document.getElementById('poolTabLabel');
+  if (lbl) lbl.textContent = 'Pool ' + currentPool();
+}
+
+function calcRecord(nodeSet) {
+  let p=0,w=0,d=0,l=0,pts=0;
+  state.history.forEach(h => {
+    if(!nodeSet.has(h.id) || h.result==='select') return;
+    p++; if(h.result==='win'){w++;pts+=3;} else if(h.result==='draw'){d++;pts+=1;} else {l++;}
+  });
+  return {p,w,d,l,pts};
+}
+
+function renderPoolTab() {
+  const el = document.getElementById('poolContent');
+  if(!el) return;
+
+  const pool     = currentPool();           // 'D', 'E', or 'G'
+  const inRound2 = pool !== 'D';
+
+  const poolD = calcRecord(POOL_NODES);
+  const poolE = calcRecord(POOL_E_NODES);
+  const poolG = calcRecord(POOL_G_NODES);
+
+  // Points system rules box
+  let html = `<div class="rule-box"><h4>Points System</h4>
+    <div class="points-grid">
+      <div class="pts-item"><div class="pts-num w">3</div><div class="pts-lbl">Win</div></div>
+      <div class="pts-item"><div class="pts-num d">1</div><div class="pts-lbl">Draw</div></div>
+      <div class="pts-item"><div class="pts-num l">0</div><div class="pts-lbl">Loss</div></div>
+    </div>
+    <ul style="margin-top:8px">
+      <li>Tiebreaker: Goal diff → Goals for → Head-to-head → Shootout</li>
+      <li>Round 1 points <strong>carry forward</strong> into Round 2 pools</li>
+      <li>Playoff draws decided by 8-second penalty shootout</li>
+    </ul>
+  </div>`;
+
+  // ── POOL D ──────────────────────────────────────────────
+  if (!inRound2) {
+    // Main view: full Pool D live table + Monument's tracker record
+    if (sheetPools.D && sheetPools.D.length) {
+      html += buildLiveTable('Pool D — Full Standings', sheetPools.D, lastSync);
+    }
+    html += buildTrackerRecord('Pool D — Monument\'s Tracker Record', poolD, null);
+
+  } else {
+    // Round 2: Pool D archived as summary, current pool as main
+    html += buildArchivedPoolD(poolD);
+
+    if (pool === 'E') {
+      if (sheetPools.E && sheetPools.E.length) {
+        html += buildLiveTable('Pool E — Full Standings (Live)', sheetPools.E, lastSync);
+      }
+      if (poolE.p > 0) {
+        html += buildTrackerRecord('Pool E — Monument\'s Record', poolE, poolD.pts);
+      } else {
+        html += `<div class="no-data" style="padding:14px;text-align:center;color:var(--muted);font-size:13px">Pool E matches not yet recorded in tracker.</div>`;
+      }
+    }
+
+    if (pool === 'G') {
+      if (sheetPools.G && sheetPools.G.length) {
+        html += buildLiveTable('Pool G — Full Standings (Live)', sheetPools.G, lastSync);
+      }
+      if (poolG.p > 0) {
+        html += buildTrackerRecord('Pool G — Monument\'s Record', poolG, poolD.pts);
+      } else {
+        html += `<div class="no-data" style="padding:14px;text-align:center;color:var(--muted);font-size:13px">Pool G matches not yet recorded in tracker.</div>`;
+      }
+    }
   }
 
-  return `<div class="upcoming"><div class="upcoming-title">Coming up</div>${items}</div>`;
+  el.innerHTML = html;
+}
+
+function buildLiveTable(title, teams, syncTime) {
+  const timeStr = syncTime ? ' · ' + fmtTime(syncTime) : '';
+  let rows = teams.map(t => {
+    const isM = t.name.toLowerCase().includes('monument');
+    return `<tr${isM?' class="monument-row"':''}>
+      <td>${t.name||'TBD'}</td>
+      <td>${t.goalsFor||'—'}</td>
+      <td>${t.goalsAgainst||'—'}</td>
+      <td><span class="pts-badge">${t.points||'—'}</span></td>
+      <td>${t.position||'—'}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="pool-section">
+    <div class="pool-title">${title}</div>
+    <span class="pool-source-badge badge-live" style="margin:6px 12px 0;display:inline-block">Live from sheet${timeStr}</span>
+    <table class="pool-table">
+      <tr><th>Team</th><th>GF</th><th>GA</th><th>Pts</th><th>Pos</th></tr>
+      ${rows}
+    </table>
+  </div>`;
+}
+
+function buildTrackerRecord(title, rec, carriedPts) {
+  const total = carriedPts !== null ? rec.pts + carriedPts : rec.pts;
+  const carryNote = carriedPts !== null
+    ? `<div class="pool-note">Total ${total} pts = ${carriedPts} carried from Pool D + ${rec.pts} this pool.</div>` : '';
+  return `<div class="pool-section">
+    <div class="pool-title">${title}</div>
+    <span class="pool-source-badge badge-manual" style="margin:6px 12px 0;display:inline-block">From tracker</span>
+    <table class="pool-table">
+      <tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
+      <tr class="monument-row">
+        <td>Hoërskool Monument</td>
+        <td>${rec.p}</td><td>${rec.w}</td><td>${rec.d}</td><td>${rec.l}</td>
+        <td><span class="pts-badge">${carriedPts !== null ? total : rec.pts}</span></td>
+      </tr>
+    </table>
+    ${carryNote}
+  </div>`;
+}
+
+function buildArchivedPoolD(poolD) {
+  return `<details class="pool-section" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px">
+    <summary style="padding:10px 14px;cursor:pointer;list-style:none;font-family:'Barlow Condensed',sans-serif;
+      font-weight:700;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;
+      background:var(--surface2);border-bottom:1px solid var(--border);">
+      ▸ Pool D — Round 1 Summary (${poolD.p} matches: ${poolD.w}W ${poolD.d}D ${poolD.l}L · ${poolD.pts} pts carried forward)
+    </summary>
+    <div style="padding:10px 14px;">
+      <table class="pool-table">
+        <tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
+        <tr class="monument-row">
+          <td>Hoërskool Monument</td>
+          <td>${poolD.p}</td><td>${poolD.w}</td><td>${poolD.d}</td><td>${poolD.l}</td>
+          <td><span class="pts-badge">${poolD.pts}</span></td>
+        </tr>
+      </table>
+    </div>
+  </details>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER — SCHEDULE
+// ════════════════════════════════════════════════════════
+function renderSchedule() {
+  const el = document.getElementById('scheduleContent');
+  if(!el) return;
+  if(!sheetFixtures) {el.innerHTML='<div class="no-data">Schedule not yet loaded. Check your connection.</div>';return;}
+
+  const days = {};
+  const dayOrder = ['DAY 1','DAY 2','DAY 3','DAY 4'];
+  const dayLabels = {'DAY 1':'Day 1 — Thu 26 Mar','DAY 2':'Day 2 — Fri 27 Mar','DAY 3':'Day 3 — Sat 28 Mar','DAY 4':'Day 4 — Sun 29 Mar'};
+
+  sheetFixtures.forEach(f => {
+    if(!days[f.day]) days[f.day]=[];
+    days[f.day].push(f);
+  });
+
+  let html = '';
+  dayOrder.forEach(d => {
+    if(!days[d]) return;
+    html += `<div class="day-group"><div class="day-header">${dayLabels[d]||d}</div>`;
+    days[d].forEach(f => {
+      const isM = f.isMonument;
+      html += `<div class="fix-row${isM?' monument-match':''}">
+        <div class="fix-time">${f.time}</div>
+        <div class="fix-teams">
+          ${isM?`<div class="fix-monument-tag">🏑 Monument</div>`:''}
+          <div class="fix-team1">${f.team1}</div>
+          <div class="fix-team2 ">vs ${f.team2}</div>
+        </div>
+        <div class="fix-pool${isM?' monument-pool':''}">${f.pool}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  if(!html) html = '<div class="no-data">No fixtures found.</div>';
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════
+//  GOOGLE SHEETS FETCH
+// ════════════════════════════════════════════════════════
+function fmtTime(d){return d.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});}
+
+function setSyncStatus(state, label) {
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
+  if(!dot||!lbl) return;
+  dot.className = 'sync-dot' + (state==='ok'?' ok':state==='err'?' err':' pulse');
+  lbl.textContent = label;
+}
+
+async function fetchRange(sheet, range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheet+'!'+range)}?key=${API_KEY}&valueRenderOption=FORMATTED_VALUE`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const data = await r.json();
+  return data.values || [];
+}
+
+async function syncSheets() {
+  setSyncStatus('pulse','Syncing…');
+  try {
+    // Fixtures — always fetch
+    const fixRows = await fetchRange('Fixtures','A:D');
+    sheetFixtures = parseFixtures(fixRows);
+
+    // Always fetch Pool D
+    const dRows = await fetchRange('Scores','B28:U32');
+    sheetPools.D = parsePoolRows(dRows);
+
+    // Also fetch Pool E and G — they'll be empty until Round 2 starts,
+    // but we fetch them so the tab is ready the moment data appears
+    const eRows = await fetchRange('Scores','B36:U40');
+    sheetPools.E = parsePoolRows(eRows);
+
+    const gRows = await fetchRange('Scores','B52:U56');
+    sheetPools.G = parsePoolRows(gRows);
+
+    lastSync = new Date();
+    syncOk = true;
+    setSyncStatus('ok', fmtTime(lastSync));
+
+    renderSchedule();
+    if(document.getElementById('pane-pool').classList.contains('active')) renderPoolTab();
+
+  } catch(e) {
+    syncOk = false;
+    setSyncStatus('err', 'Sync failed');
+    console.warn('Sheet sync error:', e);
+  }
+}
+
+function parseFixtures(rows) {
+  const fixes = [];
+  let currentDay = 'DAY 1';
+  const dayDates = {'DAY 1':'Thu 26 Mar','DAY 2':'Fri 27 Mar','DAY 3':'Sat 28 Mar','DAY 4':'Sun 29 Mar'};
+
+  rows.forEach(row => {
+    const a = (row[0]||'').toString().trim();
+    if(!a) return;
+    if(/^DAY\s+\d/i.test(a)){currentDay=a.toUpperCase();return;}
+    if(a==='Umpires'||a==='WATER BREAK'||a==='TIME'||/prize.giving/i.test(a)) return;
+    const team1 = (row[1]||'').toString().trim();
+    const team2 = (row[2]||'').toString().trim();
+    const pool  = (row[3]||'').toString().trim();
+    if(!team1||!team2||team1==='\xa0'||team2==='\xa0') return;
+
+    // Format time string
+    let timeStr = a;
+    // Google Sheets may return time as "7:45:00 AM" or "07:45"
+    const tMatch = a.match(/(\d+):(\d+)/);
+    if(tMatch) {
+      let h=parseInt(tMatch[1]), m=parseInt(tMatch[2]);
+      if(a.includes('PM')&&h<12) h+=12;
+      timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    }
+
+    const isMonument = /monument/i.test(team1) || /monument/i.test(team2);
+    fixes.push({day:currentDay, date:dayDates[currentDay]||'', time:timeStr, team1, team2, pool:pool.replace('\xa0','').trim(), isMonument});
+  });
+  return fixes;
+}
+
+function parsePoolRows(rows) {
+  // rows[0] = header; rows[1-4] = teams
+  // 0-indexed from col B: [0]=name, [13]=points, [14]=position, [17]=goalsFor, [18]=goalsAgainst
+  const teams = [];
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row) continue;
+    const name = (row[0] || '').toString().trim();
+    if (!name || /^POOL/i.test(name)) continue;
+    teams.push({
+      name,
+      points:       row[13] !== undefined ? row[13].toString() : '—',
+      position:     row[14] !== undefined ? row[14].toString() : '—',
+      goalsFor:     row[17] !== undefined ? row[17].toString() : '—',
+      goalsAgainst: row[18] !== undefined ? row[18].toString() : '—',
+    });
+  }
+  return teams;
+}
+
+// ════════════════════════════════════════════════════════
+//  MATOMO TRACKING
+// ════════════════════════════════════════════════════════
+function track(cat, action, name) {
+  try{window._paq&&_paq.push(['trackEvent',cat,action,name]);}catch(e){}
 }
 
 // ════════════════════════════════════════════════════════
@@ -1012,9 +888,8 @@ function renderUpcoming(node) {
 // ════════════════════════════════════════════════════════
 load();
 render();
+syncSheets();
+setInterval(syncSheets, POLL_MS);
 </script>
-<footer>
-  <p>Fixture information is presented as received from tournament organisers. Cylon Consulting accepts no responsibility for any changes, errors or omissions. Please confirm schedules with official festival communications.</p>
-</footer>
 </body>
 </html>
