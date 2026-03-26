@@ -576,23 +576,26 @@ function renderLog() {
     entries.push({type:'result', node:n, id:h.id, result:h.result, score, fromSheet:!!h.fromSheet});
   });
 
-  // Current match and upcoming matches
-  const cur = NODES[state.current];
-  if(cur && cur.type === 'match') {
-    const score = sheetScores[state.current] || null;
-    entries.push({type:'upcoming', node:cur, id:state.current, score});
-    // Walk ahead to show future known matches
-    const nextIds = new Set();
-    if(cur.onWin) nextIds.add(cur.onWin);
-    if(cur.onDraw) nextIds.add(cur.onDraw);
-    if(cur.onLoss) nextIds.add(cur.onLoss);
-    for(const nid of nextIds) {
-      const nn = NODES[nid];
-      if(nn && nn.type === 'match') entries.push({type:'future', node:nn, id:nid});
-      else if(nn && nn.type === 'select') entries.push({type:'pending_select', node:nn});
-    }
-  } else if(cur && cur.type === 'select') {
-    entries.push({type:'pending_select', node:cur});
+  // Current match and walk ahead to show all known upcoming matches
+  let walkId = state.current;
+  const visited = new Set();
+  let isFirst = true;
+  while(walkId && !visited.has(walkId)) {
+    visited.add(walkId);
+    const node = NODES[walkId];
+    if(!node) break;
+    if(node.type === 'match') {
+      const score = sheetScores[walkId] || null;
+      entries.push({type: isFirst ? 'upcoming' : 'future', node, id:walkId, score});
+      isFirst = false;
+      // Follow the chain — if all results lead to the same next node, keep walking
+      const nexts = new Set([node.onWin, node.onDraw, node.onLoss].filter(Boolean));
+      if(nexts.size === 1) { walkId = [...nexts][0]; }
+      else break; // branching point — can't predict which path
+    } else if(node.type === 'select') {
+      entries.push({type:'pending_select', node});
+      break;
+    } else { break; }
   }
 
   if(entries.length === 0) {
@@ -980,6 +983,11 @@ function parseAllPoolData(allRows) {
     if(poolName === 'G') mapMonumentPoolScores(rows, teamCols, getPoolEGNodeMap('G'));
   }
 
+  // Recalculate points, GF, GA from actual match scores
+  for(const [poolName, teams] of Object.entries(result)) {
+    calcPoolStatsFromScores(teams);
+  }
+
   return result;
 }
 
@@ -1214,6 +1222,39 @@ function parsePoolRows(rows) {
 }
 
 // Calculate pool positions from points, goal diff, goals for (tiebreaker rules from PDF)
+// Calculate points, GF, GA from actual match scores (don't rely on organiser)
+function calcPoolStatsFromScores(teams) {
+  if(!teams || teams.length < 2) return;
+  const teamNames = teams.map(t => t.name);
+  teams.forEach(t => {
+    let pts = 0, gf = 0, ga = 0, played = 0;
+    teamNames.forEach(opp => {
+      if(opp === t.name) return;
+      // Check allMatchScores for this matchup
+      const k1 = normTeam(t.name) + '|' + normTeam(opp);
+      const k2 = normTeam(opp) + '|' + normTeam(t.name);
+      let s = allMatchScores[k1];
+      let myGoals, theirGoals;
+      if(s) { myGoals = s.t1Goals; theirGoals = s.t2Goals; }
+      else {
+        s = allMatchScores[k2];
+        if(s) { myGoals = s.t2Goals; theirGoals = s.t1Goals; }
+      }
+      if(s === undefined) return;
+      played++;
+      gf += myGoals; ga += theirGoals;
+      if(myGoals > theirGoals) pts += 3;
+      else if(myGoals === theirGoals) pts += 1;
+    });
+    // Only override if we found at least one match score
+    if(played > 0) {
+      t.points = String(pts);
+      t.goalsFor = String(gf);
+      t.goalsAgainst = String(ga);
+    }
+  });
+}
+
 function calcPoolPositions(teams) {
   if(!teams || teams.length === 0) return;
   // Parse numeric values, skip if no meaningful data
