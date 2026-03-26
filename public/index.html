@@ -930,6 +930,7 @@ function parseAllPoolData(allRows) {
     }
 
     // Parse ALL match scores from cross-table
+    // Score groups start 1 column BEFORE the header: [c-1, c, c+1]
     for(let ri = 1; ri < rows.length; ri++) {
       const row = rows[ri];
       const rowTeam = (row[0]||'').toString().trim();
@@ -937,8 +938,7 @@ function parseAllPoolData(allRows) {
 
       teamCols.forEach((tc, ti) => {
         if(normTeam(rowTeam) === normTeam(tc.name)) return; // self
-        const numCols = (ti < teamCols.length - 1) ? 3 : Math.min(3, 13 - tc.col);
-        const score = extractScore(row, tc.col, numCols);
+        const score = extractScore(row, tc.col - 1, 3);
         if(!score) return;
         const key = normTeam(rowTeam) + '|' + normTeam(tc.name);
         allMatchScores[key] = {team1:rowTeam, team2:tc.name, t1Goals:score.mGoals, t2Goals:score.oGoals};
@@ -964,8 +964,7 @@ function mapMonumentPoolScores(rows, teamCols, oppNodeMap) {
   if(!mRow) return;
   teamCols.forEach((tc, ti) => {
     if(/monument/i.test(tc.name)) return;
-    const numCols = (ti < teamCols.length - 1) ? 3 : Math.min(3, 13 - tc.col);
-    const score = extractScore(mRow, tc.col, numCols);
+    const score = extractScore(mRow, tc.col - 1, 3);
     if(!score) return;
     for(const [oppKey, nodeId] of Object.entries(oppNodeMap)) {
       if(tc.name.toLowerCase().includes(oppKey.toLowerCase())) {
