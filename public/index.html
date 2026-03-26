@@ -179,8 +179,10 @@ details[open] .help-chevron{transform:rotate(90deg);}
 .fix-row:last-child{border-radius:0 0 8px 8px;}
 .fix-row.monument-match{border-left-color:var(--gold);background:#0d1e32;}
 .fix-row.played{opacity:.6;}
+.fix-row.has-score{background:#0a1f12;}
 .fix-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;
   color:var(--text-dim);width:44px;flex-shrink:0;}
+.fix-score{color:var(--green);font-size:14px;}
 .fix-teams{flex:1;font-size:12px;line-height:1.4;}
 .fix-team1{color:var(--text);}
 .fix-team2{color:var(--text-dim);}
@@ -240,7 +242,13 @@ details[open] .help-chevron{transform:rotate(90deg);}
 .sel  .log-badge{background:var(--blue);color:#071428;}
 .log-body{flex:1;}
 .log-match{font-size:13px;color:var(--text);font-weight:500;}
+.log-score-line{font-size:12px;color:var(--muted);margin-top:2px;}
+.log-score{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:var(--text);margin:3px 0;}
 .log-time{font-size:11px;color:var(--muted);margin-top:2px;}
+.score-src{font-size:10px;padding:1px 6px;border-radius:3px;margin-left:6px;vertical-align:middle;}
+.score-src.live{background:var(--green);color:#052512;}
+.score-src.manual{background:var(--border);color:var(--muted);}
+@keyframes pulse-badge{0%,100%{opacity:1;}50%{opacity:.6;}}
 
 /* ── FOOTER ── */
 footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border);
@@ -273,7 +281,7 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
     <p>This page follows the <strong>Hoërskool Monument 1st Girls' Hockey Team</strong> through the Courage Festival 2026 tournament, step by step.</p>
     <p>After each match, tap <strong class="c-win">WIN</strong>, <strong class="c-draw">DRAW</strong>, or <strong class="c-loss">LOSS</strong>. Pool matches can end in a draw. Knockout matches go to a penalty shootout if drawn — tap WIN or LOSS for the overall match result.</p>
     <p>At the end of each pool stage, select Monument's finishing position. This determines which bracket they enter for the next round.</p>
-    <p>Use the tabs above to switch between the live <strong>Tracker</strong>, full <strong>Schedule</strong> (updated from the official sheet), <strong>Pool D</strong> standings, and the match <strong>Log</strong>.</p>
+    <p>Use the tabs above to switch between the live <strong>Tracker</strong>, full <strong>Schedule</strong> (updated from the official sheet), <strong>Pool D</strong> standings, and match <strong>Results</strong> (with live scores from the official sheet when available).</p>
     <p>Tap <strong>↩</strong> on any history item to undo it. Progress saves automatically in your browser.</p>
   </div>
 </details>
@@ -282,7 +290,7 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
   <button class="tab-btn active" id="btn-tracker" onclick="switchTab('tracker')">🏑 Tracker</button>
   <button class="tab-btn" id="btn-schedule" onclick="switchTab('schedule')">📅 Schedule</button>
   <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 <span id="poolTabLabel">Pool D</span></button>
-  <button class="tab-btn" id="btn-log" onclick="switchTab('log')">📋 Log</button>
+  <button class="tab-btn" id="btn-log" onclick="switchTab('log')">📋 Results</button>
 </nav>
 
 <div class="tab-pane active" id="pane-tracker"><div id="app"></div></div>
@@ -397,6 +405,7 @@ const NODES = {
 let state = {current:'pd1', history:[], confirmReset:false};
 let sheetFixtures = null;
 let sheetPools    = {D:null, E:null, G:null};  // live standings per pool
+let sheetScores   = {};  // match scores from cross-table, keyed by node id e.g. {pd1:{mGoals:2,oGoals:1}}
 let lastSync      = null;
 let syncOk        = false;
 
@@ -546,30 +555,94 @@ function renderDone(node) {
 }
 
 // ════════════════════════════════════════════════════════
-//  RENDER — LOG
+//  RENDER — RESULTS
 // ════════════════════════════════════════════════════════
 function renderLog() {
   const el = document.getElementById('logContent');
   if(!el) return;
-  if(!state.history.length) {el.innerHTML='<div class="log-empty">No results recorded yet.</div>';return;}
-  let html='';
-  [...state.history].reverse().forEach(h => {
+
+  // Build list of all Monument matches from history + current + upcoming
+  const entries = [];
+
+  // Completed matches from history
+  state.history.forEach(h => {
     const n = NODES[h.id];
-    const cls = h.result==='win'?'win':h.result==='draw'?'draw':h.result==='loss'?'loss':'sel';
-    const badge = h.result==='win'?'WIN':h.result==='draw'?'DRAW':h.result==='loss'?'LOSS':'SET';
-    const matchDesc = h.result==='select'
-      ? `Position set: ${h.label} — ${n.phase}`
-      : `${n.phase}${n.away?' vs '+n.away:''}`;
-    const ts = h.ts ? new Date(h.ts).toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}) : '';
-    const day = n.day || '';
+    if(!n) return;
+    if(h.result === 'select') {
+      entries.push({type:'select', node:n, label:h.label, fromSheet:!!h.fromSheet});
+      return;
+    }
+    const score = h.score || sheetScores[h.id] || null;
+    entries.push({type:'result', node:n, id:h.id, result:h.result, score, fromSheet:!!h.fromSheet});
+  });
+
+  // Current match (if it's a match node, not select/done)
+  const cur = NODES[state.current];
+  if(cur && cur.type === 'match') {
+    const score = sheetScores[state.current] || null;
+    entries.push({type:'current', node:cur, id:state.current, score});
+  } else if(cur && cur.type === 'select') {
+    entries.push({type:'pending_select', node:cur});
+  }
+
+  if(entries.length === 0) {
+    el.innerHTML = '<div class="log-empty">No matches yet.</div>';
+    return;
+  }
+
+  let html = '';
+  entries.forEach(e => {
+    if(e.type === 'select') {
+      const src = e.fromSheet ? '<span class="score-src live">from sheet</span>' : '<span class="score-src manual">manual</span>';
+      html += `<div class="log-item sel">
+        <span class="log-badge">POS</span>
+        <div class="log-body">
+          <div class="log-match">Finished <strong>${e.label}</strong> — ${e.node.phase}</div>
+          <div class="log-time">${src}</div>
+        </div>
+      </div>`;
+      return;
+    }
+    if(e.type === 'pending_select') {
+      html += `<div class="log-item sel">
+        <span class="log-badge" style="background:var(--border);color:var(--muted)">?</span>
+        <div class="log-body">
+          <div class="log-match">${e.node.question}</div>
+          <div class="log-time">Awaiting position</div>
+        </div>
+      </div>`;
+      return;
+    }
+    if(e.type === 'current') {
+      const scoreStr = e.score ? `${e.score.mGoals} – ${e.score.oGoals}` : '';
+      html += `<div class="log-item" style="border-left-color:var(--gold);background:rgba(232,184,75,0.08)">
+        <span class="log-badge" style="background:var(--gold);color:#1a1a2e;animation:pulse-badge 2s infinite">NOW</span>
+        <div class="log-body">
+          <div class="log-match">${e.node.phase}</div>
+          <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
+          ${scoreStr ? `<div class="log-score">${scoreStr}</div>` : ''}
+          <div class="log-time">${e.node.day} · ${e.node.time}</div>
+        </div>
+      </div>`;
+      return;
+    }
+    // Completed result
+    const cls = e.result==='win'?'win':e.result==='draw'?'draw':'loss';
+    const badge = e.result==='win'?'WIN':e.result==='draw'?'DRAW':'LOSS';
+    const opp = e.node.homeIsMonument ? e.node.away : e.node.home;
+    const scoreStr = e.score ? `<div class="log-score">${e.score.mGoals} – ${e.score.oGoals}</div>` : '';
+    const src = e.fromSheet || e.score ? '<span class="score-src live">from sheet</span>' : '<span class="score-src manual">manual</span>';
     html += `<div class="log-item ${cls}">
       <span class="log-badge">${badge}</span>
       <div class="log-body">
-        <div class="log-match">${matchDesc}</div>
-        <div class="log-time">${day}${ts?' · Recorded '+ts:''}</div>
+        <div class="log-match">${e.node.phase}</div>
+        <div class="log-score-line">Monument vs ${opp}</div>
+        ${scoreStr}
+        <div class="log-time">${e.node.day} · ${e.node.time} ${src}</div>
       </div>
     </div>`;
   });
+
   el.innerHTML = html;
 }
 
@@ -752,8 +825,12 @@ function renderSchedule() {
     html += `<div class="day-group"><div class="day-header">${dayLabels[d]||d}</div>`;
     days[d].forEach(f => {
       const isM = f.isMonument;
-      html += `<div class="fix-row${isM?' monument-match':''}">
-        <div class="fix-time">${f.time}</div>
+      const score = findFixtureScore(f.team1, f.team2);
+      const timeOrScore = score
+        ? `<span class="fix-score">${score.t1Goals} – ${score.t2Goals}</span>`
+        : f.time;
+      html += `<div class="fix-row${isM?' monument-match':''}${score?' has-score':''}">
+        <div class="fix-time">${timeOrScore}</div>
         <div class="fix-teams">
           ${isM?`<div class="fix-monument-tag">🏑 Monument</div>`:''}
           <div class="fix-team1">${f.team1}</div>
@@ -782,6 +859,225 @@ function setSyncStatus(state, label) {
   lbl.textContent = label;
 }
 
+// ════════════════════════════════════════════════════════
+//  HYBRID SYNC — auto-advance tracker from sheet scores
+// ════════════════════════════════════════════════════════
+
+// Normalize team name for matching (strip accents, spaces, punctuation)
+function normTeam(s) { return s.toLowerCase().replace(/[^a-z]/g,'').slice(0,15); }
+
+// Extract a score from a group of cells in a cross-table row
+function extractScore(row, colStart, numCols) {
+  const cells = [];
+  for(let i = colStart; i < colStart + numCols && i < row.length; i++) {
+    const val = (row[i]||'').toString().trim();
+    if(val) cells.push(val);
+  }
+  for(const c of cells) {
+    const m = c.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+    if(m) return {mGoals:parseInt(m[1]), oGoals:parseInt(m[2])};
+  }
+  const nums = cells.filter(c => /^\d+$/.test(c)).map(Number);
+  if(nums.length >= 2) return {mGoals:nums[0], oGoals:nums[1]};
+  return null;
+}
+
+// Parse all pool data dynamically from a broad Scores range
+// Returns {A:{standings, scores}, B:{...}, ...}
+let allMatchScores = {}; // "normTeam1|normTeam2" → {t1Goals, t2Goals, team1, team2}
+
+function parseAllPoolData(allRows) {
+  const pools = {};
+  let curPool = null, curStart = -1;
+
+  function savePool(endIdx) {
+    if(!curPool || curStart < 0) return;
+    const block = allRows.slice(curStart, endIdx);
+    // Need at least header + 1 team row (row 1's col 0 must not be another POOL header)
+    if(block.length >= 2 && !/^POOL/i.test((block[1][0]||'').toString().trim())) {
+      pools[curPool] = block;
+    }
+    curPool = null;
+  }
+
+  for(let i = 0; i < allRows.length; i++) {
+    const cell0 = (allRows[i] && allRows[i][0] || '').toString().trim();
+    const pm = cell0.match(/^POOL\s+([A-H])$/i);
+    if(pm) {
+      savePool(i);
+      curPool = pm[1].toUpperCase();
+      curStart = i;
+    }
+  }
+  savePool(allRows.length);
+
+  // Process each pool
+  const result = {};
+  allMatchScores = {};
+  sheetScores = {};
+
+  for(const [poolName, rows] of Object.entries(pools)) {
+    // Standings
+    const standings = parsePoolRows(rows);
+    result[poolName] = standings;
+
+    // Cross-table: team headers at [2], [5], [8], [11]
+    const header = rows[0] || [];
+    const teamCols = [];
+    for(let c = 2; c <= 11; c += 3) {
+      const tn = (header[c]||'').toString().trim();
+      if(tn && !/^(points|position|goals)/i.test(tn)) teamCols.push({col:c, name:tn});
+    }
+
+    // Parse ALL match scores from cross-table
+    for(let ri = 1; ri < rows.length; ri++) {
+      const row = rows[ri];
+      const rowTeam = (row[0]||'').toString().trim();
+      if(!rowTeam || /^POOL/i.test(rowTeam)) continue;
+
+      teamCols.forEach((tc, ti) => {
+        if(normTeam(rowTeam) === normTeam(tc.name)) return; // self
+        const numCols = (ti < teamCols.length - 1) ? 3 : Math.min(3, 13 - tc.col);
+        const score = extractScore(row, tc.col, numCols);
+        if(!score) return;
+        const key = normTeam(rowTeam) + '|' + normTeam(tc.name);
+        allMatchScores[key] = {team1:rowTeam, team2:tc.name, t1Goals:score.mGoals, t2Goals:score.oGoals};
+      });
+    }
+
+    // Monument-specific: map scores to tracker node IDs
+    if(poolName === 'D') mapMonumentPoolScores(rows, teamCols, {
+      'DF Akademie':'pd1', 'Epworth':'pd2', 'Pretoria':'pd3'
+    });
+    if(poolName === 'E') mapMonumentPoolScores(rows, teamCols, getPoolEGNodeMap('E'));
+    if(poolName === 'G') mapMonumentPoolScores(rows, teamCols, getPoolEGNodeMap('G'));
+  }
+
+  return result;
+}
+
+function mapMonumentPoolScores(rows, teamCols, oppNodeMap) {
+  let mRow = null;
+  for(let i = 1; i < rows.length; i++) {
+    if(/monument/i.test((rows[i][0]||'').toString())) { mRow = rows[i]; break; }
+  }
+  if(!mRow) return;
+  teamCols.forEach((tc, ti) => {
+    if(/monument/i.test(tc.name)) return;
+    const numCols = (ti < teamCols.length - 1) ? 3 : Math.min(3, 13 - tc.col);
+    const score = extractScore(mRow, tc.col, numCols);
+    if(!score) return;
+    for(const [oppKey, nodeId] of Object.entries(oppNodeMap)) {
+      if(tc.name.toLowerCase().includes(oppKey.toLowerCase())) {
+        sheetScores[nodeId] = score;
+      }
+    }
+  });
+}
+
+function getPoolEGNodeMap(pool) {
+  const map = {};
+  const nodes = pool === 'E' ? POOL_E_NODES : POOL_G_NODES;
+  for(const id of nodes) {
+    const n = NODES[id];
+    if(n && n.away) map[n.away] = id;
+  }
+  return map;
+}
+
+function getSheetPosition(nodeId) {
+  let poolData;
+  if(nodeId === 'ask_d') poolData = sheetPools.D;
+  else if(nodeId === 'ask_e') poolData = sheetPools.E;
+  else if(nodeId === 'ask_g') poolData = sheetPools.G;
+  if(!poolData) return null;
+  const m = poolData.find(t => /monument/i.test(t.name));
+  if(!m || !m.position || m.position === '—' || m.position === '') return null;
+  const pos = parseInt(m.position);
+  const labels = {1:'1st',2:'2nd',3:'3rd',4:'4th'};
+  return labels[pos] || null;
+}
+
+// Look up score for any fixture by team names
+function findFixtureScore(team1, team2) {
+  const k1 = normTeam(team1), k2 = normTeam(team2);
+  const s = allMatchScores[k1+'|'+k2];
+  if(s) return {t1Goals:s.t1Goals, t2Goals:s.t2Goals};
+  const s2 = allMatchScores[k2+'|'+k1];
+  if(s2) return {t1Goals:s2.t2Goals, t2Goals:s2.t1Goals};
+  return null;
+}
+
+function reconcileTracker() {
+  let cursor = 'pd1';
+  const sheetPath = [];
+
+  // Walk the state machine using sheet data as far as possible
+  while(cursor) {
+    const node = NODES[cursor];
+    if(!node) break;
+    if(node.type === 'match') {
+      const score = sheetScores[cursor];
+      if(!score) break;
+      const result = score.mGoals > score.oGoals ? 'win' : score.mGoals === score.oGoals ? 'draw' : 'loss';
+      const next = result === 'win' ? node.onWin : result === 'draw' ? node.onDraw : node.onLoss;
+      sheetPath.push({id:cursor, result, ts:Date.now(), fromSheet:true, score});
+      cursor = next;
+    } else if(node.type === 'select') {
+      const pos = getSheetPosition(cursor);
+      if(!pos) break;
+      const opt = node.options.find(o => o.label === pos);
+      if(!opt) break;
+      sheetPath.push({id:cursor, result:'select', label:pos, ts:Date.now(), fromSheet:true});
+      cursor = opt.next;
+    } else {
+      break;
+    }
+  }
+
+  if(sheetPath.length === 0) return;
+
+  let changed = false;
+  for(let i = 0; i < sheetPath.length; i++) {
+    const sp = sheetPath[i];
+    if(i < state.history.length) {
+      const h = state.history[i];
+      if(h.id === sp.id) {
+        // Same node — update result/score if different
+        if(h.result !== sp.result || (sp.result === 'select' && h.label !== sp.label)) {
+          state.history[i] = {...h, ...sp, ts: h.ts || sp.ts};
+          changed = true;
+        } else if(sp.score && !h.score) {
+          state.history[i].score = sp.score;
+          state.history[i].fromSheet = true;
+          changed = true;
+        }
+      } else {
+        // Path diverged — truncate and rebuild from here
+        state.history.length = i;
+        for(let j = i; j < sheetPath.length; j++) state.history.push(sheetPath[j]);
+        state.current = cursor;
+        changed = true;
+        break;
+      }
+    } else {
+      // Beyond current history — auto-advance
+      state.history.push(sp);
+      state.current = cursor;
+      changed = true;
+    }
+  }
+
+  if(changed) {
+    save();
+    render();
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  GOOGLE SHEETS FETCH
+// ════════════════════════════════════════════════════════
+
 async function fetchRange(sheet, range) {
   const url = `/api/sheets?sheet=${encodeURIComponent(sheet)}&range=${encodeURIComponent(range)}`;
   const r = await fetch(url);
@@ -793,28 +1089,27 @@ async function fetchRange(sheet, range) {
 async function syncSheets() {
   setSyncStatus('pulse','Syncing…');
   try {
-    // Fixtures — always fetch
+    // Fixtures
     const fixRows = await fetchRange('Fixtures','A:D');
     sheetFixtures = parseFixtures(fixRows);
 
-    // Always fetch Pool D
-    const dRows = await fetchRange('Scores','B28:U32');
-    sheetPools.D = parsePoolRows(dRows);
-
-    // Also fetch Pool E and G — they'll be empty until Round 2 starts,
-    // but we fetch them so the tab is ready the moment data appears
-    const eRows = await fetchRange('Scores','B36:U40');
-    sheetPools.E = parsePoolRows(eRows);
-
-    const gRows = await fetchRange('Scores','B52:U56');
-    sheetPools.G = parsePoolRows(gRows);
+    // All pool data in one fetch — dynamically finds pool headers
+    const allRows = await fetchRange('Scores','B:U');
+    const poolData = parseAllPoolData(allRows);
+    sheetPools.D = poolData.D || null;
+    sheetPools.E = poolData.E || null;
+    sheetPools.G = poolData.G || null;
 
     lastSync = new Date();
     syncOk = true;
     setSyncStatus('ok', fmtTime(lastSync));
 
+    // Hybrid sync — auto-advance tracker from sheet scores
+    reconcileTracker();
+
     renderSchedule();
     if(document.getElementById('pane-pool').classList.contains('active')) renderPoolTab();
+    if(document.getElementById('pane-log').classList.contains('active')) renderLog();
 
   } catch(e) {
     syncOk = false;
@@ -832,7 +1127,7 @@ function parseFixtures(rows) {
     const a = (row[0]||'').toString().trim();
     if(!a) return;
     if(/^DAY\s+\d/i.test(a)){currentDay=a.toUpperCase();return;}
-    if(a==='Umpires'||a==='WATER BREAK'||a==='TIME'||/prize.giving/i.test(a)) return;
+    if(a==='Umpires'||a==='WATER BREAK'||a==='TIME'||/prize.giving/i.test(a)||/festival|fixtures|kingsmead/i.test(a)||/^TEAM\s/i.test(a)) return;
     const team1 = (row[1]||'').toString().trim();
     const team2 = (row[2]||'').toString().trim();
     const pool  = (row[3]||'').toString().trim();
@@ -855,20 +1150,32 @@ function parseFixtures(rows) {
 }
 
 function parsePoolRows(rows) {
-  // rows[0] = header; rows[1-4] = teams
-  // 0-indexed from col B: [0]=name, [13]=points, [14]=position, [17]=goalsFor, [18]=goalsAgainst
+  if(!rows || rows.length < 2) return [];
+  // Find column indices dynamically from header
+  const header = rows[0] || [];
+  let ptsIdx=-1, posIdx=-1, gfIdx=-1, gaIdx=-1;
+  for(let j = 0; j < header.length; j++) {
+    const h = (header[j]||'').toString().trim().toLowerCase();
+    if(h === 'points' && ptsIdx < 0) ptsIdx = j;
+    if(h === 'position') posIdx = j;
+    if(h === 'goals for') gfIdx = j;
+    if(h === 'goals against') gaIdx = j;
+  }
+  // Fallback: if Points header missing (e.g. Pool D), check common position
+  if(ptsIdx < 0) ptsIdx = 13;
+
   const teams = [];
-  for (let i = 1; i < rows.length; i++) {
+  for(let i = 1; i < rows.length; i++) {
     const row = rows[i];
-    if (!row) continue;
-    const name = (row[0] || '').toString().trim();
-    if (!name || /^POOL/i.test(name)) continue;
+    if(!row) continue;
+    const name = (row[0]||'').toString().trim();
+    if(!name || /^POOL/i.test(name)) continue;
     teams.push({
       name,
-      points:       row[13] !== undefined ? row[13].toString() : '—',
-      position:     row[14] !== undefined ? row[14].toString() : '—',
-      goalsFor:     row[17] !== undefined ? row[17].toString() : '—',
-      goalsAgainst: row[18] !== undefined ? row[18].toString() : '—',
+      points:       ptsIdx >= 0 && row[ptsIdx] !== undefined ? row[ptsIdx].toString() : '—',
+      position:     posIdx >= 0 && row[posIdx] !== undefined ? row[posIdx].toString() : '—',
+      goalsFor:     gfIdx >= 0 && row[gfIdx] !== undefined ? row[gfIdx].toString() : '—',
+      goalsAgainst: gaIdx >= 0 && row[gaIdx] !== undefined ? row[gaIdx].toString() : '—',
     });
   }
   return teams;
