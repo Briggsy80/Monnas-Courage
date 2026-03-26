@@ -193,6 +193,11 @@ details[open] .help-chevron{transform:rotate(90deg);}
 .no-data{padding:20px 14px;text-align:center;color:var(--muted);font-size:13px;}
 
 /* ── POOL TABLE TAB ── */
+.stream-btn{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;
+  padding:2px 6px;border-radius:3px;text-decoration:none;margin-left:4px;vertical-align:middle;}
+.stream-live{background:#e53e3e;color:#fff;animation:pulse-badge 2s infinite;}
+.stream-vod{background:var(--green);color:#052512;}
+.stream-upcoming{background:var(--border);color:var(--muted);}
 .pool-wrap{padding:12px 14px;}
 .pool-section{margin-bottom:16px;}
 .pool-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;
@@ -409,6 +414,7 @@ let sheetFixtures = null;
 let sheetPools    = {};  // live standings per pool, keyed A-H
 let sheetScores   = {};  // match scores from cross-table, keyed by node id e.g. {pd1:{mGoals:2,oGoals:1}}
 let round2Comps   = {};  // R2 pool compositions with carry-forward data, keyed E-H
+let streamLinks   = [];  // [{home, away, status, url}] from Pixellot API
 let lastSync      = null;
 let syncOk        = false;
 
@@ -998,6 +1004,10 @@ function renderSchedule() {
         : f.time;
       // Mark the last scored fixture for auto-scroll
       const scrollId = (fixtureIdx === lastScoredIdx) ? ' id="last-result"' : '';
+      const stream = findStreamLink(fx.t1, fx.t2);
+      const streamBtn = stream
+        ? `<a href="${stream.url}" target="_blank" class="stream-btn ${stream.status==='live'?'stream-live':stream.status==='archived'?'stream-vod':'stream-upcoming'}">${stream.status==='live'?'LIVE':stream.status==='archived'?'Replay':'Stream'}</a>`
+        : '';
       html += `<div class="fix-row${isM?' monument-match':''}${fx.score?' has-score':''}"${scrollId}>
         <div class="fix-time">${timeOrScore}</div>
         <div class="fix-teams">
@@ -1005,7 +1015,7 @@ function renderSchedule() {
           <div class="fix-team1">${fx.t1}</div>
           <div class="fix-team2 ">vs ${fx.t2}</div>
         </div>
-        <div class="fix-pool${isM?' monument-pool':''}">${f.pool}</div>
+        <div class="fix-pool${isM?' monument-pool':''}">${f.pool}${streamBtn}</div>
       </div>`;
       fixtureIdx++;
     });
@@ -1512,10 +1522,35 @@ function track(cat, action, name) {
 // ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
+async function syncStreams() {
+  try {
+    const r = await fetch('/api/streams');
+    if(!r.ok) return;
+    const data = await r.json();
+    streamLinks = data.events || [];
+    // Re-render schedule if it's visible
+    if(document.getElementById('pane-schedule').classList.contains('active')) renderSchedule();
+  } catch(e) { console.warn('Stream sync error:', e); }
+}
+
+function findStreamLink(team1, team2) {
+  for(const s of streamLinks) {
+    const sh = normTeam(s.home), sa = normTeam(s.away);
+    const ft1 = normTeam(team1), ft2 = normTeam(team2);
+    if((teamsMatch(ft1, sh) && teamsMatch(ft2, sa)) ||
+       (teamsMatch(ft1, sa) && teamsMatch(ft2, sh))) {
+      return s;
+    }
+  }
+  return null;
+}
+
 load();
 render();
 syncSheets();
+syncStreams();
 setInterval(syncSheets, POLL_MS);
+setInterval(syncStreams, 600000); // 10 minutes
 </script>
 </body>
 </html>

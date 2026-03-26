@@ -103,11 +103,66 @@ async function handleSheets(url) {
   }
 }
 
+const PIXELLOT_API = 'https://supersportschools.watch.pixellot.tv/api/event/list';
+const PIXELLOT_PROJECT = '606dace04cf99f438737e283';
+const TOURNAMENT_SUBCATEGORY = '69c2ed3f2a337d76720fc58d'; // Kingsmead Courage Festival 2026
+
+async function handleStreams() {
+  try {
+    const events = [];
+    for (const status of ['live', 'archived', 'upcoming']) {
+      const resp = await fetch(PIXELLOT_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-project-id': PIXELLOT_PROJECT,
+        },
+        body: JSON.stringify({
+          filters: { 'identities.id': TOURNAMENT_SUBCATEGORY, status },
+          limit: 100,
+          offset: 0,
+        }),
+      });
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      const entries = data?.content?.entries || [];
+      for (const e of entries) {
+        const title = (e.title || '').toUpperCase();
+        if (!title.includes('HOCKEY')) continue;
+        const home = e.eventTeams?.homeTeam?.name || '';
+        const away = e.eventTeams?.awayTeam?.name || '';
+        events.push({
+          id: e._id,
+          home,
+          away,
+          status: e.status || status,
+          date: e.event_date || 0,
+          url: `https://live.supersportschools.com/events/${e._id}/`,
+        });
+      }
+    }
+    return new Response(JSON.stringify({ events }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: 'Stream fetch failed', events: [] }), {
+      status: 502,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/sheets') {
       return handleSheets(url);
+    }
+    if (url.pathname === '/api/streams') {
+      return handleStreams();
     }
     return env.ASSETS.fetch(request);
   },
