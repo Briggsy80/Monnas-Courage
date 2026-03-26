@@ -863,8 +863,18 @@ function setSyncStatus(state, label) {
 //  HYBRID SYNC — auto-advance tracker from sheet scores
 // ════════════════════════════════════════════════════════
 
-// Normalize team name for matching (strip accents, spaces, punctuation)
-function normTeam(s) { return s.toLowerCase().replace(/[^a-z]/g,'').slice(0,15); }
+// Normalize team name for matching (strip diacritics, accents, spaces, punctuation)
+function normTeam(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+}
+// Fuzzy match: handles "H/S Volkskool" vs "Hoer Volkskool" (different abbreviations)
+function teamsMatch(a, b) {
+  if(a === b) return true;
+  if(a.length < 8 || b.length < 8) return false;
+  // Skip first 2 chars (variable prefix) and check 8-char overlap
+  const aSub = a.slice(2, 12), bSub = b.slice(2, 12);
+  return a.includes(bSub) || b.includes(aSub);
+}
 
 // Extract a score from a group of cells in a cross-table row
 function extractScore(row, colStart, numCols) {
@@ -1000,10 +1010,17 @@ function getSheetPosition(nodeId) {
 // Look up score for any fixture by team names
 function findFixtureScore(team1, team2) {
   const k1 = normTeam(team1), k2 = normTeam(team2);
+  // Exact match
   const s = allMatchScores[k1+'|'+k2];
   if(s) return {t1Goals:s.t1Goals, t2Goals:s.t2Goals};
   const s2 = allMatchScores[k2+'|'+k1];
   if(s2) return {t1Goals:s2.t2Goals, t2Goals:s2.t1Goals};
+  // Fuzzy match (handles abbreviated names across sheets)
+  for(const [key, score] of Object.entries(allMatchScores)) {
+    const [a, b] = key.split('|');
+    if(teamsMatch(k1,a) && teamsMatch(k2,b)) return {t1Goals:score.t1Goals, t2Goals:score.t2Goals};
+    if(teamsMatch(k1,b) && teamsMatch(k2,a)) return {t1Goals:score.t2Goals, t2Goals:score.t1Goals};
+  }
   return null;
 }
 
