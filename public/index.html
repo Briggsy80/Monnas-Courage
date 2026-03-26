@@ -1054,7 +1054,7 @@ function normTeam(s) {
 function teamsMatch(a, b) {
   if(a === b) return true;
   // Strip common school prefixes then compare
-  const strip = s => s.replace(/^(hoerskool|hs)/, '');
+  const strip = s => s.replace(/^(hoerskool|hs)/, '').replace(/(school|skool)(forgirls)?$/, '');
   const sa = strip(a), sb = strip(b);
   if(sa === sb) return true;
   // Check if shorter is fully contained in longer (on stripped names)
