@@ -955,13 +955,23 @@ function parseAllPoolData(allRows) {
     const standings = parsePoolRows(rows);
     result[poolName] = standings;
 
-    // Cross-table: team headers at [2], [5], [8], [11]
+    // Cross-table: columns [2], [5], [8], [11] correspond to teams 1-4
+    // Header may be incomplete — fall back to row labels (col 0) for missing names
     const header = rows[0] || [];
-    const teamCols = [];
-    for(let c = 2; c <= 11; c += 3) {
-      const tn = (header[c]||'').toString().trim();
-      if(tn && !/^(points|position|goals)/i.test(tn)) teamCols.push({col:c, name:tn});
+    const colPositions = [2, 5, 8, 11];
+    const rowTeamNames = [];
+    for(let ri = 1; ri < rows.length; ri++) {
+      const n = (rows[ri][0]||'').toString().trim();
+      if(n && !/^POOL/i.test(n)) rowTeamNames.push(n);
     }
+    const teamCols = [];
+    colPositions.forEach((c, idx) => {
+      const headerName = (header[c]||'').toString().trim();
+      const name = (headerName && !/^(points|position|goals)/i.test(headerName))
+        ? headerName
+        : (rowTeamNames[idx] || '');
+      if(name) teamCols.push({col:c, name});
+    });
 
     // Parse ALL match scores from cross-table
     // Score groups start 1 column BEFORE the header: [c-1, c, c+1]
