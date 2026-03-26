@@ -879,7 +879,7 @@ function setSyncStatus(state, label) {
 // ════════════════════════════════════════════════════════
 
 // Normalize team name for matching (strip diacritics, accents, spaces, punctuation)
-const TEAM_ALIASES = {'middleburg':'middelburg'};
+const TEAM_ALIASES = {'middleburg':'middelburg','dfmalan':'dfakademie'};
 function normTeam(s) {
   let n = s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
   for(const [from, to] of Object.entries(TEAM_ALIASES)) n = n.replace(from, to);
