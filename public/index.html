@@ -975,6 +975,8 @@ function parseAllPoolData(allRows) {
 
     // Parse ALL match scores from cross-table
     // Score groups start 1 column BEFORE the header: [c-1, c, c+1]
+    // Collect raw scores first, then validate both directions exist
+    const rawScores = {};
     for(let ri = 1; ri < rows.length; ri++) {
       const row = rows[ri];
       const rowTeam = (row[0]||'').toString().trim();
@@ -985,8 +987,15 @@ function parseAllPoolData(allRows) {
         const score = extractScore(row, tc.col - 1, 3);
         if(!score) return;
         const key = normTeam(rowTeam) + '|' + normTeam(tc.name);
-        allMatchScores[key] = {team1:rowTeam, team2:tc.name, t1Goals:score.mGoals, t2Goals:score.oGoals};
+        rawScores[key] = {team1:rowTeam, team2:tc.name, t1Goals:score.mGoals, t2Goals:score.oGoals};
       });
+    }
+    // Only keep scores where both directions exist (filters out formula placeholder zeros)
+    for(const [key, score] of Object.entries(rawScores)) {
+      const reverseKey = normTeam(score.team2) + '|' + normTeam(score.team1);
+      if(rawScores[reverseKey]) {
+        allMatchScores[key] = score;
+      }
     }
 
     // Monument-specific: map scores to tracker node IDs
@@ -997,9 +1006,10 @@ function parseAllPoolData(allRows) {
     if(poolName === 'G') mapMonumentPoolScores(rows, teamCols, getPoolEGNodeMap('G'));
   }
 
-  // Recalculate points, GF, GA from actual match scores
+  // Recalculate points, GF, GA from actual match scores, then recalculate positions
   for(const [poolName, teams] of Object.entries(result)) {
     calcPoolStatsFromScores(teams);
+    calcPoolPositions(teams);
   }
 
   return result;
