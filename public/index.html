@@ -288,16 +288,16 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
 </details>
 
 <nav class="tab-nav">
-  <button class="tab-btn active" id="btn-tracker" onclick="switchTab('tracker')">🏑 Manual Tracker</button>
-  <button class="tab-btn" id="btn-schedule" onclick="switchTab('schedule')">📅 Schedule</button>
+  <button class="tab-btn active" id="btn-schedule" onclick="switchTab('schedule')">📅 Schedule</button>
   <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 <span id="poolTabLabel">Round 1</span></button>
   <button class="tab-btn" id="btn-log" onclick="switchTab('log')">📋 Results</button>
+  <button class="tab-btn" id="btn-tracker" onclick="switchTab('tracker')">🏑 Manual Tracker</button>
 </nav>
 
-<div class="tab-pane active" id="pane-tracker"><div id="app"></div></div>
-<div class="tab-pane" id="pane-schedule"><div class="schedule-wrap" id="scheduleContent"><div class="no-data">Fetching schedule…</div></div></div>
+<div class="tab-pane active" id="pane-schedule"><div class="schedule-wrap" id="scheduleContent"><div class="no-data">Fetching schedule…</div></div></div>
 <div class="tab-pane" id="pane-pool"><div class="pool-wrap" id="poolContent"><div class="no-data">Fetching standings…</div></div></div>
 <div class="tab-pane" id="pane-log"><div class="log-wrap" id="logContent"><div class="log-empty">No results recorded yet.</div></div></div>
+<div class="tab-pane" id="pane-tracker"><div id="app"></div></div>
 
 <footer>Fixtures and results are as per the organisers. Cylon Consulting accepts no responsibility for any changes, errors or omissions. Please confirm schedules with official festival communications.</footer>
 
@@ -969,34 +969,56 @@ function renderSchedule() {
     days[f.day].push(f);
   });
 
-  let html = '';
+  // First pass: find which fixtures have scores so we can mark the last one
+  const allFixtures = [];
+  dayOrder.forEach(d => {
+    if(!days[d]) return;
+    days[d].forEach(f => {
+      const t1 = resolveTeamName(f.team1);
+      const t2 = resolveTeamName(f.team2);
+      const score = findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2);
+      allFixtures.push({f, t1, t2, score, day:d});
+    });
+  });
+  // Find the index of the last scored fixture
+  let lastScoredIdx = -1;
+  allFixtures.forEach((fx, i) => { if(fx.score) lastScoredIdx = i; });
+
+  // Second pass: render
+  let html = '', fixtureIdx = 0;
   dayOrder.forEach(d => {
     if(!days[d]) return;
     html += `<div class="day-group"><div class="day-header">${dayLabels[d]||d}</div>`;
     days[d].forEach(f => {
-      // Resolve placeholder names ("1st in Pool A" → actual team name)
-      const t1 = resolveTeamName(f.team1);
-      const t2 = resolveTeamName(f.team2);
-      const isM = /monument/i.test(t1) || /monument/i.test(t2);
-      const score = findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2);
-      const timeOrScore = score
-        ? `<span class="fix-score">${score.t1Goals} – ${score.t2Goals}</span>`
+      const fx = allFixtures[fixtureIdx];
+      const isM = /monument/i.test(fx.t1) || /monument/i.test(fx.t2);
+      const timeOrScore = fx.score
+        ? `<span class="fix-score">${fx.score.t1Goals} – ${fx.score.t2Goals}</span>`
         : f.time;
-      html += `<div class="fix-row${isM?' monument-match':''}${score?' has-score':''}">
+      // Mark the last scored fixture for auto-scroll
+      const scrollId = (fixtureIdx === lastScoredIdx) ? ' id="last-result"' : '';
+      html += `<div class="fix-row${isM?' monument-match':''}${fx.score?' has-score':''}"${scrollId}>
         <div class="fix-time">${timeOrScore}</div>
         <div class="fix-teams">
           ${isM?`<div class="fix-monument-tag">🏑 Monument</div>`:''}
-          <div class="fix-team1">${t1}</div>
-          <div class="fix-team2 ">vs ${t2}</div>
+          <div class="fix-team1">${fx.t1}</div>
+          <div class="fix-team2 ">vs ${fx.t2}</div>
         </div>
         <div class="fix-pool${isM?' monument-pool':''}">${f.pool}</div>
       </div>`;
+      fixtureIdx++;
     });
     html += `</div>`;
   });
 
   if(!html) html = '<div class="no-data">No fixtures found.</div>';
   el.innerHTML = html;
+
+  // Auto-scroll to last result (show recent scores at top)
+  const anchor = document.getElementById('last-result');
+  if(anchor) {
+    setTimeout(() => anchor.scrollIntoView({behavior:'smooth', block:'start'}), 300);
+  }
 }
 
 // ════════════════════════════════════════════════════════
