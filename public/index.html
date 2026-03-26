@@ -290,7 +290,7 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
 <nav class="tab-nav">
   <button class="tab-btn active" id="btn-tracker" onclick="switchTab('tracker')">🏑 Manual Tracker</button>
   <button class="tab-btn" id="btn-schedule" onclick="switchTab('schedule')">📅 Schedule</button>
-  <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 Pools</button>
+  <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 <span id="poolTabLabel">Round 1</span></button>
   <button class="tab-btn" id="btn-log" onclick="switchTab('log')">📋 Results</button>
 </nav>
 
@@ -751,7 +751,15 @@ function currentPool() {
   return 'D';
 }
 
-function updatePoolTabLabel() {} // no-op, tab always says "Pools"
+function updatePoolTabLabel() {
+  const lbl = document.getElementById('poolTabLabel');
+  if(!lbl) return;
+  const r1Done = isRoundOneComplete();
+  const r2Done = r1Done && isRoundTwoComplete();
+  if(r2Done) lbl.textContent = 'Playoffs';
+  else if(r1Done) lbl.textContent = 'Round 2';
+  else lbl.textContent = 'Round 1';
+}
 
 function calcRecord(nodeSet) {
   let p=0,w=0,d=0,l=0,pts=0;
@@ -1287,6 +1295,7 @@ async function syncSheets() {
     // Hybrid sync — auto-advance tracker from sheet scores
     reconcileTracker();
 
+    updatePoolTabLabel();
     renderSchedule();
     if(document.getElementById('pane-pool').classList.contains('active')) renderPoolTab();
     if(document.getElementById('pane-log').classList.contains('active')) renderLog();
