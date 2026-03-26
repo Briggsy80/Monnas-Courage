@@ -287,9 +287,9 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
 </details>
 
 <nav class="tab-nav">
-  <button class="tab-btn active" id="btn-tracker" onclick="switchTab('tracker')">🏑 Tracker</button>
+  <button class="tab-btn active" id="btn-tracker" onclick="switchTab('tracker')">🏑 Manual Tracker</button>
   <button class="tab-btn" id="btn-schedule" onclick="switchTab('schedule')">📅 Schedule</button>
-  <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 <span id="poolTabLabel">Pool D</span></button>
+  <button class="tab-btn" id="btn-pool" onclick="switchTab('pool')">📊 Pools</button>
   <button class="tab-btn" id="btn-log" onclick="switchTab('log')">📋 Results</button>
 </nav>
 
@@ -404,7 +404,7 @@ const NODES = {
 // ════════════════════════════════════════════════════════
 let state = {current:'pd1', history:[], confirmReset:false};
 let sheetFixtures = null;
-let sheetPools    = {D:null, E:null, G:null};  // live standings per pool
+let sheetPools    = {};  // live standings per pool, keyed A-H
 let sheetScores   = {};  // match scores from cross-table, keyed by node id e.g. {pd1:{mGoals:2,oGoals:1}}
 let lastSync      = null;
 let syncOk        = false;
@@ -684,11 +684,7 @@ function currentPool() {
   return 'D';
 }
 
-// Update pool tab label to match current pool
-function updatePoolTabLabel() {
-  const lbl = document.getElementById('poolTabLabel');
-  if (lbl) lbl.textContent = 'Pool ' + currentPool();
-}
+function updatePoolTabLabel() {} // no-op, tab always says "Pools"
 
 function calcRecord(nodeSet) {
   let p=0,w=0,d=0,l=0,pts=0;
@@ -702,13 +698,6 @@ function calcRecord(nodeSet) {
 function renderPoolTab() {
   const el = document.getElementById('poolContent');
   if(!el) return;
-
-  const pool     = currentPool();           // 'D', 'E', or 'G'
-  const inRound2 = pool !== 'D';
-
-  const poolD = calcRecord(POOL_NODES);
-  const poolE = calcRecord(POOL_E_NODES);
-  const poolG = calcRecord(POOL_G_NODES);
 
   // Points system rules box
   let html = `<div class="rule-box"><h4>Points System</h4>
@@ -724,39 +713,32 @@ function renderPoolTab() {
     </ul>
   </div>`;
 
-  // ── POOL D ──────────────────────────────────────────────
-  if (!inRound2) {
-    // Main view: full Pool D live table + Monument's tracker record
-    if (sheetPools.D && sheetPools.D.length) {
-      html += buildLiveTable('Pool D — Full Standings', sheetPools.D, lastSync);
-    }
-    html += buildTrackerRecord('Pool D — Monument\'s Tracker Record', poolD, null);
+  // Round 1 pools
+  const r1 = ['A','B','C','D'];
+  const r2 = ['E','F','G','H'];
 
-  } else {
-    // Round 2: Pool D archived as summary, current pool as main
-    html += buildArchivedPoolD(poolD);
-
-    if (pool === 'E') {
-      if (sheetPools.E && sheetPools.E.length) {
-        html += buildLiveTable('Pool E — Full Standings (Live)', sheetPools.E, lastSync);
-      }
-      if (poolE.p > 0) {
-        html += buildTrackerRecord('Pool E — Monument\'s Record', poolE, poolD.pts);
-      } else {
-        html += `<div class="no-data" style="padding:14px;text-align:center;color:var(--muted);font-size:13px">Pool E matches not yet recorded in tracker.</div>`;
-      }
+  html += `<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;padding:10px 14px 4px">Round 1 Pools</div>`;
+  r1.forEach(p => {
+    const data = sheetPools[p];
+    if(data && data.length) {
+      html += buildLiveTable('Pool ' + p, data, lastSync);
     }
+  });
 
-    if (pool === 'G') {
-      if (sheetPools.G && sheetPools.G.length) {
-        html += buildLiveTable('Pool G — Full Standings (Live)', sheetPools.G, lastSync);
+  // Round 2 pools (only show if they have team data)
+  const hasR2 = r2.some(p => sheetPools[p] && sheetPools[p].length);
+  if(hasR2) {
+    html += `<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;padding:14px 14px 4px">Round 2 Pools</div>`;
+    r2.forEach(p => {
+      const data = sheetPools[p];
+      if(data && data.length) {
+        html += buildLiveTable('Pool ' + p, data, lastSync);
       }
-      if (poolG.p > 0) {
-        html += buildTrackerRecord('Pool G — Monument\'s Record', poolG, poolD.pts);
-      } else {
-        html += `<div class="no-data" style="padding:14px;text-align:center;color:var(--muted);font-size:13px">Pool G matches not yet recorded in tracker.</div>`;
-      }
-    }
+    });
+  }
+
+  if(!r1.some(p => sheetPools[p] && sheetPools[p].length)) {
+    html += '<div class="no-data">Fetching standings…</div>';
   }
 
   el.innerHTML = html;
@@ -1146,10 +1128,7 @@ async function syncSheets() {
 
     // All pool data in one fetch — dynamically finds pool headers
     const allRows = await fetchRange('Scores','B:U');
-    const poolData = parseAllPoolData(allRows);
-    sheetPools.D = poolData.D || null;
-    sheetPools.E = poolData.E || null;
-    sheetPools.G = poolData.G || null;
+    sheetPools = parseAllPoolData(allRows);
 
     lastSync = new Date();
     syncOk = true;
