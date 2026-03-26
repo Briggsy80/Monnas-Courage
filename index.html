@@ -296,8 +296,6 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
 // ════════════════════════════════════════════════════════
 //  CONFIG
 // ════════════════════════════════════════════════════════
-const SHEET_ID  = '1wCcDyOVyCXO4WmIpi602ySKfbg3BI7Xd';
-const API_KEY   = 'AIzaSyBsyDvPuv8uBjYD1bcW6UHmENiz3w5PODM';
 const POLL_MS   = 60000;
 
 // ════════════════════════════════════════════════════════
@@ -785,7 +783,7 @@ function setSyncStatus(state, label) {
 }
 
 async function fetchRange(sheet, range) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheet)}!${range}?key=${API_KEY}&valueRenderOption=FORMATTED_VALUE`;
+  const url = `/api/sheets?sheet=${encodeURIComponent(sheet)}&range=${encodeURIComponent(range)}`;
   const r = await fetch(url);
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   const data = await r.json();
