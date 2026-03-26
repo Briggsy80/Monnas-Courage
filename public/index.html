@@ -983,7 +983,8 @@ function renderSchedule() {
     days[d].forEach(f => {
       const t1 = resolveTeamName(f.team1);
       const t2 = resolveTeamName(f.team2);
-      const score = findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2);
+      const isPenalty = /penalt|shoot/i.test(f.pool);
+      const score = isPenalty ? null : (findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2));
       allFixtures.push({f, t1, t2, score, day:d});
     });
   });
