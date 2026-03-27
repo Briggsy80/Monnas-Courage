@@ -1026,7 +1026,7 @@ function renderSchedule() {
         : f.time;
       // Mark the last scored fixture for auto-scroll
       const scrollId = (fixtureIdx === lastScoredIdx + 4) ? ' id="scroll-target"' : '';
-      const stream = findStreamLink(fx.t1, fx.t2);
+      const stream = findStreamLink(fx.t1, fx.t2, fx.day);
       const utmParams = '?utm_source=monnas-courage&utm_medium=referral&utm_campaign=kingsmead-courage-festival-2026';
       const streamBtn = stream
         ? `<a href="${stream.url}${utmParams}" target="_blank" class="stream-btn ${stream.status==='live'?'stream-live':stream.status==='archived'?'stream-vod':'stream-upcoming'}">${stream.status==='live'?'LIVE':stream.status==='archived'?'Replay':'Stream'}</a>`
@@ -1627,12 +1627,21 @@ async function syncStreams() {
 // Load cached stream links on startup
 try { streamLinks = JSON.parse(localStorage.getItem('streamLinks')) || []; } catch(e) {}
 
-function findStreamLink(team1, team2) {
+// Map fixture day labels to date strings for matching
+const DAY_DATES = {'DAY 1':'2026-03-26','DAY 2':'2026-03-27','DAY 3':'2026-03-28','DAY 4':'2026-03-29'};
+
+function findStreamLink(team1, team2, fixtureDay) {
+  const fixDate = DAY_DATES[fixtureDay] || '';
   for(const s of streamLinks) {
     const sh = normTeam(s.home), sa = normTeam(s.away);
     const ft1 = normTeam(team1), ft2 = normTeam(team2);
     if((teamsMatch(ft1, sh) && teamsMatch(ft2, sa)) ||
        (teamsMatch(ft1, sa) && teamsMatch(ft2, sh))) {
+      // Check date matches (stream date must be on the same day as fixture)
+      if(fixDate && s.date) {
+        const streamDate = new Date(s.date).toISOString().slice(0,10);
+        if(streamDate !== fixDate) continue; // wrong day, keep looking
+      }
       return s;
     }
   }
