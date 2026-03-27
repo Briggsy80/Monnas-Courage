@@ -464,13 +464,14 @@ function buildRound2Pools() {
       // Match by sheet position (col P = index 14, stored as sheetPosition)
       const team = r1Pool.find(t => t.sheetPosition === src.pos);
       if(!team) continue;
-      // Use sheet points (col O = index 13) and sheet GF/GA for carry-forward
+      // Use sheet column O for points (reliable), but use cross-table calculated
+      // GF/GA (sheet columns S/T are incomplete for some teams)
       teams.push({
         name: team.name,
         r1Pool: src.pool,
         r1Points: parseInt(team.sheetPoints)||0,
-        r1GF: parseInt(team.sheetGF)||0,
-        r1GA: parseInt(team.sheetGA)||0,
+        r1GF: parseInt(team.goalsFor)||0,
+        r1GA: parseInt(team.goalsAgainst)||0,
         r1Played: 3,
       });
     }
