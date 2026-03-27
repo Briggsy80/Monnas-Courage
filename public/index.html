@@ -453,20 +453,25 @@ function isRoundTwoComplete() {
 }
 
 function buildRound2Pools() {
+  // Use column O (index 13) for points and column P (index 14) for position
+  // from the organiser's R1 pool data as the definitive R1 results
   round2Comps = {};
   for(const [r2Pool, sources] of Object.entries(R2_POOL_MAP)) {
     const teams = [];
     for(const src of sources) {
       const r1Pool = sheetPools[src.pool];
       if(!r1Pool) continue;
+      // Match by sheet position (col P = index 14, stored as sheetPosition)
       const team = r1Pool.find(t => t.sheetPosition === src.pos);
       if(!team) continue;
+      // Use sheet points (col O = index 13) and sheet GF/GA for carry-forward
       teams.push({
         name: team.name,
         r1Pool: src.pool,
         r1Points: parseInt(team.sheetPoints)||0,
         r1GF: parseInt(team.sheetGF)||0,
         r1GA: parseInt(team.sheetGA)||0,
+        r1Played: 3,
       });
     }
     if(teams.length > 0) round2Comps[r2Pool] = teams;
@@ -1369,8 +1374,8 @@ async function syncSheets() {
         sheetPools[p].forEach(t => {
           const cf = round2Comps[p].find(c => teamsMatch(normTeam(c.name), normTeam(t.name)));
           if(!cf) return;
-          // Start with R1 stats
-          let pts = cf.r1Points, gf = cf.r1GF, ga = cf.r1GA, played = 3;
+          // Start with R1 stats (from sheet columns O and P)
+          let pts = cf.r1Points, gf = cf.r1GF, ga = cf.r1GA, played = cf.r1Played;
           // Only add R2 scores: matches between teams from DIFFERENT R1 pools
           sheetPools[p].forEach(opp => {
             if(opp.name === t.name) return;
