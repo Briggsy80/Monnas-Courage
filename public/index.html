@@ -447,7 +447,7 @@ function isRoundTwoComplete() {
   for(const p of ['E','F','G','H']) {
     const pool = sheetPools[p];
     if(!pool || pool.length < 4) return false;
-    if(pool.some(t => (parseInt(t.played)||0) < 2)) return false;
+    if(pool.some(t => (parseInt(t.played)||0) < 5)) return false;
   }
   return true;
 }
