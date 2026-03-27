@@ -1362,16 +1362,20 @@ async function syncSheets() {
       buildRound2Pools();
       for(const p of ['E','F','G','H']) {
         if(!round2Comps[p] || !sheetPools[p]) continue;
-        // Override R2 pool stats with our own calculation:
-        // R1 carried stats + any R2 cross-table match scores
+        // Override R2 pool stats: R1 carried + R2 new matches only
+        // R2 matches are ONLY between teams from different R1 pools
         sheetPools[p].forEach(t => {
           const cf = round2Comps[p].find(c => teamsMatch(normTeam(c.name), normTeam(t.name)));
           if(!cf) return;
           // Start with R1 stats
           let pts = cf.r1Points, gf = cf.r1GF, ga = cf.r1GA, played = 3;
-          // Add any R2 match scores from cross-table
+          // Only add R2 scores: matches between teams from DIFFERENT R1 pools
           sheetPools[p].forEach(opp => {
             if(opp.name === t.name) return;
+            const oppCf = round2Comps[p].find(c => teamsMatch(normTeam(c.name), normTeam(opp.name)));
+            if(!oppCf) return;
+            // Skip if same R1 pool — that's an R1 match already in carry-forward
+            if(cf.r1Pool === oppCf.r1Pool) return;
             const k1 = normTeam(t.name) + '|' + normTeam(opp.name);
             const k2 = normTeam(opp.name) + '|' + normTeam(t.name);
             let s = allMatchScores[k1];
