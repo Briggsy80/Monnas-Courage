@@ -1316,7 +1316,14 @@ function reconcileTracker() {
       const h = state.history[i];
       if(h.id === sp.id) {
         // Same node — update result/score if different
-        if(h.result !== sp.result || (sp.result === 'select' && h.label !== sp.label)) {
+        if(sp.result === 'select' && h.label !== sp.label) {
+          // Position changed — truncate everything after and rebuild
+          state.history.length = i;
+          for(let j = i; j < sheetPath.length; j++) state.history.push(sheetPath[j]);
+          state.current = cursor;
+          changed = true;
+          break;
+        } else if(h.result !== sp.result) {
           state.history[i] = {...h, ...sp, ts: h.ts || sp.ts};
           changed = true;
         } else if(sp.score && !h.score) {
