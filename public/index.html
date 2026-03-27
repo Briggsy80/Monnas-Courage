@@ -283,7 +283,7 @@ footer{margin:20px 14px 10px;padding:10px 12px;border-top:1px solid var(--border
     <span class="help-chevron">›</span>
   </summary>
   <div class="help-body">
-    <p>This page follows <strong>Hoërskool Monument</strong> through the Kingsmead Kingsmead Courage Festival 2026 hockey tournament.</p>
+    <p>This page follows <strong>Hoërskool Monument</strong> through the Kingsmead Courage Festival 2026 hockey tournament.</p>
     <p><strong>Manual Tracker</strong> — Tap <strong class="c-win">WIN</strong>, <strong class="c-draw">DRAW</strong>, or <strong class="c-loss">LOSS</strong> after each match to advance through the tournament bracket. Pool matches can draw; knockout matches go to a shootout, so tap WIN or LOSS for the final result. At the end of each pool stage, select Monument's finishing position. Tap <strong>↩</strong> to undo. Progress saves automatically in your browser.</p>
     <p><strong>Schedule</strong> — The full tournament fixture list, updated live from the official spreadsheet. Scores replace match times as results come in.</p>
     <p><strong>Pools</strong> — Live standings for all pools (Round 1 and Round 2). Points, goal difference, and positions are calculated automatically from match scores.</p>
@@ -1497,10 +1497,8 @@ function applyCarryForward(poolName, teams) {
   teams.forEach(t => {
     const cf = comps.find(c => teamsMatch(normTeam(c.name), normTeam(t.name)));
     if(!cf) return;
-    // Only add carry-forward if this team has R2 match scores from cross-table
-    // (calcPoolStatsFromScores sets played > 0 when it finds scores)
-    // If played is still from the sheet (no cross-table scores), don't double-count
     if(t._fromCrossTable) {
+      // Cross-table scores found: add R1 carry-forward to R2 match stats
       const r2Pts = parseInt(t.points)||0;
       const r2GF  = parseInt(t.goalsFor)||0;
       const r2GA  = parseInt(t.goalsAgainst)||0;
@@ -1509,6 +1507,10 @@ function applyCarryForward(poolName, teams) {
       t.goalsFor = String(r2GF + cf.r1GF);
       t.goalsAgainst = String(r2GA + cf.r1GA);
       t.played = String(r2P + 3);
+    } else {
+      // No R2 cross-table scores yet: sheet already has carried values
+      // Just set played to 3 (R1 matches only, no R2 yet)
+      t.played = '3';
     }
   });
 }
