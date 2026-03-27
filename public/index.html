@@ -1613,11 +1613,19 @@ async function syncStreams() {
     const r = await fetch('/api/streams');
     if(!r.ok) return;
     const data = await r.json();
-    streamLinks = data.events || [];
-    // Always re-render schedule to show stream links
+    const newLinks = data.events || [];
+    // Merge: keep existing links, add/update new ones (never remove)
+    const byId = {};
+    streamLinks.forEach(s => { byId[s.id] = s; });
+    newLinks.forEach(s => { byId[s.id] = s; }); // new data overwrites (status may change)
+    streamLinks = Object.values(byId);
+    // Persist to localStorage so links survive page refreshes
+    try { localStorage.setItem('streamLinks', JSON.stringify(streamLinks)); } catch(e) {}
     renderSchedule();
   } catch(e) { console.warn('Stream sync error:', e); }
 }
+// Load cached stream links on startup
+try { streamLinks = JSON.parse(localStorage.getItem('streamLinks')) || []; } catch(e) {}
 
 function findStreamLink(team1, team2) {
   for(const s of streamLinks) {
