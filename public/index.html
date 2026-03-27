@@ -1468,8 +1468,11 @@ function parsePoolRows(rows) {
     if(h === 'goals for') gfIdx = j;
     if(h === 'goals against') gaIdx = j;
   }
-  // Fallback: if Points header missing (e.g. Pool D), check common position
+  // Fallback: if headers missing (e.g. Pool D), use known column positions
   if(ptsIdx < 0) ptsIdx = 13;
+  if(posIdx < 0) posIdx = 14;
+  if(gfIdx < 0) gfIdx = 17;
+  if(gaIdx < 0) gaIdx = 18;
 
   const teams = [];
   for(let i = 1; i < rows.length; i++) {
