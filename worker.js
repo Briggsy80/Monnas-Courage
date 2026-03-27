@@ -104,8 +104,20 @@ async function handleSheets(url) {
 }
 
 const PIXELLOT_API = 'https://supersportschools.watch.pixellot.tv/api/event/list';
+const PIXELLOT_EVENT_API = 'https://supersportschools.watch.pixellot.tv/api/event/get_by_id/id/';
 const PIXELLOT_PROJECT = '606dace04cf99f438737e283';
 const TOURNAMENT_SUBCATEGORY = '69c2ed3f2a337d76720fc58d'; // Kingsmead Courage Festival 2026
+
+// Day 1 streams that drop off the list API but are still accessible by ID
+const PINNED_EVENT_IDS = [
+  '69c48952a89f43606ac88979', // Monument vs DF Akademie
+  '69c48c8aa89f43606ac88bf7', // Epworth vs Monument
+  '69c488bca89f43606ac888e9', // DSG vs St Dominic's
+  '69c48ae3f7d08325083438a3', // Volkskool vs Ermelo
+  '69c48bc6f7d083250834396d', // St Mary's vs Kingsmead
+  '69c48a35a89f43606ac88a47', // Hugenote vs Maris Stella
+  '69c48dbca89f43606ac88ce1', // Parktown vs Middleburg
+];
 
 async function handleStreams() {
   try {
@@ -154,6 +166,32 @@ async function handleStreams() {
         if (offset >= total || entries.length === 0) break; // got all pages
       }
     }
+
+    // Fetch pinned events that may have dropped off the list API
+    const seenIds = new Set(events.map(e => e.id));
+    for (const eid of PINNED_EVENT_IDS) {
+      if (seenIds.has(eid)) continue;
+      try {
+        const resp = await fetch(PIXELLOT_EVENT_API + eid, {
+          headers: { 'x-project-id': PIXELLOT_PROJECT },
+        });
+        if (!resp.ok) continue;
+        const data = await resp.json();
+        const e = data?.content;
+        if (!e) continue;
+        const title = (e.title || '').toUpperCase();
+        if (!title.includes('HOCKEY')) continue;
+        events.push({
+          id: e._id || e.event_id || eid,
+          home: e.eventTeams?.homeTeam?.name || '',
+          away: e.eventTeams?.awayTeam?.name || '',
+          status: e.status || 'archived',
+          date: e.event_date || 0,
+          url: `https://live.supersportschools.com/events/${eid}/`,
+        });
+      } catch (err) { /* skip failed individual fetches */ }
+    }
+
     return new Response(JSON.stringify({ events }), {
       headers: {
         'Content-Type': 'application/json',
