@@ -113,21 +113,28 @@ async function handleStreams() {
     for (const status of ['live', 'archived', 'upcoming']) {
       // Paginate through all results (API caps at 20 per page)
       let offset = 0;
-      while (true) {
-        const resp = await fetch(PIXELLOT_API, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-project-id': PIXELLOT_PROJECT,
-          },
-          body: JSON.stringify({
-            filters: { 'identities.id': TOURNAMENT_SUBCATEGORY, status },
-            limit: 20,
-            offset,
-          }),
-        });
+      const maxPages = 5; // safety limit
+      for (let page = 0; page < maxPages; page++) {
+        let resp;
+        try {
+          resp = await fetch(PIXELLOT_API, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-project-id': PIXELLOT_PROJECT,
+            },
+            body: JSON.stringify({
+              filters: { 'identities.id': TOURNAMENT_SUBCATEGORY, status },
+              limit: 20,
+              offset,
+            }),
+          });
+        } catch (fetchErr) {
+          break; // network error, stop paginating this status
+        }
         if (!resp.ok) break;
         const data = await resp.json();
+        const total = data?.content?.entryCount || 0;
         const entries = data?.content?.entries || [];
         for (const e of entries) {
           const title = (e.title || '').toUpperCase();
@@ -143,8 +150,8 @@ async function handleStreams() {
             url: `https://live.supersportschools.com/events/${e._id}/`,
           });
         }
-        if (entries.length < 20) break; // last page
-        offset += 20;
+        offset += entries.length;
+        if (offset >= total || entries.length === 0) break; // got all pages
       }
     }
     return new Response(JSON.stringify({ events }), {
