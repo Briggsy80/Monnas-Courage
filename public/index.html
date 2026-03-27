@@ -1175,37 +1175,36 @@ function parseAllPoolData(allRows) {
       if(name) teamCols.push({col:c, name});
     });
 
-    // Parse ALL match scores from cross-table
-    // Score groups start 1 column BEFORE the header: [c-1, c, c+1]
-    // Collect raw scores first, then validate both directions exist
-    const rawScores = {};
-    for(let ri = 1; ri < rows.length; ri++) {
-      const row = rows[ri];
-      const rowTeam = (row[0]||'').toString().trim();
-      if(!rowTeam || /^POOL/i.test(rowTeam)) continue;
+    // Parse match scores from cross-table — R1 pools only
+    // R2 pools mix carried R1 point values with match scores, making cross-table unreliable
+    if('ABCD'.includes(poolName)) {
+      const rawScores = {};
+      for(let ri = 1; ri < rows.length; ri++) {
+        const row = rows[ri];
+        const rowTeam = (row[0]||'').toString().trim();
+        if(!rowTeam || /^POOL/i.test(rowTeam)) continue;
 
-      teamCols.forEach((tc, ti) => {
-        if(normTeam(rowTeam) === normTeam(tc.name)) return; // self
-        const score = extractScore(row, tc.col - 1, 3);
-        if(!score) return;
-        const key = normTeam(rowTeam) + '|' + normTeam(tc.name);
-        rawScores[key] = {team1:rowTeam, team2:tc.name, t1Goals:score.mGoals, t2Goals:score.oGoals};
+        teamCols.forEach((tc, ti) => {
+          if(normTeam(rowTeam) === normTeam(tc.name)) return; // self
+          const score = extractScore(row, tc.col - 1, 3);
+          if(!score) return;
+          const key = normTeam(rowTeam) + '|' + normTeam(tc.name);
+          rawScores[key] = {team1:rowTeam, team2:tc.name, t1Goals:score.mGoals, t2Goals:score.oGoals};
+        });
+      }
+      // Only keep scores where both directions exist (filters out formula placeholder zeros)
+      for(const [key, score] of Object.entries(rawScores)) {
+        const reverseKey = normTeam(score.team2) + '|' + normTeam(score.team1);
+        if(rawScores[reverseKey]) {
+          allMatchScores[key] = score;
+        }
+      }
+
+      // Monument-specific: map scores to tracker node IDs
+      if(poolName === 'D') mapMonumentPoolScores(rows, teamCols, {
+        'DF Akademie':'pd1', 'Epworth':'pd2', 'Pretoria':'pd3'
       });
     }
-    // Only keep scores where both directions exist (filters out formula placeholder zeros)
-    for(const [key, score] of Object.entries(rawScores)) {
-      const reverseKey = normTeam(score.team2) + '|' + normTeam(score.team1);
-      if(rawScores[reverseKey]) {
-        allMatchScores[key] = score;
-      }
-    }
-
-    // Monument-specific: map scores to tracker node IDs
-    if(poolName === 'D') mapMonumentPoolScores(rows, teamCols, {
-      'DF Akademie':'pd1', 'Epworth':'pd2', 'Pretoria':'pd3'
-    });
-    if(poolName === 'E') mapMonumentPoolScores(rows, teamCols, getPoolEGNodeMap('E'));
-    if(poolName === 'G') mapMonumentPoolScores(rows, teamCols, getPoolEGNodeMap('G'));
   }
 
   // Recalculate points, GF, GA from actual match scores, then recalculate positions
@@ -1376,40 +1375,21 @@ async function syncSheets() {
     const allRows = await fetchRange('Scores','B:U');
     sheetPools = parseAllPoolData(allRows);
 
-    // Once R1 is complete, calculate R2 pool stats from R1 results + R2 matches
+    // Once R1 is complete, override R2 pool data with R1 carried values
+    // R2 cross-tables and sheet values are unreliable (organiser data entry errors)
+    // Use R1 sheet column O for points, R1 GF/GA as baseline
     if(isRoundOneComplete()) {
       buildRound2Pools();
       for(const p of ['E','F','G','H']) {
         if(!round2Comps[p] || !sheetPools[p]) continue;
-        // Override R2 pool stats: R1 carried + R2 new matches only
-        // R2 matches are ONLY between teams from different R1 pools
         sheetPools[p].forEach(t => {
           const cf = round2Comps[p].find(c => teamsMatch(normTeam(c.name), normTeam(t.name)));
           if(!cf) return;
-          // Start with R1 stats (from sheet columns O and P)
-          let pts = cf.r1Points, gf = cf.r1GF, ga = cf.r1GA, played = cf.r1Played;
-          // Only add R2 scores: matches between teams from DIFFERENT R1 pools
-          sheetPools[p].forEach(opp => {
-            if(opp.name === t.name) return;
-            const oppCf = round2Comps[p].find(c => teamsMatch(normTeam(c.name), normTeam(opp.name)));
-            if(!oppCf) return;
-            // Skip if same R1 pool — that's an R1 match already in carry-forward
-            if(cf.r1Pool === oppCf.r1Pool) return;
-            const k1 = normTeam(t.name) + '|' + normTeam(opp.name);
-            const k2 = normTeam(opp.name) + '|' + normTeam(t.name);
-            let s = allMatchScores[k1];
-            let my, their;
-            if(s) { my = s.t1Goals; their = s.t2Goals; }
-            else { s = allMatchScores[k2]; if(s) { my = s.t2Goals; their = s.t1Goals; } }
-            if(s === undefined) return;
-            played++; gf += my; ga += their;
-            if(my > their) pts += 3;
-            else if(my === their) pts += 1;
-          });
-          t.points = String(pts);
-          t.goalsFor = String(gf);
-          t.goalsAgainst = String(ga);
-          t.played = String(played);
+          // Use R1 carried values as the reliable baseline
+          t.points = String(cf.r1Points);
+          t.goalsFor = String(cf.r1GF);
+          t.goalsAgainst = String(cf.r1GA);
+          t.played = String(cf.r1Played);
         });
         calcPoolPositions(sheetPools[p]);
       }
