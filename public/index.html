@@ -1209,8 +1209,11 @@ function parseAllPoolData(allRows) {
   }
 
   // Recalculate points, GF, GA from actual match scores, then recalculate positions
+  // Only for R1 pools — R2 pools are handled separately in syncSheets with carry-forward
   for(const [poolName, teams] of Object.entries(result)) {
-    calcPoolStatsFromScores(teams);
+    if('ABCD'.includes(poolName)) {
+      calcPoolStatsFromScores(teams);
+    }
     calcPoolPositions(teams);
   }
 
