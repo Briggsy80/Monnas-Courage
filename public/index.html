@@ -464,13 +464,14 @@ function buildRound2Pools() {
       // Match by sheet position (col P = index 14, stored as sheetPosition)
       const team = r1Pool.find(t => t.sheetPosition === src.pos);
       if(!team) continue;
-      // Use sheet points (col O = index 13) and sheet GF/GA for carry-forward
+      // Use sheet column O for points (reliable), but use cross-table calculated
+      // GF/GA (sheet columns S/T are incomplete for some teams)
       teams.push({
         name: team.name,
         r1Pool: src.pool,
         r1Points: parseInt(team.sheetPoints)||0,
-        r1GF: parseInt(team.sheetGF)||0,
-        r1GA: parseInt(team.sheetGA)||0,
+        r1GF: parseInt(team.goalsFor)||0,
+        r1GA: parseInt(team.goalsAgainst)||0,
         r1Played: 3,
       });
     }
@@ -1388,25 +1389,36 @@ async function syncSheets() {
           t._r2played = cf.r1Played;
           t._r1Pool = cf.r1Pool;
         });
-        // Find R2 match scores from fixtures (Schedule tab data)
-        // Only count matches between teams from DIFFERENT R1 pools
+        // Find R2 match scores from fixture list (exactly as shown on Schedule)
+        // Scan each fixture, match teams to this pool, use the fixture's team order
         if(sheetFixtures) {
           const poolTeams = sheetPools[p].filter(t => t._r1Pool);
-          for(let i = 0; i < poolTeams.length; i++) {
-            for(let j = i+1; j < poolTeams.length; j++) {
-              const a = poolTeams[i], b = poolTeams[j];
-              if(a._r1Pool === b._r1Pool) continue; // same R1 pool, skip
-              // Search fixtures for this matchup and check for a score
-              const score = findFixtureScore(a.name, b.name);
-              if(!score) continue;
-              // a is team1 in the score
-              a._r2played++; b._r2played++;
-              a._r2gf += score.t1Goals; a._r2ga += score.t2Goals;
-              b._r2gf += score.t2Goals; b._r2ga += score.t1Goals;
-              if(score.t1Goals > score.t2Goals) { a._r2pts += 3; }
-              else if(score.t1Goals === score.t2Goals) { a._r2pts += 1; b._r2pts += 1; }
-              else { b._r2pts += 3; }
-            }
+          const counted = new Set(); // avoid double-counting same matchup
+          for(const f of sheetFixtures) {
+            if(/penalt|shoot/i.test(f.pool)) continue;
+            // Resolve fixture team names
+            const ft1 = resolveTeamName(f.team1);
+            const ft2 = resolveTeamName(f.team2);
+            // Find both teams in this R2 pool
+            const t1 = poolTeams.find(t => teamsMatch(normTeam(t.name), normTeam(ft1)));
+            const t2 = poolTeams.find(t => teamsMatch(normTeam(t.name), normTeam(ft2)));
+            if(!t1 || !t2 || t1 === t2) continue;
+            // Only R2 matches: teams from different R1 pools
+            if(t1._r1Pool === t2._r1Pool) continue;
+            // Avoid double-counting
+            const pairKey = [normTeam(t1.name), normTeam(t2.name)].sort().join('|');
+            if(counted.has(pairKey)) continue;
+            // Get the score as shown on Schedule (fixture team order)
+            const score = findFixtureScore(ft1, ft2);
+            if(!score) continue;
+            counted.add(pairKey);
+            // Fixture team1=ft1 matched to t1, fixture team2=ft2 matched to t2
+            t1._r2played++; t2._r2played++;
+            t1._r2gf += score.t1Goals; t1._r2ga += score.t2Goals;
+            t2._r2gf += score.t2Goals; t2._r2ga += score.t1Goals;
+            if(score.t1Goals > score.t2Goals) { t1._r2pts += 3; }
+            else if(score.t1Goals === score.t2Goals) { t1._r2pts += 1; t2._r2pts += 1; }
+            else { t2._r2pts += 3; }
           }
         }
         // Apply calculated values
