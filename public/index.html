@@ -203,7 +203,9 @@ details[open] .help-chevron{transform:rotate(90deg);}
 .pool-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;
   color:var(--gold);text-transform:uppercase;letter-spacing:1px;
   padding:8px 12px;background:var(--surface2);border-radius:8px 8px 0 0;border-bottom:2px solid var(--gold-dim);}
-.pool-table{width:100%;background:var(--surface);border-radius:0 0 8px 8px;overflow:hidden;border-collapse:collapse;}
+.pool-table{width:100%;background:var(--surface);border-radius:0 0 8px 8px;overflow:hidden;border-collapse:collapse;table-layout:fixed;}
+.pool-table th,.pool-table td{width:40px;}
+.pool-table th:first-child,.pool-table td:first-child{width:auto;}
 .pool-table th{background:var(--surface2);padding:7px 10px;font-family:'Barlow Condensed',sans-serif;
   font-weight:700;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;text-align:center;}
 .pool-table th:first-child{text-align:left;}
@@ -457,7 +459,7 @@ function buildRound2Pools() {
     for(const src of sources) {
       const r1Pool = sheetPools[src.pool];
       if(!r1Pool) continue;
-      const team = r1Pool.find(t => t.position === src.pos);
+      const team = r1Pool.find(t => t.sheetPosition === src.pos);
       if(!team) continue;
       teams.push({
         name: team.name,
@@ -1468,12 +1470,13 @@ function parsePoolRows(rows) {
     const name = (row[0]||'').toString().trim();
     if(!name || /^POOL/i.test(name)) continue;
     const sheetPts = ptsIdx >= 0 && row[ptsIdx] !== undefined ? row[ptsIdx].toString() : '—';
+    const sheetPos = posIdx >= 0 && row[posIdx] !== undefined ? row[posIdx].toString() : '—';
     const sheetGF  = gfIdx >= 0 && row[gfIdx] !== undefined ? row[gfIdx].toString() : '—';
     const sheetGA  = gaIdx >= 0 && row[gaIdx] !== undefined ? row[gaIdx].toString() : '—';
     teams.push({
       name,
       points: sheetPts, sheetPoints: sheetPts,
-      position:     posIdx >= 0 && row[posIdx] !== undefined ? row[posIdx].toString() : '—',
+      position: sheetPos, sheetPosition: sheetPos,
       goalsFor: sheetGF, sheetGF,
       goalsAgainst: sheetGA, sheetGA,
     });
