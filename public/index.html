@@ -462,9 +462,9 @@ function buildRound2Pools() {
       teams.push({
         name: team.name,
         r1Pool: src.pool,
-        r1Points: parseInt(team.points)||0,
-        r1GF: parseInt(team.goalsFor)||0,
-        r1GA: parseInt(team.goalsAgainst)||0,
+        r1Points: parseInt(team.sheetPoints)||0,
+        r1GF: parseInt(team.sheetGF)||0,
+        r1GA: parseInt(team.sheetGA)||0,
       });
     }
     if(teams.length > 0) round2Comps[r2Pool] = teams;
@@ -1467,12 +1467,15 @@ function parsePoolRows(rows) {
     if(!row) continue;
     const name = (row[0]||'').toString().trim();
     if(!name || /^POOL/i.test(name)) continue;
+    const sheetPts = ptsIdx >= 0 && row[ptsIdx] !== undefined ? row[ptsIdx].toString() : '—';
+    const sheetGF  = gfIdx >= 0 && row[gfIdx] !== undefined ? row[gfIdx].toString() : '—';
+    const sheetGA  = gaIdx >= 0 && row[gaIdx] !== undefined ? row[gaIdx].toString() : '—';
     teams.push({
       name,
-      points:       ptsIdx >= 0 && row[ptsIdx] !== undefined ? row[ptsIdx].toString() : '—',
+      points: sheetPts, sheetPoints: sheetPts,
       position:     posIdx >= 0 && row[posIdx] !== undefined ? row[posIdx].toString() : '—',
-      goalsFor:     gfIdx >= 0 && row[gfIdx] !== undefined ? row[gfIdx].toString() : '—',
-      goalsAgainst: gaIdx >= 0 && row[gaIdx] !== undefined ? row[gaIdx].toString() : '—',
+      goalsFor: sheetGF, sheetGF,
+      goalsAgainst: sheetGA, sheetGA,
     });
   }
   // Calculate positions locally from points, goal diff, goals for
@@ -1556,11 +1559,17 @@ function calcPoolPositions(teams) {
   if(parsed.every(p => p.pts === 0 && p.gf === 0 && p.ga === 0)) return;
   // Sort: points desc, then goal diff desc, then goals for desc
   parsed.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
-  // Assign calculated positions
+  // Assign positions: use calculated sort, but respect sheet position for tied teams
+  // (ties may have been decided by shootout — only organiser knows the result)
   parsed.forEach((p, i) => {
     p.team.calcPosition = String(i + 1);
-    // Use calculated position if sheet position is missing
-    if(!p.team.position || p.team.position === '—' || p.team.position === '' || p.team.position === '0') {
+    // Check if tied with adjacent team on all criteria
+    const prev = i > 0 ? parsed[i-1] : null;
+    const tied = prev && prev.pts === p.pts && prev.gd === p.gd && prev.gf === p.gf;
+    const sheetPos = parseInt(p.team.position);
+    if(tied && sheetPos > 0) {
+      // Keep organiser's position for tied teams (shootout result)
+    } else {
       p.team.position = p.team.calcPosition;
     }
   });
