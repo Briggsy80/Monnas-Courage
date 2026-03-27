@@ -1357,17 +1357,38 @@ async function syncSheets() {
     const allRows = await fetchRange('Scores','B:U');
     sheetPools = parseAllPoolData(allRows);
 
-    // Once R1 is complete, build R2 compositions and fix R2 played counts
+    // Once R1 is complete, calculate R2 pool stats from R1 results + R2 matches
     if(isRoundOneComplete()) {
       buildRound2Pools();
       for(const p of ['E','F','G','H']) {
-        if(sheetPools[p] && sheetPools[p].length) {
-          // Set played=3 (R1 carry-forward) for teams without R2 cross-table scores
-          sheetPools[p].forEach(t => {
-            if(!t._fromCrossTable) t.played = '3';
+        if(!round2Comps[p] || !sheetPools[p]) continue;
+        // Override R2 pool stats with our own calculation:
+        // R1 carried stats + any R2 cross-table match scores
+        sheetPools[p].forEach(t => {
+          const cf = round2Comps[p].find(c => teamsMatch(normTeam(c.name), normTeam(t.name)));
+          if(!cf) return;
+          // Start with R1 stats
+          let pts = cf.r1Points, gf = cf.r1GF, ga = cf.r1GA, played = 3;
+          // Add any R2 match scores from cross-table
+          sheetPools[p].forEach(opp => {
+            if(opp.name === t.name) return;
+            const k1 = normTeam(t.name) + '|' + normTeam(opp.name);
+            const k2 = normTeam(opp.name) + '|' + normTeam(t.name);
+            let s = allMatchScores[k1];
+            let my, their;
+            if(s) { my = s.t1Goals; their = s.t2Goals; }
+            else { s = allMatchScores[k2]; if(s) { my = s.t2Goals; their = s.t1Goals; } }
+            if(s === undefined) return;
+            played++; gf += my; ga += their;
+            if(my > their) pts += 3;
+            else if(my === their) pts += 1;
           });
-          calcPoolPositions(sheetPools[p]);
-        }
+          t.points = String(pts);
+          t.goalsFor = String(gf);
+          t.goalsAgainst = String(ga);
+          t.played = String(played);
+        });
+        calcPoolPositions(sheetPools[p]);
       }
     }
 
