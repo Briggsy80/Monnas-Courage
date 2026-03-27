@@ -1357,12 +1357,15 @@ async function syncSheets() {
     const allRows = await fetchRange('Scores','B:U');
     sheetPools = parseAllPoolData(allRows);
 
-    // Build R2 compositions and apply carry-forward once R1 is complete
+    // Once R1 is complete, build R2 compositions and fix R2 played counts
     if(isRoundOneComplete()) {
       buildRound2Pools();
       for(const p of ['E','F','G','H']) {
         if(sheetPools[p] && sheetPools[p].length) {
-          applyCarryForward(p, sheetPools[p]);
+          // Set played=3 (R1 carry-forward) for teams without R2 cross-table scores
+          sheetPools[p].forEach(t => {
+            if(!t._fromCrossTable) t.played = '3';
+          });
           calcPoolPositions(sheetPools[p]);
         }
       }
