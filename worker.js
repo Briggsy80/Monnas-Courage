@@ -111,34 +111,40 @@ async function handleStreams() {
   try {
     const events = [];
     for (const status of ['live', 'archived', 'upcoming']) {
-      const resp = await fetch(PIXELLOT_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-project-id': PIXELLOT_PROJECT,
-        },
-        body: JSON.stringify({
-          filters: { 'identities.id': TOURNAMENT_SUBCATEGORY, status },
-          limit: 100,
-          offset: 0,
-        }),
-      });
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      const entries = data?.content?.entries || [];
-      for (const e of entries) {
-        const title = (e.title || '').toUpperCase();
-        if (!title.includes('HOCKEY')) continue;
-        const home = e.eventTeams?.homeTeam?.name || '';
-        const away = e.eventTeams?.awayTeam?.name || '';
-        events.push({
-          id: e._id,
-          home,
-          away,
-          status: e.status || status,
-          date: e.event_date || 0,
-          url: `https://live.supersportschools.com/events/${e._id}/`,
+      // Paginate through all results (API caps at 20 per page)
+      let offset = 0;
+      while (true) {
+        const resp = await fetch(PIXELLOT_API, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-project-id': PIXELLOT_PROJECT,
+          },
+          body: JSON.stringify({
+            filters: { 'identities.id': TOURNAMENT_SUBCATEGORY, status },
+            limit: 20,
+            offset,
+          }),
         });
+        if (!resp.ok) break;
+        const data = await resp.json();
+        const entries = data?.content?.entries || [];
+        for (const e of entries) {
+          const title = (e.title || '').toUpperCase();
+          if (!title.includes('HOCKEY')) continue;
+          const home = e.eventTeams?.homeTeam?.name || '';
+          const away = e.eventTeams?.awayTeam?.name || '';
+          events.push({
+            id: e._id,
+            home,
+            away,
+            status: e.status || status,
+            date: e.event_date || 0,
+            url: `https://live.supersportschools.com/events/${e._id}/`,
+          });
+        }
+        if (entries.length < 20) break; // last page
+        offset += 20;
       }
     }
     return new Response(JSON.stringify({ events }), {
