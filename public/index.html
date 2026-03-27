@@ -1255,8 +1255,10 @@ function getSheetPosition(nodeId) {
   else if(nodeId === 'ask_g') poolData = sheetPools.G;
   if(!poolData) return null;
   const m = poolData.find(t => /monument/i.test(t.name));
-  if(!m || !m.position || m.position === '—' || m.position === '') return null;
-  const pos = parseInt(m.position);
+  if(!m) return null;
+  // Use sheet's original position (column P) — definitive including shootout results
+  const pos = parseInt(m.sheetPosition) || parseInt(m.position);
+  if(!pos) return null;
   const labels = {1:'1st',2:'2nd',3:'3rd',4:'4th'};
   return labels[pos] || null;
 }
