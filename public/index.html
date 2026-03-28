@@ -1118,7 +1118,13 @@ function renderSchedule() {
       const isPenalty = /penalt|shoot/i.test(f.pool);
       const poolScoreM = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
       const poolScore = poolScoreM ? {t1Goals:parseInt(poolScoreM[1]), t2Goals:parseInt(poolScoreM[2])} : null;
-      const score = isPenalty ? null : (findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore);
+      // For knockout days (3+4), only use knockout section scores or pool column scores
+      // Don't use findFixtureScore which would match earlier round pool matches between same teams
+      const isKnockoutDay = d === 'DAY 3' || d === 'DAY 4';
+      const fixtureScore = isPenalty ? null :
+        isKnockoutDay ? (poolScore || findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2)) :
+        (findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore);
+      const score = fixtureScore;
       allFixtures.push({f, t1, t2, score, day:d});
     });
   });
@@ -1252,6 +1258,7 @@ function extractScore(row, colStart, numCols) {
 // Parse all pool data dynamically from a broad Scores range
 // Returns {A:{standings, scores}, B:{...}, ...}
 let allMatchScores = {}; // "normTeam1|normTeam2" → {t1Goals, t2Goals, team1, team2}
+let knockoutScores = {}; // same format, only from knockout section
 
 function parseAllPoolData(allRows) {
   const pools = {};
@@ -1283,6 +1290,7 @@ function parseAllPoolData(allRows) {
   // Process each pool
   const result = {};
   allMatchScores = {};
+  knockoutScores = {};
   sheetScores = {};
 
   for(const [poolName, rows] of Object.entries(pools)) {
@@ -1371,6 +1379,8 @@ function parseAllPoolData(allRows) {
     const revKey = normTeam(c) + '|' + normTeam(b);
     allMatchScores[key] = {team1:b, team2:c, t1Goals, t2Goals};
     allMatchScores[revKey] = {team1:c, team2:b, t1Goals:t2Goals, t2Goals:t1Goals};
+    knockoutScores[key] = allMatchScores[key];
+    knockoutScores[revKey] = allMatchScores[revKey];
   }
 
   return result;
@@ -1420,6 +1430,21 @@ function getSheetPosition(nodeId) {
 }
 
 // Look up score for any fixture by team names
+// Find score only from knockout section (not pool matches)
+function findKnockoutScore(team1, team2) {
+  const k1 = normTeam(team1), k2 = normTeam(team2);
+  const s = knockoutScores[k1+'|'+k2];
+  if(s) return {t1Goals:s.t1Goals, t2Goals:s.t2Goals};
+  const s2 = knockoutScores[k2+'|'+k1];
+  if(s2) return {t1Goals:s2.t2Goals, t2Goals:s2.t1Goals};
+  for(const [key, score] of Object.entries(knockoutScores)) {
+    const [a, b] = key.split('|');
+    if(teamsMatch(k1,a) && teamsMatch(k2,b)) return {t1Goals:score.t1Goals, t2Goals:score.t2Goals};
+    if(teamsMatch(k1,b) && teamsMatch(k2,a)) return {t1Goals:score.t2Goals, t2Goals:score.t1Goals};
+  }
+  return null;
+}
+
 function findFixtureScore(team1, team2) {
   const k1 = normTeam(team1), k2 = normTeam(team2);
   // Exact match
@@ -1529,11 +1554,17 @@ async function syncSheets() {
     sheetFixtures = parseFixtures(fixRows);
 
     // Pool data + knockout scores from separate ranges
-    // (gviz trims empty rows, so knockout section after gap needs separate fetch)
+    // (gviz trims empty rows between pools and knockouts)
     const allRows = await fetchRange('Scores','B:U');
-    let knockoutRows = [];
-    try { knockoutRows = await fetchRange('Scores','B60:F90'); } catch(e) {}
-    // Append knockout rows with "TEAM 1" marker for the parser
+    // Knockout: fetch team names and scores separately then merge columns
+    // (gviz doesn't return column E when fetching B:F for these rows)
+    let koBC = [], koDE = [];
+    try { koBC = await fetchRange('Scores','B65:C90'); } catch(e) {}
+    try { koDE = await fetchRange('Scores','D65:E90'); } catch(e) {}
+    const knockoutRows = koBC.map((r, i) => {
+      const de = koDE[i] || [];
+      return [r[0]||'', r[1]||'', de[0]||'', de[1]||''];
+    });
     const combinedRows = [...allRows, ...knockoutRows];
     sheetPools = parseAllPoolData(combinedRows);
 
