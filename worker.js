@@ -151,12 +151,16 @@ async function handleStreams() {
         for (const e of entries) {
           const title = (e.title || '').toUpperCase();
           if (!title.includes('HOCKEY')) continue;
-          const home = e.eventTeams?.homeTeam?.name || '';
-          const away = e.eventTeams?.awayTeam?.name || '';
+          const homeTeam = e.eventTeams?.homeTeam || {};
+          const awayTeam = e.eventTeams?.awayTeam || {};
           events.push({
             id: e._id,
-            home,
-            away,
+            home: homeTeam.name || '',
+            away: awayTeam.name || '',
+            homeId: homeTeam.teamId || homeTeam.id || '',
+            awayId: awayTeam.teamId || awayTeam.id || '',
+            homeLogo: homeTeam.logo || '',
+            awayLogo: awayTeam.logo || '',
             status: e.status || status,
             date: e.event_date || 0,
             url: `https://live.supersportschools.com/events/${e._id}/`,
