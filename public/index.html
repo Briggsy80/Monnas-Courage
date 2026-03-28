@@ -483,9 +483,8 @@ function resolveTeamName(name) {
   const m = name.match(/(\d)(?:st|nd|rd|th)\s+(?:in |from )?Pool\s+([A-H])/i);
   if(!m) return name;
   const pos = m[1], poolLetter = m[2].toUpperCase();
-  // Only resolve once the relevant round is complete
-  if('ABCD'.includes(poolLetter) && !isRoundOneComplete()) return name;
-  if('EFGH'.includes(poolLetter) && !isRoundTwoComplete()) return name;
+  // Only resolve once R1 is complete (R2 pool compositions are known)
+  if(!isRoundOneComplete()) return name;
   const pool = sheetPools[poolLetter];
   if(!pool) return name;
   const team = pool.find(t => t.position === pos);
@@ -686,6 +685,25 @@ function renderLog() {
     return;
   }
 
+  // Helper: resolve opponent name from placeholder to actual team name
+  function resolveOpp(node) {
+    const opp = node.homeIsMonument ? node.away : node.home;
+    return resolveTeamName(opp) || opp;
+  }
+  // Helper: find score for a Monument match from any source
+  function findMatchScore(node, historyScore) {
+    if(historyScore) return historyScore;
+    const opp = resolveOpp(node);
+    const s = findFixtureScore('Hoërskool Monument', opp) || findFixtureScore('H/S Monument', opp);
+    if(s) {
+      // Convert t1Goals/t2Goals to mGoals/oGoals (Monument's perspective)
+      return node.homeIsMonument
+        ? {mGoals:s.t1Goals, oGoals:s.t2Goals}
+        : {mGoals:s.t2Goals, oGoals:s.t1Goals};
+    }
+    return null;
+  }
+
   let html = '';
   entries.forEach(e => {
     if(e.type === 'select') {
@@ -710,12 +728,14 @@ function renderLog() {
       return;
     }
     if(e.type === 'upcoming') {
-      const scoreStr = e.score ? `${e.score.mGoals} – ${e.score.oGoals}` : '';
+      const opp = resolveOpp(e.node);
+      const score = findMatchScore(e.node, e.score);
+      const scoreStr = score ? `${score.mGoals} – ${score.oGoals}` : '';
       html += `<div class="log-item" style="border-left-color:var(--gold);background:rgba(232,184,75,0.08)">
         <span class="log-badge" style="background:var(--gold);color:#1a1a2e">NEXT</span>
         <div class="log-body">
           <div class="log-match">${e.node.phase}</div>
-          <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
+          <div class="log-score-line">Monument vs ${opp}</div>
           ${scoreStr ? `<div class="log-score">${scoreStr}</div>` : ''}
           <div class="log-time">${e.node.day} · ${e.node.time}</div>
         </div>
@@ -723,11 +743,12 @@ function renderLog() {
       return;
     }
     if(e.type === 'future') {
+      const opp = resolveOpp(e.node);
       html += `<div class="log-item" style="border-left-color:var(--border)">
         <span class="log-badge" style="background:var(--surface2);color:var(--muted)">TBD</span>
         <div class="log-body">
           <div class="log-match" style="color:var(--muted)">${e.node.phase}</div>
-          <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
+          <div class="log-score-line">Monument vs ${opp}</div>
           <div class="log-time">${e.node.day} · ${e.node.time}</div>
         </div>
       </div>`;
@@ -736,9 +757,10 @@ function renderLog() {
     // Completed result
     const cls = e.result==='win'?'win':e.result==='draw'?'draw':'loss';
     const badge = e.result==='win'?'WIN':e.result==='draw'?'DRAW':'LOSS';
-    const opp = e.node.homeIsMonument ? e.node.away : e.node.home;
-    const scoreStr = e.score ? `<div class="log-score">${e.score.mGoals} – ${e.score.oGoals}</div>` : '';
-    const src = e.fromSheet || e.score ? '<span class="score-src live">from sheet</span>' : '<span class="score-src manual">manual</span>';
+    const opp = resolveOpp(e.node);
+    const score = findMatchScore(e.node, e.score);
+    const scoreStr = score ? `<div class="log-score">${score.mGoals} – ${score.oGoals}</div>` : '';
+    const src = e.fromSheet || score ? '<span class="score-src live">from sheet</span>' : '<span class="score-src manual">manual</span>';
     html += `<div class="log-item ${cls}">
       <span class="log-badge">${badge}</span>
       <div class="log-body">
@@ -1325,7 +1347,8 @@ function parseAllPoolData(allRows) {
   }
 
   // Parse knockout/placement scores from rows AFTER the "TEAM 1" header
-  // Format: column B = team1, column C = team2, column D = score (e.g. "4-0")
+  // Format: B=team1, C=team2, D=match label, E=score (e.g. "4 - 0")
+  // Also handles: B=team1, C=team2, D=score (older format)
   let inKnockouts = false;
   for(let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
@@ -1334,9 +1357,14 @@ function parseAllPoolData(allRows) {
     if(b === 'TEAM 1') { inKnockouts = true; continue; }
     if(!inKnockouts) continue;
     const c = (row[1]||'').toString().trim();
-    const d = (row[2]||'').toString().trim();
-    if(!b || !c || !d) continue;
-    const sm = d.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+    if(!b || !c) continue;
+    // Look for score in columns D, E, F (organiser may put it in different places)
+    let sm = null;
+    for(let col = 2; col <= 5 && col < row.length; col++) {
+      const v = (row[col]||'').toString().trim();
+      sm = v.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      if(sm) break;
+    }
     if(!sm) continue;
     const t1Goals = parseInt(sm[1]), t2Goals = parseInt(sm[2]);
     const key = normTeam(b) + '|' + normTeam(c);
