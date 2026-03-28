@@ -988,6 +988,7 @@ function buildKnockoutResults() {
     if(!fixtures.length) return;
 
     // Check if any fixture has a score (from allMatchScores or pool column)
+    const koLabelCount = {};
     const rows = fixtures.map(f => {
       let t1 = resolveTeamName(f.team1);
       let t2 = resolveTeamName(f.team2);
@@ -998,9 +999,12 @@ function buildKnockoutResults() {
       const kf = knockoutFixtures[poolLabel];
       let score = null;
       if(kf && kf.length) {
-        if(kf[0].team1 && !/^(winner|loser)/i.test(kf[0].team1)) t1 = kf[0].team1;
-        if(kf[0].team2 && !/^(winner|loser)/i.test(kf[0].team2)) t2 = kf[0].team2;
-        score = kf[0].score || null;
+        const idx = koLabelCount[poolLabel] || 0;
+        koLabelCount[poolLabel] = idx + 1;
+        const entry = kf[Math.min(idx, kf.length - 1)];
+        if(entry.team1 && !/^(winner|loser)/i.test(entry.team1)) t1 = entry.team1;
+        if(entry.team2 && !/^(winner|loser)/i.test(entry.team2)) t2 = entry.team2;
+        score = entry.score || null;
       }
       if(!score) score = findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2) || poolScore;
       const isM = /monument/i.test(t1) || /monument/i.test(t2);
@@ -1119,6 +1123,7 @@ function renderSchedule() {
 
   // First pass: find which fixtures have scores so we can mark the last one
   const allFixtures = [];
+  const labelCount = {}; // track occurrences of duplicate labels (e.g. "Semi" appears twice)
   dayOrder.forEach(d => {
     if(!days[d]) return;
     days[d].forEach(f => {
@@ -1134,10 +1139,13 @@ function renderSchedule() {
       if(isKnockoutDay && !isPenalty) {
         const kf = knockoutFixtures[poolLabel];
         if(kf && kf.length) {
-          // Use team names from Scores sheet (organiser updates these before Fixtures sheet)
-          if(kf[0].team1 && !/^(winner|loser)/i.test(kf[0].team1)) t1 = kf[0].team1;
-          if(kf[0].team2 && !/^(winner|loser)/i.test(kf[0].team2)) t2 = kf[0].team2;
-          score = kf[0].score || null;
+          // For duplicate labels (e.g. two "Semi" entries), use the correct occurrence
+          const idx = labelCount[poolLabel] || 0;
+          labelCount[poolLabel] = idx + 1;
+          const entry = kf[Math.min(idx, kf.length - 1)];
+          if(entry.team1 && !/^(winner|loser)/i.test(entry.team1)) t1 = entry.team1;
+          if(entry.team2 && !/^(winner|loser)/i.test(entry.team2)) t2 = entry.team2;
+          score = entry.score || null;
         }
         if(!score) score = poolScore || findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2);
       } else if(!isPenalty) {
