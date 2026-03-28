@@ -989,11 +989,20 @@ function buildKnockoutResults() {
 
     // Check if any fixture has a score (from allMatchScores or pool column)
     const rows = fixtures.map(f => {
-      const t1 = resolveTeamName(f.team1);
-      const t2 = resolveTeamName(f.team2);
+      let t1 = resolveTeamName(f.team1);
+      let t2 = resolveTeamName(f.team2);
+      const poolLabel = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/) ? '' : f.pool;
       const poolScoreM = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
       const poolScore = poolScoreM ? {t1Goals:parseInt(poolScoreM[1]),t2Goals:parseInt(poolScoreM[2])} : null;
-      const score = findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2) || poolScore;
+      // Use knockout section for team names and scores
+      const kf = knockoutFixtures[poolLabel];
+      let score = null;
+      if(kf && kf.length) {
+        if(kf[0].team1 && !/^(winner|loser)/i.test(kf[0].team1)) t1 = kf[0].team1;
+        if(kf[0].team2 && !/^(winner|loser)/i.test(kf[0].team2)) t2 = kf[0].team2;
+        score = kf[0].score || null;
+      }
+      if(!score) score = findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2) || poolScore;
       const isM = /monument/i.test(t1) || /monument/i.test(t2);
       return {t1, t2, score, time: f.time, isM, pool: f.pool};
     });
@@ -1113,18 +1122,27 @@ function renderSchedule() {
   dayOrder.forEach(d => {
     if(!days[d]) return;
     days[d].forEach(f => {
-      const t1 = resolveTeamName(f.team1);
-      const t2 = resolveTeamName(f.team2);
+      let t1 = resolveTeamName(f.team1);
+      let t2 = resolveTeamName(f.team2);
       const isPenalty = /penalt|shoot/i.test(f.pool);
       const poolScoreM = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
       const poolScore = poolScoreM ? {t1Goals:parseInt(poolScoreM[1]), t2Goals:parseInt(poolScoreM[2])} : null;
-      // For knockout days (3+4), only use knockout section scores or pool column scores
-      // Don't use findFixtureScore which would match earlier round pool matches between same teams
+      const poolLabel = poolScoreM ? '' : f.pool;
       const isKnockoutDay = d === 'DAY 3' || d === 'DAY 4';
-      const fixtureScore = isPenalty ? null :
-        isKnockoutDay ? (poolScore || findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2)) :
-        (findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore);
-      const score = fixtureScore;
+      let score = null;
+      // For knockout days, use Scores sheet knockout section for team names AND scores
+      if(isKnockoutDay && !isPenalty) {
+        const kf = knockoutFixtures[poolLabel];
+        if(kf && kf.length) {
+          // Use team names from Scores sheet (organiser updates these before Fixtures sheet)
+          if(kf[0].team1 && !/^(winner|loser)/i.test(kf[0].team1)) t1 = kf[0].team1;
+          if(kf[0].team2 && !/^(winner|loser)/i.test(kf[0].team2)) t2 = kf[0].team2;
+          score = kf[0].score || null;
+        }
+        if(!score) score = poolScore || findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2);
+      } else if(!isPenalty) {
+        score = findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore;
+      }
       allFixtures.push({f, t1, t2, score, day:d});
     });
   });
@@ -1153,14 +1171,12 @@ function renderSchedule() {
     days[d].forEach(f => {
       const fx = allFixtures[fixtureIdx];
       const isM = /monument/i.test(fx.t1) || /monument/i.test(fx.t2);
-      // Check if organiser put score in the pool column (e.g. "4 - 0" instead of "M55")
-      const poolScoreMatch = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
-      const poolScore = poolScoreMatch ? {t1Goals:parseInt(poolScoreMatch[1]), t2Goals:parseInt(poolScoreMatch[2])} : null;
-      const score = fx.score || poolScore;
+      const score = fx.score;
       const timeOrScore = score
         ? `<span class="fix-score">${score.t1Goals} – ${score.t2Goals}</span>`
         : f.time;
-      const poolLabel = poolScoreMatch ? '' : f.pool; // don't show score as pool badge
+      const poolScoreMatch = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      const poolLabel = poolScoreMatch ? '' : f.pool;
       // Mark the last scored fixture for auto-scroll
       const scrollId = (fixtureIdx === lastScoredIdx + 4) ? ' id="scroll-target"' : '';
       const stream = findStreamLink(fx.t1, fx.t2, fx.day);
@@ -1259,6 +1275,7 @@ function extractScore(row, colStart, numCols) {
 // Returns {A:{standings, scores}, B:{...}, ...}
 let allMatchScores = {}; // "normTeam1|normTeam2" → {t1Goals, t2Goals, team1, team2}
 let knockoutScores = {}; // same format, only from knockout section
+let knockoutFixtures = {}; // match label → {team1, team2, score} from Scores sheet knockout section
 
 function parseAllPoolData(allRows) {
   const pools = {};
@@ -1358,6 +1375,7 @@ function parseAllPoolData(allRows) {
   // Format: B=team1, C=team2, D=match label, E=score (e.g. "4 - 0")
   // Also handles: B=team1, C=team2, D=score (older format)
   let inKnockouts = false;
+  knockoutFixtures = {};
   for(let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
     if(!row) continue;
@@ -1366,7 +1384,14 @@ function parseAllPoolData(allRows) {
     if(!inKnockouts) continue;
     const c = (row[1]||'').toString().trim();
     if(!b || !c) continue;
-    // Look for score in columns D, E, F (organiser may put it in different places)
+    // Column D = match label (M55, Q1, Semi, etc.)
+    const matchLabel = (row[2]||'').toString().trim();
+    // Store team names by match label (organiser updates these before Fixtures sheet)
+    if(matchLabel) {
+      knockoutFixtures[matchLabel] = knockoutFixtures[matchLabel] || [];
+      knockoutFixtures[matchLabel].push({team1:b, team2:c});
+    }
+    // Look for score in columns D, E, F
     let sm = null;
     for(let col = 2; col <= 5 && col < row.length; col++) {
       const v = (row[col]||'').toString().trim();
@@ -1381,6 +1406,10 @@ function parseAllPoolData(allRows) {
     allMatchScores[revKey] = {team1:c, team2:b, t1Goals:t2Goals, t2Goals:t1Goals};
     knockoutScores[key] = allMatchScores[key];
     knockoutScores[revKey] = allMatchScores[revKey];
+    // Also store score by match label
+    if(matchLabel && knockoutFixtures[matchLabel]) {
+      knockoutFixtures[matchLabel].forEach(kf => { kf.score = {t1Goals, t2Goals}; });
+    }
   }
 
   return result;
