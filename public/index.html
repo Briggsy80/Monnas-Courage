@@ -927,9 +927,25 @@ function buildKnockoutResults() {
     {label:'FINAL', matches:['FINAL']},
   ];
 
+  // Collect all known section match labels
+  const allSectionLabels = new Set();
+  sections.forEach(sec => sec.matches.forEach(m => allSectionLabels.add(m)));
+
+  // Add a section for fixtures where the organiser replaced the label with a score
+  // (e.g. "M55" became "4 - 0")
+  const scoredKnockouts = sheetFixtures.filter(f => {
+    const isScorePool = /^\d+\s*[-–]\s*\d+$/.test(f.pool);
+    const isKnockoutDay = f.day === 'DAY 3' || f.day === 'DAY 4';
+    const isInSection = allSectionLabels.has(f.pool);
+    return isScorePool && isKnockoutDay && !isInSection;
+  });
+  if(scoredKnockouts.length) {
+    sections.unshift({label:'Completed', matches:[], _fixtures: scoredKnockouts});
+  }
+
   let html = '', hasAny = false;
   sections.forEach(sec => {
-    const fixtures = sheetFixtures.filter(f => sec.matches.includes(f.pool) || sec.matches.includes(f.pool.replace(/\s*-\s*\d+/,'').trim()));
+    const fixtures = sec._fixtures || sheetFixtures.filter(f => sec.matches.includes(f.pool));
     if(!fixtures.length) return;
 
     // Check if any fixture has a score (from allMatchScores or pool column)
