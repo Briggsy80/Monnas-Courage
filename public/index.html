@@ -483,9 +483,8 @@ function resolveTeamName(name) {
   const m = name.match(/(\d)(?:st|nd|rd|th)\s+(?:in |from )?Pool\s+([A-H])/i);
   if(!m) return name;
   const pos = m[1], poolLetter = m[2].toUpperCase();
-  // Only resolve once the relevant round is complete
-  if('ABCD'.includes(poolLetter) && !isRoundOneComplete()) return name;
-  if('EFGH'.includes(poolLetter) && !isRoundTwoComplete()) return name;
+  // Only resolve once R1 is complete (R2 pool compositions are known)
+  if(!isRoundOneComplete()) return name;
   const pool = sheetPools[poolLetter];
   if(!pool) return name;
   const team = pool.find(t => t.position === pos);
@@ -697,8 +696,10 @@ function renderLog() {
     const opp = resolveOpp(node);
     const s = findFixtureScore('Hoërskool Monument', opp) || findFixtureScore('H/S Monument', opp);
     if(s) {
-      // Determine which side is Monument
-      return node.homeIsMonument ? s : {mGoals:s.t2Goals, oGoals:s.t1Goals};
+      // Convert t1Goals/t2Goals to mGoals/oGoals (Monument's perspective)
+      return node.homeIsMonument
+        ? {mGoals:s.t1Goals, oGoals:s.t2Goals}
+        : {mGoals:s.t2Goals, oGoals:s.t1Goals};
     }
     return null;
   }
