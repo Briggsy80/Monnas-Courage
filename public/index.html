@@ -1347,7 +1347,8 @@ function parseAllPoolData(allRows) {
   }
 
   // Parse knockout/placement scores from rows AFTER the "TEAM 1" header
-  // Format: column B = team1, column C = team2, column D = score (e.g. "4-0")
+  // Format: B=team1, C=team2, D=match label, E=score (e.g. "4 - 0")
+  // Also handles: B=team1, C=team2, D=score (older format)
   let inKnockouts = false;
   for(let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
@@ -1356,9 +1357,14 @@ function parseAllPoolData(allRows) {
     if(b === 'TEAM 1') { inKnockouts = true; continue; }
     if(!inKnockouts) continue;
     const c = (row[1]||'').toString().trim();
-    const d = (row[2]||'').toString().trim();
-    if(!b || !c || !d) continue;
-    const sm = d.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+    if(!b || !c) continue;
+    // Look for score in columns D, E, F (organiser may put it in different places)
+    let sm = null;
+    for(let col = 2; col <= 5 && col < row.length; col++) {
+      const v = (row[col]||'').toString().trim();
+      sm = v.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      if(sm) break;
+    }
     if(!sm) continue;
     const t1Goals = parseInt(sm[1]), t2Goals = parseInt(sm[2]);
     const key = normTeam(b) + '|' + normTeam(c);
