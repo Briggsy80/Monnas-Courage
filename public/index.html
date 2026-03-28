@@ -1528,9 +1528,14 @@ async function syncSheets() {
     const fixRows = await fetchRange('Fixtures','A:D');
     sheetFixtures = parseFixtures(fixRows);
 
-    // All pool data in one fetch — dynamically finds pool headers
+    // Pool data + knockout scores from separate ranges
+    // (gviz trims empty rows, so knockout section after gap needs separate fetch)
     const allRows = await fetchRange('Scores','B:U');
-    sheetPools = parseAllPoolData(allRows);
+    let knockoutRows = [];
+    try { knockoutRows = await fetchRange('Scores','B60:F90'); } catch(e) {}
+    // Append knockout rows with "TEAM 1" marker for the parser
+    const combinedRows = [...allRows, ...knockoutRows];
+    sheetPools = parseAllPoolData(combinedRows);
 
     // Once R1 is complete, calculate R2 standings ourselves:
     // R1 baseline (sheet col O/GF/GA) + R2 match scores from fixtures
