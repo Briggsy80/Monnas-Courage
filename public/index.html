@@ -815,7 +815,14 @@ function renderPoolTab() {
   }
 
   if(r1Complete && hasR2Data) {
-    // Round 2 is current (or just completed if r2Complete)
+    // Show knockout results if any matches have been played
+    const knockoutHtml = buildKnockoutResults();
+    if(knockoutHtml) {
+      html += buildRoundHeader('Knockout Results');
+      html += knockoutHtml;
+    }
+
+    // Round 2 pools
     if(r2Complete) {
       html += buildCollapsedRound('Round 2', r2);
     } else {
@@ -899,6 +906,100 @@ function buildPlayoffBracket() {
 function ordSuffix(n) {
   n = String(n);
   if(n==='1') return 'st'; if(n==='2') return 'nd'; if(n==='3') return 'rd'; return 'th';
+}
+
+function buildKnockoutResults() {
+  if(!sheetFixtures) return '';
+  // Group knockout fixtures by category
+  const sections = [
+    {label:'Bottom 8 — Round 1', matches:['M55','M56','M57','M58']},
+    {label:'Top 8 — Quarter-Finals', matches:['Q1','Q2','Q3','Q4']},
+    {label:'Bottom 8 — Round 2', matches:['M59','M60','M61','M62']},
+    {label:'Top 8 — Semi-Finals', matches:['Semi']},
+    {label:'QF Losers', matches:['M63','M64']},
+    {label:'Placement — 15th/16th', matches:['15/16']},
+    {label:'Placement — 13th/14th', matches:['13/14']},
+    {label:'Placement — 11th/12th', matches:['11/12']},
+    {label:'Placement — 9th/10th', matches:['9/10']},
+    {label:'Placement — 7th/8th', matches:['7/8']},
+    {label:'Placement — 5th/6th', matches:['5/6']},
+    {label:'3rd/4th Place', matches:['3/4']},
+    {label:'FINAL', matches:['FINAL']},
+  ];
+
+  // Collect all known section match labels
+  const allSectionLabels = new Set();
+  sections.forEach(sec => sec.matches.forEach(m => allSectionLabels.add(m)));
+
+  // Sort fixtures where the organiser replaced the match label with a score
+  // into Bottom 8 / Top 8 by checking which R2 pool the teams came from
+  const bottom8Teams = new Set();
+  const top8Teams = new Set();
+  for(const p of ['G','H']) (round2Comps[p]||[]).forEach(t => bottom8Teams.add(normTeam(t.name)));
+  for(const p of ['E','F']) (round2Comps[p]||[]).forEach(t => top8Teams.add(normTeam(t.name)));
+
+  const scoredBottom = [], scoredTop = [];
+  sheetFixtures.forEach(f => {
+    if(!/^\d+\s*[-–]\s*\d+$/.test(f.pool)) return;
+    if(f.day !== 'DAY 3' && f.day !== 'DAY 4') return;
+    if(allSectionLabels.has(f.pool)) return;
+    const nt1 = normTeam(f.team1), nt2 = normTeam(f.team2);
+    const isBottom = [...bottom8Teams].some(t => teamsMatch(nt1,t)) || [...bottom8Teams].some(t => teamsMatch(nt2,t));
+    const isTop = [...top8Teams].some(t => teamsMatch(nt1,t)) || [...top8Teams].some(t => teamsMatch(nt2,t));
+    if(isBottom && !isTop) scoredBottom.push(f);
+    else if(isTop && !isBottom) scoredTop.push(f);
+    else scoredBottom.push(f); // fallback
+  });
+  if(scoredBottom.length) {
+    // Insert after "Bottom 8 — Round 1" section
+    const idx = sections.findIndex(s => s.label.includes('Bottom 8'));
+    sections.splice(idx >= 0 ? idx : 0, 0, {label:'Bottom 8 — Results', matches:[], _fixtures: scoredBottom});
+  }
+  if(scoredTop.length) {
+    const idx = sections.findIndex(s => s.label.includes('Top 8'));
+    sections.splice(idx >= 0 ? idx : 0, 0, {label:'Top 8 — Results', matches:[], _fixtures: scoredTop});
+  }
+
+  let html = '', hasAny = false;
+  sections.forEach(sec => {
+    const fixtures = sec._fixtures || sheetFixtures.filter(f => sec.matches.includes(f.pool));
+    if(!fixtures.length) return;
+
+    // Check if any fixture has a score (from allMatchScores or pool column)
+    const rows = fixtures.map(f => {
+      const t1 = resolveTeamName(f.team1);
+      const t2 = resolveTeamName(f.team2);
+      const poolScoreM = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      const poolScore = poolScoreM ? {t1Goals:parseInt(poolScoreM[1]),t2Goals:parseInt(poolScoreM[2])} : null;
+      const score = findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore;
+      const isM = /monument/i.test(t1) || /monument/i.test(t2);
+      return {t1, t2, score, time: f.time, isM, pool: f.pool};
+    });
+
+    const sectionHasScore = rows.some(r => r.score);
+    const sectionHtml = rows.map(r => {
+      const scoreStr = r.score ? `<span class="fix-score">${r.score.t1Goals} – ${r.score.t2Goals}</span>` : r.time;
+      const label = r.score ? '' : (r.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/) ? '' : r.pool);
+      return `<div class="fix-row${r.isM?' monument-match':''}${r.score?' has-score':''}" style="margin:0 14px">
+        <div class="fix-time">${scoreStr}</div>
+        <div class="fix-teams">
+          ${r.isM?'<div class="fix-monument-tag">🏑 Monument</div>':''}
+          <div class="fix-team1">${r.t1}</div>
+          <div class="fix-team2">vs ${r.t2}</div>
+        </div>
+        <div class="fix-pool">${label}</div>
+      </div>`;
+    }).join('');
+
+    // Only show sections that have at least one scored match or are upcoming today
+    if(sectionHasScore || fixtures.some(f => !f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/))) {
+      html += `<div style="font-weight:600;font-size:12px;color:var(--gold);padding:8px 14px 2px;text-transform:uppercase;letter-spacing:0.5px">${sec.label}</div>`;
+      html += sectionHtml;
+      hasAny = true;
+    }
+  });
+
+  return hasAny ? `<div style="margin-bottom:12px">${html}</div>` : '';
 }
 
 function buildLiveTable(title, teams, syncTime) {
