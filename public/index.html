@@ -686,6 +686,23 @@ function renderLog() {
     return;
   }
 
+  // Helper: resolve opponent name from placeholder to actual team name
+  function resolveOpp(node) {
+    const opp = node.homeIsMonument ? node.away : node.home;
+    return resolveTeamName(opp) || opp;
+  }
+  // Helper: find score for a Monument match from any source
+  function findMatchScore(node, historyScore) {
+    if(historyScore) return historyScore;
+    const opp = resolveOpp(node);
+    const s = findFixtureScore('Hoërskool Monument', opp) || findFixtureScore('H/S Monument', opp);
+    if(s) {
+      // Determine which side is Monument
+      return node.homeIsMonument ? s : {mGoals:s.t2Goals, oGoals:s.t1Goals};
+    }
+    return null;
+  }
+
   let html = '';
   entries.forEach(e => {
     if(e.type === 'select') {
@@ -710,12 +727,14 @@ function renderLog() {
       return;
     }
     if(e.type === 'upcoming') {
-      const scoreStr = e.score ? `${e.score.mGoals} – ${e.score.oGoals}` : '';
+      const opp = resolveOpp(e.node);
+      const score = findMatchScore(e.node, e.score);
+      const scoreStr = score ? `${score.mGoals} – ${score.oGoals}` : '';
       html += `<div class="log-item" style="border-left-color:var(--gold);background:rgba(232,184,75,0.08)">
         <span class="log-badge" style="background:var(--gold);color:#1a1a2e">NEXT</span>
         <div class="log-body">
           <div class="log-match">${e.node.phase}</div>
-          <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
+          <div class="log-score-line">Monument vs ${opp}</div>
           ${scoreStr ? `<div class="log-score">${scoreStr}</div>` : ''}
           <div class="log-time">${e.node.day} · ${e.node.time}</div>
         </div>
@@ -723,11 +742,12 @@ function renderLog() {
       return;
     }
     if(e.type === 'future') {
+      const opp = resolveOpp(e.node);
       html += `<div class="log-item" style="border-left-color:var(--border)">
         <span class="log-badge" style="background:var(--surface2);color:var(--muted)">TBD</span>
         <div class="log-body">
           <div class="log-match" style="color:var(--muted)">${e.node.phase}</div>
-          <div class="log-score-line">${e.node.homeIsMonument ? 'Monument' : e.node.home} vs ${e.node.homeIsMonument ? e.node.away : 'Monument'}</div>
+          <div class="log-score-line">Monument vs ${opp}</div>
           <div class="log-time">${e.node.day} · ${e.node.time}</div>
         </div>
       </div>`;
@@ -736,9 +756,10 @@ function renderLog() {
     // Completed result
     const cls = e.result==='win'?'win':e.result==='draw'?'draw':'loss';
     const badge = e.result==='win'?'WIN':e.result==='draw'?'DRAW':'LOSS';
-    const opp = e.node.homeIsMonument ? e.node.away : e.node.home;
-    const scoreStr = e.score ? `<div class="log-score">${e.score.mGoals} – ${e.score.oGoals}</div>` : '';
-    const src = e.fromSheet || e.score ? '<span class="score-src live">from sheet</span>' : '<span class="score-src manual">manual</span>';
+    const opp = resolveOpp(e.node);
+    const score = findMatchScore(e.node, e.score);
+    const scoreStr = score ? `<div class="log-score">${score.mGoals} – ${score.oGoals}</div>` : '';
+    const src = e.fromSheet || score ? '<span class="score-src live">from sheet</span>' : '<span class="score-src manual">manual</span>';
     html += `<div class="log-item ${cls}">
       <span class="log-badge">${badge}</span>
       <div class="log-body">
