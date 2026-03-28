@@ -1214,6 +1214,27 @@ function parseAllPoolData(allRows) {
     calcPoolPositions(teams);
   }
 
+  // Parse knockout/placement scores from rows after pool sections
+  // Format: column B = team1, column C = team2, column D = score (e.g. "4-0")
+  for(let i = 0; i < allRows.length; i++) {
+    const row = allRows[i];
+    if(!row) continue;
+    const b = (row[0]||'').toString().trim();
+    const c = (row[1]||'').toString().trim();
+    const d = (row[2]||'').toString().trim();
+    if(!b || !c || !d || b === 'TEAM 1') continue;
+    // Check if column D has a score pattern like "4-0" or "2 - 1"
+    const sm = d.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+    if(!sm) continue;
+    // Skip if this looks like a pool row (already parsed above)
+    if(/^POOL/i.test(b)) continue;
+    const t1Goals = parseInt(sm[1]), t2Goals = parseInt(sm[2]);
+    const key = normTeam(b) + '|' + normTeam(c);
+    const revKey = normTeam(c) + '|' + normTeam(b);
+    allMatchScores[key] = {team1:b, team2:c, t1Goals, t2Goals};
+    allMatchScores[revKey] = {team1:c, team2:b, t1Goals:t2Goals, t2Goals:t1Goals};
+  }
+
   return result;
 }
 
