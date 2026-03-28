@@ -1557,10 +1557,11 @@ async function syncSheets() {
     // (gviz trims empty rows between pools and knockouts)
     const allRows = await fetchRange('Scores','B:U');
     // Knockout: fetch team names and scores separately then merge columns
-    // (gviz doesn't return column E when fetching B:F for these rows)
+    // Start from row 66 (TEAM 1 header) to avoid row alignment issues
+    // (gviz trims leading empty rows differently per range)
     let koBC = [], koDE = [];
-    try { koBC = await fetchRange('Scores','B65:C90'); } catch(e) {}
-    try { koDE = await fetchRange('Scores','D65:E90'); } catch(e) {}
+    try { koBC = await fetchRange('Scores','B66:C90'); } catch(e) {}
+    try { koDE = await fetchRange('Scores','D66:E90'); } catch(e) {}
     const knockoutRows = koBC.map((r, i) => {
       const de = koDE[i] || [];
       return [r[0]||'', r[1]||'', de[0]||'', de[1]||''];
