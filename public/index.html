@@ -1152,8 +1152,10 @@ function parseAllPoolData(allRows) {
       curPool = pm[1].toUpperCase();
       curStart = i;
     }
+    // Stop at knockout section (organiser adds headers after pools)
+    if(cell0 === 'TEAM 1' || /cross.?pool/i.test(cell0)) { savePool(i); break; }
   }
-  savePool(allRows.length);
+  if(curPool) savePool(curStart + 5); // max 5 rows per pool (header + 4 teams)
 
   // Process each pool
   const result = {};
@@ -1221,20 +1223,20 @@ function parseAllPoolData(allRows) {
     calcPoolPositions(teams);
   }
 
-  // Parse knockout/placement scores from rows after pool sections
+  // Parse knockout/placement scores from rows AFTER the "TEAM 1" header
   // Format: column B = team1, column C = team2, column D = score (e.g. "4-0")
+  let inKnockouts = false;
   for(let i = 0; i < allRows.length; i++) {
     const row = allRows[i];
     if(!row) continue;
     const b = (row[0]||'').toString().trim();
+    if(b === 'TEAM 1') { inKnockouts = true; continue; }
+    if(!inKnockouts) continue;
     const c = (row[1]||'').toString().trim();
     const d = (row[2]||'').toString().trim();
-    if(!b || !c || !d || b === 'TEAM 1') continue;
-    // Check if column D has a score pattern like "4-0" or "2 - 1"
+    if(!b || !c || !d) continue;
     const sm = d.match(/^(\d+)\s*[-–]\s*(\d+)$/);
     if(!sm) continue;
-    // Skip if this looks like a pool row (already parsed above)
-    if(/^POOL/i.test(b)) continue;
     const t1Goals = parseInt(sm[1]), t2Goals = parseInt(sm[2]);
     const key = normTeam(b) + '|' + normTeam(c);
     const revKey = normTeam(c) + '|' + normTeam(b);
