@@ -931,16 +931,33 @@ function buildKnockoutResults() {
   const allSectionLabels = new Set();
   sections.forEach(sec => sec.matches.forEach(m => allSectionLabels.add(m)));
 
-  // Add a section for fixtures where the organiser replaced the label with a score
-  // (e.g. "M55" became "4 - 0")
-  const scoredKnockouts = sheetFixtures.filter(f => {
-    const isScorePool = /^\d+\s*[-–]\s*\d+$/.test(f.pool);
-    const isKnockoutDay = f.day === 'DAY 3' || f.day === 'DAY 4';
-    const isInSection = allSectionLabels.has(f.pool);
-    return isScorePool && isKnockoutDay && !isInSection;
+  // Sort fixtures where the organiser replaced the match label with a score
+  // into Bottom 8 / Top 8 by checking which R2 pool the teams came from
+  const bottom8Teams = new Set();
+  const top8Teams = new Set();
+  for(const p of ['G','H']) (round2Comps[p]||[]).forEach(t => bottom8Teams.add(normTeam(t.name)));
+  for(const p of ['E','F']) (round2Comps[p]||[]).forEach(t => top8Teams.add(normTeam(t.name)));
+
+  const scoredBottom = [], scoredTop = [];
+  sheetFixtures.forEach(f => {
+    if(!/^\d+\s*[-–]\s*\d+$/.test(f.pool)) return;
+    if(f.day !== 'DAY 3' && f.day !== 'DAY 4') return;
+    if(allSectionLabels.has(f.pool)) return;
+    const nt1 = normTeam(f.team1), nt2 = normTeam(f.team2);
+    const isBottom = [...bottom8Teams].some(t => teamsMatch(nt1,t)) || [...bottom8Teams].some(t => teamsMatch(nt2,t));
+    const isTop = [...top8Teams].some(t => teamsMatch(nt1,t)) || [...top8Teams].some(t => teamsMatch(nt2,t));
+    if(isBottom && !isTop) scoredBottom.push(f);
+    else if(isTop && !isBottom) scoredTop.push(f);
+    else scoredBottom.push(f); // fallback
   });
-  if(scoredKnockouts.length) {
-    sections.unshift({label:'Completed', matches:[], _fixtures: scoredKnockouts});
+  if(scoredBottom.length) {
+    // Insert after "Bottom 8 — Round 1" section
+    const idx = sections.findIndex(s => s.label.includes('Bottom 8'));
+    sections.splice(idx >= 0 ? idx : 0, 0, {label:'Bottom 8 — Results', matches:[], _fixtures: scoredBottom});
+  }
+  if(scoredTop.length) {
+    const idx = sections.findIndex(s => s.label.includes('Top 8'));
+    sections.splice(idx >= 0 ? idx : 0, 0, {label:'Top 8 — Results', matches:[], _fixtures: scoredTop});
   }
 
   let html = '', hasAny = false;
