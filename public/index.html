@@ -993,7 +993,7 @@ function buildKnockoutResults() {
       const t2 = resolveTeamName(f.team2);
       const poolScoreM = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
       const poolScore = poolScoreM ? {t1Goals:parseInt(poolScoreM[1]),t2Goals:parseInt(poolScoreM[2])} : null;
-      const score = findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore;
+      const score = findKnockoutScore(t1, t2) || findKnockoutScore(f.team1, f.team2) || poolScore;
       const isM = /monument/i.test(t1) || /monument/i.test(t2);
       return {t1, t2, score, time: f.time, isM, pool: f.pool};
     });
