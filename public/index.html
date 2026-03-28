@@ -1633,10 +1633,20 @@ async function syncStreams() {
     if(!r.ok) return;
     const data = await r.json();
     const newLinks = data.events || [];
-    // Merge: keep existing links, add/update new ones (never remove)
+    // Build key by teams+date to detect replaced events (same match, new ID)
+    const teamKey = s => [normTeam(s.home), normTeam(s.away)].sort().join('|') + '|' + new Date(s.date).toISOString().slice(0,10);
+    // Start with cached links
     const byId = {};
     streamLinks.forEach(s => { byId[s.id] = s; });
-    newLinks.forEach(s => { byId[s.id] = s; }); // new data overwrites (status may change)
+    // Remove old links that have been replaced (same teams+date, different ID)
+    const newKeys = {};
+    newLinks.forEach(s => { newKeys[teamKey(s)] = s.id; });
+    for(const [id, s] of Object.entries(byId)) {
+      const key = teamKey(s);
+      if(newKeys[key] && newKeys[key] !== id) delete byId[id]; // replaced
+    }
+    // Add/update with new data
+    newLinks.forEach(s => { byId[s.id] = s; });
     streamLinks = Object.values(byId);
     // Persist to localStorage so links survive page refreshes
     try { localStorage.setItem('streamLinks', JSON.stringify(streamLinks)); } catch(e) {}
