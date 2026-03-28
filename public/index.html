@@ -993,7 +993,9 @@ function renderSchedule() {
       const t1 = resolveTeamName(f.team1);
       const t2 = resolveTeamName(f.team2);
       const isPenalty = /penalt|shoot/i.test(f.pool);
-      const score = isPenalty ? null : (findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2));
+      const poolScoreM = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      const poolScore = poolScoreM ? {t1Goals:parseInt(poolScoreM[1]), t2Goals:parseInt(poolScoreM[2])} : null;
+      const score = isPenalty ? null : (findFixtureScore(t1, t2) || findFixtureScore(f.team1, f.team2) || poolScore);
       allFixtures.push({f, t1, t2, score, day:d});
     });
   });
@@ -1022,9 +1024,14 @@ function renderSchedule() {
     days[d].forEach(f => {
       const fx = allFixtures[fixtureIdx];
       const isM = /monument/i.test(fx.t1) || /monument/i.test(fx.t2);
-      const timeOrScore = fx.score
-        ? `<span class="fix-score">${fx.score.t1Goals} – ${fx.score.t2Goals}</span>`
+      // Check if organiser put score in the pool column (e.g. "4 - 0" instead of "M55")
+      const poolScoreMatch = f.pool.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      const poolScore = poolScoreMatch ? {t1Goals:parseInt(poolScoreMatch[1]), t2Goals:parseInt(poolScoreMatch[2])} : null;
+      const score = fx.score || poolScore;
+      const timeOrScore = score
+        ? `<span class="fix-score">${score.t1Goals} – ${score.t2Goals}</span>`
         : f.time;
+      const poolLabel = poolScoreMatch ? '' : f.pool; // don't show score as pool badge
       // Mark the last scored fixture for auto-scroll
       const scrollId = (fixtureIdx === lastScoredIdx + 4) ? ' id="scroll-target"' : '';
       const stream = findStreamLink(fx.t1, fx.t2, fx.day);
@@ -1032,14 +1039,14 @@ function renderSchedule() {
       const streamBtn = stream
         ? `<a href="${stream.url}${utmParams}" target="_blank" class="stream-btn ${stream.status==='live'?'stream-live':stream.status==='archived'?'stream-vod':'stream-upcoming'}">${stream.status==='live'?'LIVE':stream.status==='archived'?'Replay':'Stream'}</a>`
         : '';
-      html += `<div class="fix-row${isM?' monument-match':''}${fx.score?' has-score':''}"${scrollId}>
+      html += `<div class="fix-row${isM?' monument-match':''}${score?' has-score':''}"${scrollId}>
         <div class="fix-time">${timeOrScore}</div>
         <div class="fix-teams">
           ${isM?`<div class="fix-monument-tag">🏑 Monument</div>`:''}
           <div class="fix-team1">${fx.t1}</div>
           <div class="fix-team2 ">vs ${fx.t2}</div>
         </div>
-        <div class="fix-pool${isM?' monument-pool':''}">${f.pool}${streamBtn}</div>
+        <div class="fix-pool${isM?' monument-pool':''}">${poolLabel}${streamBtn}</div>
       </div>`;
       fixtureIdx++;
     });
