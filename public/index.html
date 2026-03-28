@@ -1152,8 +1152,10 @@ function parseAllPoolData(allRows) {
       curPool = pm[1].toUpperCase();
       curStart = i;
     }
+    // Stop at knockout section (organiser adds "TEAM 1" header after pools)
+    if(cell0 === 'TEAM 1') { savePool(i); break; }
   }
-  savePool(allRows.length);
+  if(curPool) savePool(curStart + 5); // max 5 rows per pool (header + 4 teams)
 
   // Process each pool
   const result = {};
