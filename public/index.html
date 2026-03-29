@@ -1334,10 +1334,10 @@ function parseAllPoolData(allRows) {
     }
     const teamCols = [];
     colPositions.forEach((c, idx) => {
+      // Prefer row names (each team's own label) over header names to avoid header typos (e.g. DGS vs DSG)
       const headerName = (header[c]||'').toString().trim();
-      const name = (headerName && !/^(points|position|goals)/i.test(headerName))
-        ? headerName
-        : (rowTeamNames[idx] || '');
+      const name = rowTeamNames[idx]
+        || ((headerName && !/^(points|position|goals)/i.test(headerName)) ? headerName : '');
       if(name) teamCols.push({col:c, name});
     });
 
@@ -1595,7 +1595,7 @@ async function syncSheets() {
     const allRows = await fetchRange('Scores','B:U');
     // Knockout: fetch team names and scores from a single range to avoid alignment issues
     let knockoutRaw = [];
-    try { knockoutRaw = await fetchRange('Scores','B66:E90'); } catch(e) {}
+    try { knockoutRaw = await fetchRange('Scores','B66:E120'); } catch(e) {}
     const knockoutRows = knockoutRaw;
     const combinedRows = [...allRows, ...knockoutRows];
     sheetPools = parseAllPoolData(combinedRows);
