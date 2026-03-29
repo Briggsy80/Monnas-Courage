@@ -905,21 +905,21 @@ function buildCollapsedRound(title, pools) {
 
 function buildPlayoffBracket() {
   let html = '<div style="padding:4px 14px">';
-  html += '<div style="font-weight:600;font-size:13px;color:var(--text);margin:8px 0 4px">Top 8 (Positions 1–8)</div>';
-  R3_MATCHUPS.top8.forEach(m => {
-    const t1 = resolveTeamName(m.ep + ordSuffix(m.ep) + ' in Pool ' + m.e);
-    const t2 = resolveTeamName(m.fp + ordSuffix(m.fp) + ' in Pool ' + m.f);
-    const score = findFixtureScore(t1, t2);
-    const scoreStr = score ? `<span class="fix-score" style="margin-left:8px">${score.t1Goals} – ${score.t2Goals}</span>` : '';
-    html += `<div style="padding:4px 0;font-size:12px;color:var(--text-dim)">${t1} vs ${t2}${scoreStr}</div>`;
-  });
-  html += '<div style="font-weight:600;font-size:13px;color:var(--text);margin:8px 0 4px">Bottom 8 (Positions 9–16)</div>';
-  R3_MATCHUPS.bottom8.forEach(m => {
-    const t1 = resolveTeamName(m.ep + ordSuffix(m.ep) + ' in Pool ' + m.e);
-    const t2 = resolveTeamName(m.fp + ordSuffix(m.fp) + ' in Pool ' + m.f);
-    const score = findFixtureScore(t1, t2);
-    const scoreStr = score ? `<span class="fix-score" style="margin-left:8px">${score.t1Goals} – ${score.t2Goals}</span>` : '';
-    html += `<div style="padding:4px 0;font-size:12px;color:var(--text-dim)">${t1} vs ${t2}${scoreStr}</div>`;
+  // Use knockout fixtures from Scores sheet for correct team names and scores
+  const top8Labels = ['Q1','Q2','Q3','Q4'];
+  const bottom8Labels = ['M55','M56','M57','M58'];
+  [{title:'Top 8 (Positions 1–8)', labels:top8Labels},
+   {title:'Bottom 8 (Positions 9–16)', labels:bottom8Labels}].forEach(sec => {
+    html += `<div style="font-weight:600;font-size:13px;color:var(--text);margin:8px 0 4px">${sec.title}</div>`;
+    sec.labels.forEach(label => {
+      const kf = knockoutFixtures[label];
+      const entry = kf && kf[0];
+      const t1 = entry ? entry.team1 : label;
+      const t2 = entry ? entry.team2 : '';
+      const score = entry && entry.score ? entry.score : findKnockoutScore(t1, t2);
+      const scoreStr = score ? `<span class="fix-score" style="margin-left:8px">${score.t1Goals} – ${score.t2Goals}</span>` : '';
+      html += `<div style="padding:4px 0;font-size:12px;color:var(--text-dim)">${t1} vs ${t2}${scoreStr}</div>`;
+    });
   });
   html += '</div>';
   return html;
